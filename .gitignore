@@ -2,3 +2,13 @@ __pycache__/
 *.pyc
 db.sqlite3
 .env
+# Model Trained dan Data Berat
+*.pkl
+*.joblib
+*.h5
+*.pth
+*.csv
+
+# Folder Uploaded/Statik Lokal
+/media/
+/static/
