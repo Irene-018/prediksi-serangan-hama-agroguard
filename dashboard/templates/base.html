@@ -13,10 +13,16 @@
     <!-- ==== NAVBAR & FOOTER STYLE ==== -->
     <link rel="stylesheet" href="{% static 'dashboard/css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'dashboard/css/footer.css' %}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="profile">
+    <span>{{ request.user.first_name }} {{ request.user.last_name }}</span>
+    <span class="role">Petani</span>
+    <div class="avatar">{{ request.user.username|first|upper }}</div>
+</div>
+
 
     <!-- ==== NAVBAR ==== -->
     {% include 'partials/navbar.html' %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deteksi Daun - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/detection.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🌿 Deteksi Serangan Hama pada Daun</h2>
+
+    <form action="" method="POST" enctype="multipart/form-data" class="upload-form">
+        {% csrf_token %}
+        <div class="upload-box">
+            <p>Unggah gambar daun yang ingin dideteksi:</p>
+            <input type="file" name="leaf_image" accept="image/*" required>
+            <button type="submit" class="btn btn-upload">🔍 Deteksi Sekarang</button>
+        </div>
+    </form>
+
+    {% if uploaded_file_url %}
+    <section class="result mt-5">
+        <div class="row align-items-center">
+            <div class="col-md-5 text-center">
+                <img src="{{ uploaded_file_url }}" alt="Daun yang diupload" class="leaf-preview img-fluid rounded shadow">
+            </div>
+            <div class="col-md-7">
+                <div class="result-card p-4">
+                    <h4>📊 Hasil Deteksi</h4>
+                    <ul class="list-unstyled mt-3">
+                        <li><b>Jenis Hama:</b> {{ detected_pest }}</li>
+                        <li><b>Confidence Score:</b> {{ confidence }}%</li>
+                        <li><b>Tingkat Keparahan:</b> {{ severity }}</li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="/recommendation/" class="btn btn-success me-2">💡 Rekomendasi Treatment</a>
+                        <button class="btn btn-outline-secondary">Simpan Hasil</button>
+                    </div>
+                </div>
+
+                <div class="tips mt-4">
+                    <h5>💡 Tips Perawatan Awal</h5>
+                    <p>Periksa daun secara rutin, hindari kelembapan berlebih, dan gunakan pestisida alami seperti minyak neem jika perlu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
