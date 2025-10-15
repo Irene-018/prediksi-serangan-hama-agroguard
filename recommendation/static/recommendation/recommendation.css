@@ -1,0 +1,29 @@
+body {
+    background-color: #f8faf9;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+}
+
+h2 {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.card h4 {
+    color: #388e3c;
+}
+
+ul {
+    margin-top: 15px;
+}
+
+.btn-outline-success {
+    border-radius: 8px;
+    padding: 8px 20px;
+}
