@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Monitoring{% endblock %}
+
+{% block content %}
+<section class="dashboard-container">
+    <h1>Dashboard Monitoring</h1>
+    <p>Selamat datang kembali, Ahmad! Berikut ringkasan kondisi tanaman Anda hari ini.</p>
+
+    <div class="stats">
+        <div class="card sehat">
+            <h2>100</h2>
+            <p>Tanaman Sehat</p>
+        </div>
+        <div class="card sakit">
+            <h2>127</h2>
+            <p>Tanaman Sakit</p>
+        </div>
+        <div class="card risiko">
+            <h2>31%</h2>
+            <p>Risiko Serangan Hama</p>
+        </div>
+        <div class="card kelembapan">
+            <h2>75%</h2>
+            <p>Kelembapan</p>
+        </div>
+    </div>
+
+    <div class="alert">
+        ⚠️ Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
+    </div>
+
+    <div class="chart-box">
+        <h3>📊 Data Sensor Real-Time</h3>
+        <canvas id="sensorChart"></canvas>
+    </div>
+
+    <div class="sensor-box">
+        <h4>📅 Data Sensor Terbaru</h4>
+        <p>Update terakhir: 14 Okt 2025, 21:30 WIB</p>
+        <div class="sensor-stats">
+            <div class="sensor-item">
+                <span class="sensor-label">🌡️ Suhu:</span>
+                <span class="sensor-value">28°C</span>
+            </div>
+            <div class="sensor-item">
+                <span class="sensor-label">💧 Kelembapan:</span>
+                <span class="sensor-value">75%</span>
+            </div>
+            <div class="sensor-item">
+                <span class="sensor-label">☀️ Cahaya:</span>
+                <span class="sensor-value">850 lux</span>
+            </div>
+            <div class="sensor-item">
+                <span class="sensor-label">🌱 pH Tanah:</span>
+                <span class="sensor-value">6.5</span>
+            </div>
+        </div>
+        <button class="btn-warning">⚠️ Lihat Peringatan</button>
+    </div>
+</section>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Data dummy untuk grafik sensor
+const ctx = document.getElementById('sensorChart').getContext('2d');
+
+const sensorChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+        datasets: [
+            {
+                label: 'Suhu (°C)',
+                data: [24, 23, 26, 29, 31, 28, 25],
+                borderColor: '#e74c3c',
+                backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'Kelembapan (%)',
+                data: [80, 82, 78, 75, 72, 75, 78],
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'Cahaya (x10 lux)',
+                data: [0, 10, 60, 85, 90, 40, 5],
+                borderColor: '#f39c12',
+                backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'pH Tanah',
+                data: [6.5, 6.4, 6.6, 6.5, 6.7, 6.5, 6.4],
+                borderColor: '#27ae60',
+                backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.5,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 15,
+                    font: {
+                        size: 12,
+                        family: "'Poppins', sans-serif"
+                    }
+                }
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                padding: 12,
+                titleFont: {
+                    size: 13,
+                    family: "'Poppins', sans-serif"
+                },
+                bodyFont: {
+                    size: 12,
+                    family: "'Poppins', sans-serif"
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                },
+                ticks: {
+                    font: {
+                        family: "'Poppins', sans-serif"
+                    }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    font: {
+                        family: "'Poppins', sans-serif"
+                    }
+                }
+            }
+        },
+        interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+        }
+    }
+});
+
+// Simulasi update data real-time (opsional)
+function updateChart() {
+    // Generate data acak untuk simulasi
+    const newTemp = Math.floor(Math.random() * 8) + 24; // 24-32°C
+    const newHumidity = Math.floor(Math.random() * 15) + 70; // 70-85%
+    const newLight = Math.floor(Math.random() * 100); // 0-100 (x10 lux)
+    const newPH = (Math.random() * 1 + 6).toFixed(1); // 6.0-7.0
+
+    // Hapus data pertama dan tambah data baru di akhir
+    sensorChart.data.datasets[0].data.shift();
+    sensorChart.data.datasets[0].data.push(newTemp);
+    
+    sensorChart.data.datasets[1].data.shift();
+    sensorChart.data.datasets[1].data.push(newHumidity);
+    
+    sensorChart.data.datasets[2].data.shift();
+    sensorChart.data.datasets[2].data.push(newLight);
+    
+    sensorChart.data.datasets[3].data.shift();
+    sensorChart.data.datasets[3].data.push(newPH);
+
+    // Update label waktu
+    const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    sensorChart.data.labels.shift();
+    sensorChart.data.labels.push(currentTime);
+
+    sensorChart.update();
+}
+
+// Auto-update setiap 5 detik (komen jika tidak ingin auto-update)
+// setInterval(updateChart, 5000);
+</script>
+{% endblock %}
