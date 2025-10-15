@@ -1,0 +1,179 @@
+{% load static %}
+<footer class="main-footer">
+    <div class="footer-container">
+        <!-- Left Column - Thank You and Copyright -->
+        <div class="footer-column footer-left">
+            <div class="thank-you">
+                <h2>TERIMA KASIH !</h2>
+                <p>Sudah mengunjungi website kami</p>
+            </div>
+            <div class="copyright">
+                <p>© 2025 By AgroGuard.</p>
+            </div>
+        </div>
+
+        <!-- Middle Column - About AgroGuard -->
+        <div class="footer-column footer-center">
+            <h3>Tentang AgroGuard</h3>
+            <p>AgroGuard hadir sebagai solusi cerdas untuk melindungi tanaman. Dengan teknologi AI dan IoT, AgroGuard membantu mendeteksi serangan hama lebih awal supaya petani bisa cepat mengambil tindakan yang tepat.</p>
+        </div>
+
+        <!-- Right Column - Contact Us and Social Media -->
+        <div class="footer-column footer-right">
+            <h3>Hubungi Kami :</h3>
+            <div class="social-media">
+                <a href="mailto:info@agroguard.com" class="social-link" title="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://instagram.com/agroguard" class="social-link" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://twitter.com/agroguard" class="social-link" title="Twitter/X">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.main-footer {
+    background: #f5f5dc;
+    padding: 3rem 0 2rem 0;
+    margin-top: 3rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.footer-column {
+    color: #333;
+}
+
+.footer-left {
+    text-align: left;
+}
+
+.footer-center {
+    text-align: left;
+}
+
+.footer-right {
+    text-align: left;
+}
+
+.thank-you h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.thank-you p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.copyright p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+.footer-column h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.footer-center p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.social-media {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.social-link:hover {
+    background: #619D69;
+    color: white;
+    border-color: #619D69;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .footer-column {
+        text-align: center;
+    }
+    
+    .thank-you h2 {
+        font-size: 1.5rem;
+    }
+    
+    .social-media {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-footer {
+        padding: 2rem 0 1.5rem 0;
+    }
+    
+    .footer-container {
+        gap: 1.5rem;
+    }
+    
+    .thank-you h2 {
+        font-size: 1.3rem;
+    }
+    
+    .footer-column h3 {
+        font-size: 1.1rem;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+</style>

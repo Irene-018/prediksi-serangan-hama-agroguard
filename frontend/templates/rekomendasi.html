@@ -1,0 +1,25 @@
+{% extends "layouts/app.html" %}
+{% load static %}
+
+{% block title %}Agroguard - Rekomendasi{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="content-title">Rekomendasi Perawatan</h1>
+    <p class="content-subtitle">Dapatkan saran perawatan berdasarkan hasil deteksi</p>
+</div>
+
+<div class="content-body">
+    <div class="recommendation-area">
+        <p>Area rekomendasi perawatan akan ditampilkan di sini.</p>
+    </div>
+</div>
+
+<!-- Footer -->
+{% include "layouts/footer.html" %}
+{% block extra_styles %}
+<style>
+@import url('/css/rekomendasi.css');
+</style>
+{% endblock %}
+{% endblock %}

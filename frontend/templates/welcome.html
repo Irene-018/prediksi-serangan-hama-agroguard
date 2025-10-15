@@ -1,0 +1,23 @@
+{% extends "layouts/app.html" %}
+{% load static %}
+
+{% block title %}Agroguard - Dashboard{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="content-title">Selamat Datang di Agroguard</h1>
+    <p class="content-subtitle">Sistem Deteksi Penyakit Daun Tanaman yang Cerdas</p>
+</div>
+
+<div class="content-body">
+    <p>Konten utama aplikasi akan ditampilkan di sini.</p>
+</div>
+
+<!-- Footer -->
+{% include "layouts/footer.html" %}
+{% block extra_styles %}
+<style>
+@import url('/css/welcome.css');
+</style>
+{% endblock %}
+{% endblock %}
