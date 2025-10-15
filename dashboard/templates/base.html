@@ -9,6 +9,12 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="profile">
+    <span>{{ request.user.first_name }} {{ request.user.last_name }}</span>
+    <span class="role">Petani</span>
+    <div class="avatar">{{ request.user.username|first|upper }}</div>
+</div>
+
 
     <!-- Navbar -->
     {% include 'partials/navbar.html' %}

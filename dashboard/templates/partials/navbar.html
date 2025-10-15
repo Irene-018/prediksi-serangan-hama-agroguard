@@ -17,7 +17,7 @@
     <!-- User Menu dengan Dropdown -->
     <div class="user-menu">
       <div class="user-info">
-        <span class="username">{{ user.username|default:"Irene Krsti" }}</span>
+        <span class="username">{{ user.username|default:"Zetta Sim" }}</span>
         <small class="role">Petani</small>
       </div>
       <div class="user-dropdown">
@@ -32,10 +32,11 @@
             <span>Pengaturan</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="{% url 'accounts:logout' %}" class="dropdown-item logout">
-            <span class="icon">🚪</span>
-            <span>Logout</span>
-          </a>
+          <a href="#" class="dropdown-item logout">
+    <span class="icon">🚪</span>
+    <span>Logout</span>
+</a>
+
         </div>
       </div>
     </div>
