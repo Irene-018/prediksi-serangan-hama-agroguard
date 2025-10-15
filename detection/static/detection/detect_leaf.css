@@ -62,3 +62,89 @@ body {
     color: #2e7d32;
     font-weight: 600;
 }
+
+/* ========================================= */
+/* 1. KONTEN UTAMA FOOTER */
+/* ========================================= */
+.footer {
+    /* Padding atas dan bawah untuk ruang */
+    padding: 40px 0;
+    /* Warna latar belakang (sesuaikan dengan desain Anda) */
+    background-color: #f7f7f7; 
+    /* Garis tipis di atas footer */
+    border-top: 1px solid #e0e0e0; 
+    color: #333;
+    font-size: 14px;
+}
+
+.footer-content {
+    /* Menggunakan Flexbox untuk membagi 3 kolom */
+    display: flex;
+    /* Konten memenuhi ruang horizontal di antara kolom */
+    justify-content: space-between; 
+    /* Jarak antar kolom */
+    gap: 30px; 
+    /* Batasi lebar maksimum dan taruh di tengah halaman */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* Padding samping agar konten tidak menempel di tepi */
+}
+
+/* ========================================= */
+/* 2. STYLE TEKS */
+/* ========================================= */
+.footer h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #1a5b32; /* Hijau gelap, sesuaikan */
+}
+
+.footer h4 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.footer p {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* ========================================= */
+/* 3. ICON SOSIAL MEDIA */
+/* ========================================= */
+.social-icons {
+    display: flex;
+    gap: 15px; /* Jarak antar ikon */
+    margin-top: 15px;
+}
+
+.social-icons a {
+    /* Menghilangkan underline pada link */
+    text-decoration: none; 
+    /* Warna ikon */
+    color: #333; 
+    /* Ukuran ikon Font Awesome */
+    font-size: 24px; 
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #1a5b32; /* Warna berubah saat kursor di atas ikon */
+}
+
+
+/* ========================================= */
+/* 4. RESPONSIVITAS (Mobile View) */
+/* ========================================= */
+@media (max-width: 768px) {
+    .footer-content {
+        /* Saat layar kecil, kolom footer disusun ke bawah */
+        flex-direction: column;
+        /* Rata kiri */
+        align-items: flex-start; 
+        gap: 30px;
+    }
+}
