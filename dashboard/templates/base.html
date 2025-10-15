@@ -3,21 +3,54 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AgroGuard{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 
     <!-- Navbar -->
     {% include 'partials/navbar.html' %}
 
-    <!-- Konten halaman -->
+    <!-- Konten utama -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
     {% include 'partials/footer.html' %}
+
+    <!-- JavaScript di bagian bawah setelah semua HTML dimuat -->
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Dropdown Toggle Script -->
+    <script>
+        // Optional: Toggle dropdown dengan click (alternatif dari hover)
+        document.addEventListener('DOMContentLoaded', function() {
+            const userAvatar = document.querySelector('.user-avatar');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (userAvatar && dropdownMenu) {
+                // Toggle dropdown on click
+                userAvatar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.user-dropdown')) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Block untuk JS tambahan dari halaman child -->
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>

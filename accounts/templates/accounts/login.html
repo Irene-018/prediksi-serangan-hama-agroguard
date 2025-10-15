@@ -3,109 +3,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AgroGuard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 </head>
-<body class="bg-gradient-to-br from-green-100 to-green-200 min-h-screen flex items-center justify-center">
+<body>
+    <div class="container">
+        <!-- Panel Kiri -->
+        <div class="left-panel">
+            <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
+            <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
+            <p>AgroGuard Siap Mendeteksi Hama Lebih Awal</p>
+            <p>Beri Solusi Tepat Sebelum Masalah Berkembang</p>
+        </div>
 
-    <!-- Main Container -->
-    <div class="relative w-full max-w-4xl p-4"> <!-- dari max-w-5xl jadi max-w-4xl agar lebih kecil -->
-        
-        <!-- Decorative Background Elements -->
-        <div class="absolute -bottom-6 -left-6 w-20 h-20 bg-green-200 opacity-60"></div>
-        <div class="absolute -top-6 right-4 w-24 h-24 bg-green-200 opacity-60"></div>
+        <!-- Panel Kanan -->
+        <div class="right-panel">
+            <h2>Masuk ke Akun Anda</h2>
 
-        <!-- Main Card -->
-        <div class="bg-white rounded-2xl shadow-2xl flex overflow-hidden relative z-10 min-h-[420px] border-4" style="border-color: #63906E;">
-            <!-- tambah border tebal -->
-            
-            <!-- Left Side - Branding -->
-            <div class="bg-gradient-to-br from-green-300 to-green-200 flex-1 p-10 flex flex-col justify-center items-center relative 
-                        rounded-tr-[35px] rounded-br-[35px]">
-                <!-- Logo Shield -->
-                <div class="mb-6">
-                    <div class="w-24 h-24 flex items-center justify-center">
-                        <svg viewBox="0 0 100 120" class="w-full h-full">
-                            <path d="M 50 10 L 85 25 L 85 60 Q 85 90 50 110 Q 15 90 15 60 L 15 25 Z" 
-                                  fill="#2d5f3f" stroke="#1a3d2b" stroke-width="2"/>
-                            <path d="M 50 20 L 75 30 L 75 60 Q 75 82 50 95 Q 25 82 25 60 L 25 30 Z" 
-                                  fill="#3d7f5f"/>
-                            <path d="M 50 45 Q 45 40 45 35 Q 45 30 50 28 Q 55 30 55 35 Q 55 40 50 45" 
-                                  fill="#7fb89e"/>
-                            <path d="M 50 45 L 45 55 Q 43 58 40 58 Q 38 58 38 56 Q 38 54 40 52 L 50 45" 
-                                  fill="#7fb89e"/>
-                            <path d="M 50 45 L 55 55 Q 57 58 60 58 Q 62 58 62 56 Q 62 54 60 52 L 50 45" 
-                                  fill="#7fb89e"/>
-                            <path d="M 50 45 L 50 75" stroke="#5d9f7f" stroke-width="2" fill="none"/>
-                        </svg>
-                    </div>
-                </div>
-                
-                <!-- Brand Name -->
-                <h1 class="text-2xl font-light text-gray-700 mb-6 tracking-wide">AgroGuard</h1>
-                
-                <!-- Taglines -->
-                <div class="text-center space-y-1 text-gray-700 text-sm">
-                    <p class="font-medium">Lindungi Tanaman Agar Tetap Aman</p>
-                    <p>AgroGuard Siap Mendeteksi Hama Lebih Awal</p>
-                    <p>Beri Solusi Tepat Sebelum Masalah Berkembang</p>
-                </div>
-            </div>
+            <form method="POST" action="{% url 'accounts:login' %}">
+                {% csrf_token %}
+                <label>Email atau Username</label>
+                <input type="text" name="username" placeholder="Masukkan Email atau Username" required>
 
-            <!-- Right Side - Login Form -->
-            <div class="flex-1 p-10 flex flex-col justify-center bg-gray-50">
-                <h2 class="text-2xl font-bold mb-2 text-gray-900">Masuk ke Akun Anda</h2>
-                
-                <form method="post" class="space-y-4 mt-6">
-                    {% csrf_token %}
-                    
-                    <!-- Email/Username Field -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email atau Username</label>
-                        <input 
-                            type="text" 
-                            name="username" 
-                            placeholder="Masukkan Email atau Username" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent bg-white"
-                            required
-                        >
-                    </div>
-                    
-                    <!-- Password Field -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input 
-                            type="password" 
-                            name="password" 
-                            placeholder="Masukkan Password" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent bg-white"
-                            required
-                        >
-                    </div>
-                    
-                    <!-- Forgot Password Link -->
-                    <div class="text-left">
-                        <a href="#" class="text-sm text-gray-400 hover:text-green-600 transition">Lupa Password ?</a>
-                    </div>
-                    
-                    <!-- Login Button -->
-                    <button 
-                        type="submit" 
-                        class="w-full bg-green-400 text-white font-semibold py-2 rounded-lg hover:bg-green-500 transition-colors shadow-md"
-                    >
-                        Masuk
-                    </button>
-                </form>
-                
-                <!-- Register Link -->
-                <a 
-                    href="{% url 'register' %}" 
-                    class="block text-center mt-4 bg-white border-2 border-green-400 text-green-700 font-semibold py-2 rounded-lg hover:bg-green-50 transition-colors"
-                >
-                    Daftar Akun Baru
-                </a>
-            </div>
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Masukkan Password" required>
+
+                <a href="#" class="forgot">Lupa Password ?</a>
+                <button type="submit" class="login">Masuk</button>
+            </form>
+
+            <p class="login-link">
+                Belum punya akun?
+                <a href="{% url 'accounts:register' %}">Daftar Akun Baru</a>
+            </p>
         </div>
     </div>
 </body>

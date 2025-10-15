@@ -117,6 +117,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -124,6 +125,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Redirect setelah login & logout
-LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/"       # setelah login ke dashboard home
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "dashboard:home"       # setelah login ke dashboard home
 LOGOUT_REDIRECT_URL = "/login/"

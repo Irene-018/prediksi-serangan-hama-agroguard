@@ -3,11 +3,16 @@
 
 {% block title %}Dashboard Monitoring{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
 <section class="dashboard-container">
     <h1>Dashboard Monitoring</h1>
     <p>Selamat datang kembali, Ahmad! Berikut ringkasan kondisi tanaman Anda hari ini.</p>
 
+    <!-- STAT CARDS -->
     <div class="stats">
         <div class="card sehat">
             <h2>100</h2>
@@ -27,18 +32,21 @@
         </div>
     </div>
 
+    <!-- ALERT -->
     <div class="alert">
         ⚠️ Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
     </div>
 
+    <!-- CHART -->
     <div class="chart-box">
         <h3>📊 Data Sensor Real-Time</h3>
         <canvas id="sensorChart"></canvas>
     </div>
 
+    <!-- SENSOR DATA -->
     <div class="sensor-box">
         <h4>📅 Data Sensor Terbaru</h4>
-        <p>Update terakhir: 14 Okt 2025, 21:30 WIB</p>
+        <p style="margin-bottom: 15px; color: #666;">Update terakhir: 14 Okt 2025, 21:30 WIB</p>
         <div class="sensor-stats">
             <div class="sensor-item">
                 <span class="sensor-label">🌡️ Suhu:</span>
@@ -60,7 +68,9 @@
         <button class="btn-warning">⚠️ Lihat Peringatan</button>
     </div>
 </section>
+{% endblock %}
 
+{% block extra_js %}
 <!-- Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -78,36 +88,44 @@ const sensorChart = new Chart(ctx, {
                 data: [24, 23, 26, 29, 31, 28, 25],
                 borderColor: '#e74c3c',
                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6
             },
             {
                 label: 'Kelembapan (%)',
                 data: [80, 82, 78, 75, 72, 75, 78],
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6
             },
             {
                 label: 'Cahaya (x10 lux)',
                 data: [0, 10, 60, 85, 90, 40, 5],
                 borderColor: '#f39c12',
                 backgroundColor: 'rgba(243, 156, 18, 0.1)',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6
             },
             {
                 label: 'pH Tanah',
                 data: [6.5, 6.4, 6.6, 6.5, 6.7, 6.5, 6.4],
                 borderColor: '#27ae60',
                 backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                borderWidth: 2,
+                borderWidth: 3,
                 tension: 0.4,
-                fill: true
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6
             }
         ]
     },
@@ -123,8 +141,9 @@ const sensorChart = new Chart(ctx, {
                     usePointStyle: true,
                     padding: 15,
                     font: {
-                        size: 12,
-                        family: "'Poppins', sans-serif"
+                        size: 13,
+                        family: "'Poppins', sans-serif",
+                        weight: '500'
                     }
                 }
             },
@@ -134,25 +153,31 @@ const sensorChart = new Chart(ctx, {
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 padding: 12,
                 titleFont: {
+                    size: 14,
+                    family: "'Poppins', sans-serif",
+                    weight: '600'
+                },
+                bodyFont: {
                     size: 13,
                     family: "'Poppins', sans-serif"
                 },
-                bodyFont: {
-                    size: 12,
-                    family: "'Poppins', sans-serif"
-                }
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1
             }
         },
         scales: {
             y: {
                 beginAtZero: false,
                 grid: {
-                    color: 'rgba(0, 0, 0, 0.05)'
+                    color: 'rgba(0, 0, 0, 0.05)',
+                    drawBorder: false
                 },
                 ticks: {
                     font: {
-                        family: "'Poppins', sans-serif"
-                    }
+                        family: "'Poppins', sans-serif",
+                        size: 12
+                    },
+                    padding: 10
                 }
             },
             x: {
@@ -161,8 +186,10 @@ const sensorChart = new Chart(ctx, {
                 },
                 ticks: {
                     font: {
-                        family: "'Poppins', sans-serif"
-                    }
+                        family: "'Poppins', sans-serif",
+                        size: 12
+                    },
+                    padding: 10
                 }
             }
         },
@@ -174,36 +201,9 @@ const sensorChart = new Chart(ctx, {
     }
 });
 
-// Simulasi update data real-time (opsional)
-function updateChart() {
-    // Generate data acak untuk simulasi
-    const newTemp = Math.floor(Math.random() * 8) + 24; // 24-32°C
-    const newHumidity = Math.floor(Math.random() * 15) + 70; // 70-85%
-    const newLight = Math.floor(Math.random() * 100); // 0-100 (x10 lux)
-    const newPH = (Math.random() * 1 + 6).toFixed(1); // 6.0-7.0
-
-    // Hapus data pertama dan tambah data baru di akhir
-    sensorChart.data.datasets[0].data.shift();
-    sensorChart.data.datasets[0].data.push(newTemp);
-    
-    sensorChart.data.datasets[1].data.shift();
-    sensorChart.data.datasets[1].data.push(newHumidity);
-    
-    sensorChart.data.datasets[2].data.shift();
-    sensorChart.data.datasets[2].data.push(newLight);
-    
-    sensorChart.data.datasets[3].data.shift();
-    sensorChart.data.datasets[3].data.push(newPH);
-
-    // Update label waktu
-    const currentTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    sensorChart.data.labels.shift();
-    sensorChart.data.labels.push(currentTime);
-
-    sensorChart.update();
-}
-
-// Auto-update setiap 5 detik (komen jika tidak ingin auto-update)
-// setInterval(updateChart, 5000);
+// Animasi saat load
+window.addEventListener('load', function() {
+    sensorChart.update('active');
+});
 </script>
 {% endblock %}

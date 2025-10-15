@@ -4,14 +4,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background: url("/static/accounts/images/bg.jpg") no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 
-/* ====== Blur Overlay ====== */
+/* ====== Blur Background ====== */
 body::before {
     content: "";
     position: absolute;
@@ -27,13 +27,14 @@ body::before {
 /* ====== Container ====== */
 .container {
     display: flex;
-    width: 900px;           /* ✅ sama dengan login */
-    height: 520px;          /* ✅ sama tinggi dengan login */
+    width: 950px;
+    min-height: 600px;
     background: #fff;
     overflow: hidden;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     position: relative;
     z-index: 1;
+    border-radius: 15px;
 }
 
 /* ====== Panel Kiri ====== */
@@ -66,7 +67,7 @@ body::before {
 /* ====== Panel Kanan ====== */
 .right-panel {
     flex: 1;
-    padding: 30px 45px;      /* ✅ dikurangi agar proporsional */
+    padding: 35px 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -74,45 +75,44 @@ body::before {
 }
 
 .right-panel h2 {
-    font-size: 22px;         /* ✅ sedikit lebih kecil */
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
 }
 
-/* ====== Form ====== */
+/* ====== Form Input ====== */
 label {
     font-weight: 500;
-    margin-top: 8px;
+    margin-top: 10px;
     display: block;
-    font-size: 14px;         /* ✅ lebih kecil */
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
-    padding: 10px;           /* ✅ lebih kecil */
-    margin-top: 5px;
+    padding: 12px;
+    margin-top: 6px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     box-sizing: border-box;
 }
 
+/* ====== Tombol Register ====== */
 button.register {
     width: 100%;
-    padding: 10px;           /* ✅ lebih kecil */
+    padding: 12px;
     background-color: #8cc08f;
     color: #fff;
     border: none;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 15px;
-    font-size: 14px;
+    margin-top: 20px;
+    font-size: 15px;
     transition: 0.3s ease;
-    box-sizing: border-box;
 }
 
 button.register:hover {
@@ -122,8 +122,8 @@ button.register:hover {
 /* ====== Link ke Login ====== */
 .login-link {
     text-align: center;
-    margin-top: 10px;
-    font-size: 13px;
+    margin-top: 15px;
+    font-size: 14px;
 }
 
 .login-link a {
