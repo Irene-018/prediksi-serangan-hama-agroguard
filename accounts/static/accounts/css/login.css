@@ -1,0 +1,176 @@
+/* ====== Reset & Body ====== */
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: url("/static/accounts/images/bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+}
+
+/* ====== Blur Overlay untuk efek blur ====== */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(6px);  /* ✅ efek blur */
+    background-color: rgba(0, 0, 0, 0.25); /* lapisan gelap lembut */
+    z-index: 0;
+}
+
+/* ====== Container Utama ====== */
+.container {
+    display: flex;
+    width: 900px;
+    height: 520px;
+    background: #fff;
+    border-radius: none;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1; /* ✅ di atas blur */
+}
+
+/* ====== Bagian Kiri ====== */
+.left-panel {
+    background-color: rgba(118, 180, 125, 0.95);
+    color: #000;
+    flex: 1.1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    text-align: center;
+    border-top-right-radius: 33px;
+    border-bottom-right-radius: 33px;
+}
+
+.left-panel img {
+    width: 230px; /* ✅ logo besar proporsional */
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+}
+
+.left-panel p {
+    margin: 2px 0; /* ✅ jarak antar teks lebih rapat */
+    font-size: 15px;
+    line-height: 1.3;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+/* ====== Bagian Kanan ====== */
+.right-panel {
+    flex: 1;
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.right-panel h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+label {
+    font-weight: 500;
+    margin-top: 10px;
+    display: block;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%; /* ✅ sejajar penuh */
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+a.forgot {
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+button {
+    width: 100%; /* ✅ sejajar input */
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 15px;
+    transition: 0.3s ease;
+    box-sizing: border-box;
+}
+
+button.login {
+    background-color: #8cc08f;
+    color: #fff;
+}
+
+button.login:hover {
+    background-color: #78b07c;
+}
+
+button.register {
+    background-color: #eaf8ea;
+    color: #000;
+}
+
+button.register:hover {
+    background-color: #d6efd7;
+}
+
+/* ====== Responsif ====== */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+
+    .left-panel {
+        border-radius: 15px 15px 0 0;
+    }
+}
+
+/* Tombol Daftar Akun Baru sejajar dengan input & tombol Masuk */
+.register-btn {
+    display: block;
+    width: 100%;               /* ✅ sama panjang dengan input dan tombol masuk */
+    padding: 12px;
+    text-align: center;
+    background-color: #eaf8ea;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    margin-top: 10px;          /* ✅ jarak antar elemen konsisten */
+    border: none;
+    font-size: 15px;
+    box-sizing: border-box;    /* ✅ biar padding tidak menambah panjang total */
+    transition: 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #d6efd7;
+}
+

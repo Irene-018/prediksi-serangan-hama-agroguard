@@ -1,0 +1,26 @@
+{% load static %}
+<nav class="navbar">
+  <div class="nav-container">
+    <!-- Logo -->
+    <div class="logo">
+      <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
+    </div>
+
+    <!-- Menu Links -->
+    <ul class="nav-links">
+      <li><a href="{% url 'dashboard:home' %}" class="active">Dashboard</a></li>
+      <li><a href="{% url 'dashboard:deteksi' %}">Deteksi Daun</a></li>
+      <li><a href="{% url 'dashboard:rekomendasi' %}">Rekomendasi</a></li>
+      <li><a href="{% url 'dashboard:riwayat' %}">Riwayat</a></li>
+    </ul>
+
+    <!-- User Menu -->
+    <div class="user-menu">
+      <div class="user-info">
+        <span class="username">Irene Krsti</span>
+        <small class="role">Admin</small>
+      </div>
+      <div class="user-avatar">IK</div>
+    </div>
+  </div>
+</nav>
