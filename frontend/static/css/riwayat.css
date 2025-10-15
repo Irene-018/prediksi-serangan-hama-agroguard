@@ -1,0 +1,54 @@
+/* Search and Export Section */
+.search-export-section { display: flex; justify-content: space-between; align-items: center; margin: 2rem 0; gap: 1rem; }
+.search-container { display: flex; flex-direction: column; gap: 0.5rem; }
+.search-label { font-size: 0.9rem; font-weight: 600; color: #333; text-transform: uppercase; letter-spacing: 0.5px; }
+.search-input { padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; width: 300px; transition: border-color 0.3s ease; }
+.search-input:focus { outline: none; border-color: #619D69; }
+.export-btn { background: white; color: #333; border: 1px solid #ddd; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; }
+.export-btn:hover { background: #f8f9fa; border-color: #619D69; }
+
+/* Statistics Cards */
+.stats-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+.stat-card { padding: 1.5rem; border-radius: 8px; text-align: center; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.stat-card-green { background: #d4edda; border: 1px solid #c3e6cb; }
+.stat-card-red { background: #f8d7da; border: 1px solid #f5c6cb; }
+.stat-card-orange { background: #fff3cd; border: 1px solid #ffeaa7; }
+.stat-label { position: absolute; top: .5rem; left: .5rem; font-size: .7rem; color: #666; font-weight: 500; }
+.stat-number { font-size: 2.5rem; font-weight: 700; color: #333; margin: 1rem 0 .5rem 0; }
+.stat-text { font-size: .9rem; color: #666; font-weight: 500; }
+
+/* Table */
+.table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
+.history-table { width: 100%; border-collapse: collapse; }
+.history-table thead { background: #f8f9fa; }
+.history-table th { padding: 1rem; text-align: left; font-weight: 600; color: #333; border-bottom: 1px solid #dee2e6; font-size: 0.9rem; }
+.history-table td { padding: 1rem; border-bottom: 1px solid #f1f3f4; vertical-align: middle; }
+.history-table tbody tr:hover { background: #f8f9fa; }
+.date-cell { font-weight: 500; color: #333; }
+.photo-cell { text-align: center; }
+.photo-placeholder { width: 40px; height: 40px; background: #f8f9fa; border: 2px solid #ffc107; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.photo-placeholder i { color: #28a745; font-size: 1.2rem; }
+.plant-cell { font-weight: 500; color: #333; }
+.detection-result { display: flex; flex-direction: column; gap: .25rem; }
+.disease-name { font-weight: 600; color: #333; }
+.disease-level { font-size: .85rem; color: #666; }
+.confidence-cell { font-weight: 600; color: #28a745; text-align: center; }
+.action-cell { text-align: center; }
+.detail-btn { background: #28a745; color: white; border: none; padding: .5rem 1rem; border-radius: 4px; cursor: pointer; font-size: .85rem; font-weight: 500; transition: background-color .3s ease; }
+.detail-btn:hover { background: #218838; }
+
+@media (max-width: 768px) {
+  .search-export-section { flex-direction: column; align-items: stretch; }
+  .search-input { width: 100%; }
+  .stats-cards { grid-template-columns: 1fr; gap: 1rem; }
+  .history-table { font-size: .85rem; }
+  .history-table th, .history-table td { padding: .75rem .5rem; }
+  .table-container { overflow-x: auto; }
+}
+
+@media (max-width: 480px) {
+  .stat-card { padding: 1rem; }
+  .stat-number { font-size: 2rem; }
+  .history-table th, .history-table td { padding: .5rem .25rem; font-size: .8rem; }
+}
+

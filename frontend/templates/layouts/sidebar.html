@@ -1,0 +1,43 @@
+{% load static %}
+<div class="sidebar" id="sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <img src="https://placehold.co/60x60/ffffff/619D69?text=AG&font=roboto" alt="Agroguard Logo" class="logo">
+        <div class="website-name">Agroguard</div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="sidebar-menu">
+        <a href="{% url 'welcome' %}" class="menu-item {% if request.resolver_match.url_name == 'welcome' %}active{% endif %}">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="{% url 'deteksi' %}" class="menu-item {% if request.resolver_match.url_name == 'deteksi' %}active{% endif %}">
+            <i class="fas fa-leaf"></i>
+            <span>Deteksi Daun</span>
+        </a>
+        <a href="{% url 'rekomendasi' %}" class="menu-item {% if request.resolver_match.url_name == 'rekomendasi' %}active{% endif %}">
+            <i class="fas fa-lightbulb"></i>
+            <span>Rekomendasi</span>
+        </a>
+        <a href="{% url 'riwayat' %}" class="menu-item {% if request.resolver_match.url_name == 'riwayat' %}active{% endif %}">
+            <i class="fas fa-history"></i>
+            <span>Riwayat</span>
+        </a>
+        <a href="{% url 'profile' %}" class="menu-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+        <a href="#" class="user-profile">
+            <img src="https://placehold.co/45x45/ffffff/619D69?text=G&font=roboto" alt="Gadiza Profile" class="user-avatar">
+            <div class="user-info">
+                <div class="user-name">Gadiza</div>
+                <div class="user-role">Admin</div>
+            </div>
+        </a>
+    </div>
+</div>
