@@ -1,52 +1,53 @@
-/* ==== GLOBAL ==== */
+/* ==== GLOBAL UNTUK DASHBOARD ==== */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f6f8;
-    margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
 }
 
 /* Memberi jarak agar konten tidak tertutup navbar */
 main {
-    padding: 30px 60px;
-    padding-top: 90px; /* ✅ Dikurangi dari 120px jadi jarak lebih dekat */
+  padding: 30px 60px;
+  padding-top: 90px; /* ✅ disesuaikan agar pas di bawah navbar */
 }
 
 .dashboard-container h1 {
-    color: #2c3e50;
-    margin-bottom: 8px;
+  color: #2c3e50;
+  margin-bottom: 8px;
 }
 
 .dashboard-container > p {
-    color: #666;
-    margin-bottom: 25px;
+  color: #666;
+  margin-bottom: 25px;
 }
 
 /* ==== STAT CARDS ==== */
 .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .card h2 {
-    margin: 0;
-    font-size: 2rem;
+  margin: 0;
+  font-size: 2rem;
 }
 
 .card p {
-    color: #555;
-    margin: 8px 0 0;
+  color: #555;
+  margin: 8px 0 0;
 }
 
+/* Warna garis atas tiap jenis kartu */
 .card.sehat { border-top: 4px solid #27ae60; }
 .card.sakit { border-top: 4px solid #e74c3c; }
 .card.risiko { border-top: 4px solid #f39c12; }
@@ -54,325 +55,82 @@ main {
 
 /* ==== ALERT ==== */
 .alert {
-    background: #fff8e1;
-    border-left: 6px solid #f1c40f;
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin: 25px 0;
+  background: #fff8e1;
+  border-left: 6px solid #f1c40f;
+  padding: 12px 18px;
+  border-radius: 10px;
+  margin: 25px 0;
 }
 
 /* ==== CHART BOX ==== */
 .chart-box, .sensor-box {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
 }
 
 .chart-box h3 {
-    margin-bottom: 20px;
-    color: #2c3e50;
+  margin-bottom: 20px;
+  color: #2c3e50;
 }
 
 .chart-box canvas {
-    max-height: 400px;
+  max-height: 400px;
 }
 
 .chart-placeholder {
-    border: 2px dashed #bbb;
-    border-radius: 10px;
-    padding: 30px;
-    text-align: center;
-    color: #666;
+  border: 2px dashed #bbb;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: #666;
 }
 
 /* ==== SENSOR STATS ==== */
 .sensor-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
 }
 
 .sensor-item {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 4px solid #5B9A64;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid #5B9A64;
 }
 
 .sensor-label {
-    color: #555;
-    font-size: 0.9rem;
-    font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .sensor-value {
-    color: #2c3e50;
-    font-size: 1.1rem;
-    font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 /* ==== BUTTON ==== */
 .btn-warning {
-    background-color: #f1c40f;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
 }
 
 .btn-warning:hover {
-    background-color: #d4ac0d;
-}
-
-/* ==== NAVBAR ==== */
-.navbar {
-  background-color: #5B9A64;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  height: 65px; /* ✅ Dikurangi dari 80px jadi lebih kecil */
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-}
-
-.nav-container {
-  width: 95%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Logo */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo img {
-  height: 50px; /* ✅ Diperbesar dari 40px */
-}
-
-.logo span {
-  font-size: 1.5rem; /* ✅ Diperbesar dari 1.3rem */
-  font-weight: 600;
-  color: white;
-}
-
-/* Nav Links */
-.nav-links {
-  display: flex;
-  gap: 40px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  align-items: center; /* ✅ Agar button di tengah vertikal */
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  font-size: 0.9rem;
-  transition: 0.2s ease-in-out;
-  padding: 8px 16px;
-  border-radius: 8px;
-  display: inline-block;
-}
-
-/* ✅ Efek hover ringan untuk semua button */
-.nav-links a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* ✅ Tidak ada efek saat ditekan */
-.nav-links a:active {
-  background-color: transparent;
-}
-
-/* ✅ Class active tanpa background */
-.nav-links a.active {
-  background-color: transparent;
-}
-
-/* User Menu */
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  color: white;
-  font-size: 0.85rem;
-  line-height: 1.3;
-}
-
-.user-dropdown {
-  position: relative;
-}
-
-.user-avatar {
-  background-color: white;
-  color: #5B9A64;
-  font-weight: 600;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.user-avatar:hover {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
-}
-
-/* Dropdown Menu */
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
-  padding: 8px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-
-.user-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* Dropdown Items */
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  color: #2c3e50;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-}
-
-.dropdown-item.logout:hover {
-  background-color: #fee;
-  color: #e74c3c;
-}
-
-.dropdown-item .icon {
-  font-size: 1.1rem;
-  width: 20px;
-  text-align: center;
-}
-
-/* Dropdown Divider */
-.dropdown-divider {
-  height: 1px;
-  background-color: #e9ecef;
-  margin: 8px 0;
-}
-
-/* ==== FOOTER ==== */
-.footer {
-    background-color: #e8e8e8;
-    padding: 40px 60px;
-    margin-top: 60px;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr;
-    gap: 60px;
-    align-items: start;
-}
-
-.footer-content > div:first-child h3 {
-    color: #2c3e50;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-}
-
-.footer-content > div:first-child p {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0 0 15px 0;
-}
-
-.footer-content > div:first-child small {
-    color: #999;
-    font-size: 0.75rem;
-    display: block;
-}
-
-.footer-content h4 {
-    color: #2c3e50;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0 0 12px 0;
-}
-
-.footer-content p {
-    color: #555;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* Social Icons */
-.footer-content > div:last-child {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.social-icons {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.social-icons a {
-    color: #2c3e50;
-    font-size: 1.5rem;
-    transition: color 0.3s;
-    text-decoration: none;
-}
-
-.social-icons a:hover {
-    color: #5B9A64;
+  background-color: #d4ac0d;
 }

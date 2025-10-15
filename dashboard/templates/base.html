@@ -5,52 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AgroGuard{% endblock %}</title>
+
+    <!-- ==== FONT & GLOBAL STYLE ==== -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+
+    <!-- ==== NAVBAR & FOOTER STYLE ==== -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard/css/footer.css' %}">
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- ==== NAVBAR ==== -->
     {% include 'partials/navbar.html' %}
 
-    <!-- Konten utama -->
+    <!-- ==== MAIN CONTENT ==== -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- ==== FOOTER ==== -->
     {% include 'partials/footer.html' %}
 
-    <!-- JavaScript di bagian bawah setelah semua HTML dimuat -->
-    <!-- Chart.js Library -->
+    <!-- ==== JAVASCRIPT ==== -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    
-    <!-- Dropdown Toggle Script -->
-    <script>
-        // Optional: Toggle dropdown dengan click (alternatif dari hover)
-        document.addEventListener('DOMContentLoaded', function() {
-            const userAvatar = document.querySelector('.user-avatar');
-            const dropdownMenu = document.querySelector('.dropdown-menu');
-            
-            if (userAvatar && dropdownMenu) {
-                // Toggle dropdown on click
-                userAvatar.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    dropdownMenu.classList.toggle('show');
-                });
 
-                // Close dropdown when clicking outside
+    <!-- Dropdown user menu (opsional) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatar = document.querySelector('.user-avatar');
+            const dropdown = document.querySelector('.dropdown-menu');
+            if (avatar && dropdown) {
+                avatar.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('show');
+                });
                 document.addEventListener('click', function(e) {
                     if (!e.target.closest('.user-dropdown')) {
-                        dropdownMenu.classList.remove('show');
+                        dropdown.classList.remove('show');
                     }
                 });
             }
         });
     </script>
-    
-    <!-- Block untuk JS tambahan dari halaman child -->
-    {% block extra_js %}{% endblock %}
 
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
