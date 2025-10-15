@@ -1,0 +1,64 @@
+body {
+    background-color: #f9fafc;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+}
+
+.container h2 {
+    color: #2f7a32;
+    font-weight: 600;
+}
+
+.upload-form {
+    text-align: center;
+}
+
+.upload-box {
+    border: 2px dashed #2f7a32;
+    padding: 40px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: inline-block;
+}
+
+.upload-box input[type="file"] {
+    display: block;
+    margin: 15px auto;
+}
+
+.btn-upload {
+    background-color: #2f7a32;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.btn-upload:hover {
+    background-color: #256428;
+}
+
+.result-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.leaf-preview {
+    max-width: 80%;
+    border: 3px solid #c8e6c9;
+    border-radius: 15px;
+}
+
+.tips {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.tips h5 {
+    color: #2e7d32;
+    font-weight: 600;
+}
