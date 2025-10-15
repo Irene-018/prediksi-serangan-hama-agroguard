@@ -2,21 +2,49 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Register - AgroGuard</title>
-  <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
+    <meta charset="UTF-8">
+    <title>Daftar Akun</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
 </head>
 <body>
-  <div class="container">
-    <h2>Buat Akun Baru</h2>
-    <form method="post">
-      {% csrf_token %}
-      <input type="email" name="email" placeholder="Email" required><br>
-      <input type="text" name="username" placeholder="Username" required><br>
-      <input type="password" name="password" placeholder="Password" required><br>
-      <button type="submit">Daftar</button>
-    </form>
-    <p>Sudah punya akun? <a href="{% url 'login' %}">Login di sini</a></p>
-  </div>
+    <div class="container">
+        <!-- Panel Kiri -->
+        <div class="left-panel">
+            <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
+            <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
+            <p>AgroGuard Siap Mendeteksi Hama Lebih Awal</p>
+            <p>Beri Solusi Tepat Sebelum Masalah Berkembang</p>
+        </div>
+
+        <!-- Panel Kanan -->
+        <div class="right-panel">
+            <h2>Buat Akun Baru</h2>
+
+            <form method="POST" action="{% url 'accounts:register' %}">
+                {% csrf_token %}
+                <label>Nama Lengkap</label>
+                <input type="text" name="nama_lengkap" placeholder="Masukkan Nama Lengkap" required>
+
+                <label>Email</label>
+                <input type="email" name="email" placeholder="Masukkan Email" required>
+
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Masukkan Username" required>
+
+                <label>Password</label>
+                <input type="password" name="password1" placeholder="Masukkan Password" required>
+
+                <label>Konfirmasi Password</label>
+                <input type="password" name="password2" placeholder="Ulangi Password" required>
+
+                <button type="submit" class="register">Daftar</button>
+            </form>
+
+            <p class="login-link">
+                Sudah punya akun?
+                <a href="{% url 'accounts:login' %}">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
 </body>
 </html>

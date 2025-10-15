@@ -18,7 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("dashboard.urls")),   # default ke home/dashboard
-    path("", include("accounts.urls")),    # login, register, logout
+    path('admin/', admin.site.urls),
+
+    # Tambahkan namespace untuk dashboard
+    path('dashboard/', include(('dashboard.urls', 'dashboard'), namespace='dashboard')),
+
+    # Auth routes (jika ada)
+    path('', include('accounts.urls')),  
 ]
+

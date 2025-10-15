@@ -1,17 +1,26 @@
-/* ====== Reset & Body ====== */
+/* ====== Reset & Font Import ====== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ====== Body ====== */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     background: url("/static/accounts/images/bg.jpg") no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 
-/* ====== Blur Overlay untuk efek blur ====== */
+/* ====== Blur Background ====== */
 body::before {
     content: "";
     position: absolute;
@@ -19,57 +28,83 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(6px);  /* ✅ efek blur */
-    background-color: rgba(0, 0, 0, 0.25); /* lapisan gelap lembut */
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 0;
 }
 
-/* ====== Container Utama ====== */
+/* ====== Container ====== */
 .container {
     display: flex;
     width: 900px;
-    height: 520px;
+    min-height: 520px;
     background: #fff;
-    border-radius: none;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     position: relative;
-    z-index: 1; /* ✅ di atas blur */
+    z-index: 1;
 }
 
-/* ====== Bagian Kiri ====== */
+/* ====== Panel Kiri ====== */
 .left-panel {
-    background-color: rgba(118, 180, 125, 0.95);
-    color: #000;
-    flex: 1.1;
+    background: linear-gradient(135deg, #8BC899 0%, #78B587 100%);
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 30px;
+    padding: 40px 30px;
     text-align: center;
-    border-top-right-radius: 33px;
-    border-bottom-right-radius: 33px;
+    position: relative;
 }
 
-.left-panel img {
-    width: 230px; /* ✅ logo besar proporsional */
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
+/* Logo Container dengan Shield Background */
+.logo-container {
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.left-panel p {
-    margin: 2px 0; /* ✅ jarak antar teks lebih rapat */
+.logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+/* Brand Name */
+.brand-name {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d5f3f;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+}
+
+/* Tagline */
+.tagline {
+    color: #2d5f3f;
+    line-height: 1.6;
+}
+
+.tagline p {
+    margin: 8px 0;
     font-size: 15px;
-    line-height: 1.3;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
 }
 
-/* ====== Bagian Kanan ====== */
+.tagline p:first-child {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* ====== Panel Kanan ====== */
 .right-panel {
     flex: 1;
-    padding: 40px 50px;
+    padding: 50px 45px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -77,100 +112,192 @@ body::before {
 }
 
 .right-panel h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 25px;
-    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+    text-align: left;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 20px;
 }
 
 label {
-    font-weight: 500;
-    margin-top: 10px;
     display: block;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"] {
-    width: 100%; /* ✅ sejajar penuh */
-    padding: 12px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    width: 100%;
+    padding: 13px 15px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
     font-size: 14px;
-    box-sizing: border-box;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
 }
 
-a.forgot {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #8BC899;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(139, 200, 153, 0.1);
+}
+
+input::placeholder {
+    color: #999;
     font-size: 14px;
-    color: #333;
+}
+
+/* Forgot Password Link */
+.forgot-link {
+    display: block;
+    text-align: left;
+    color: #999;
+    font-size: 13px;
     text-decoration: none;
-    margin: 10px 0;
-    display: inline-block;
+    margin-top: -5px;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
 }
 
-button {
-    width: 100%; /* ✅ sejajar input */
-    padding: 12px;
+.forgot-link:hover {
+    color: #666;
+}
+
+/* Buttons */
+.btn-login,
+.btn-register {
+    width: 100%;
+    padding: 14px;
     border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
+    border-radius: 8px;
+    font-weight: 600;
     font-size: 15px;
-    transition: 0.3s ease;
-    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
 }
 
-button.login {
-    background-color: #8cc08f;
+.btn-login {
+    background-color: #8BC899;
     color: #fff;
+    margin-bottom: 12px;
 }
 
-button.login:hover {
-    background-color: #78b07c;
+.btn-login:hover {
+    background-color: #78B587;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 200, 153, 0.4);
 }
 
-button.register {
-    background-color: #eaf8ea;
-    color: #000;
+.btn-register {
+    background-color: #f0f7f2;
+    color: #2d5f3f;
+    border: 1.5px solid #e0ebe3;
 }
 
-button.register:hover {
-    background-color: #d6efd7;
+.btn-register:hover {
+    background-color: #e5f2e9;
+    border-color: #8BC899;
 }
 
-/* ====== Responsif ====== */
+/* ====== Responsive Design ====== */
 @media (max-width: 900px) {
     .container {
         flex-direction: column;
         width: 90%;
-        height: auto;
+        max-width: 450px;
+        margin: 20px;
     }
 
     .left-panel {
-        border-radius: 15px 15px 0 0;
+        padding: 30px 20px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .logo-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .brand-name {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .tagline p {
+        font-size: 14px;
+    }
+
+    .right-panel {
+        padding: 40px 30px;
+    }
+
+    .right-panel h2 {
+        font-size: 22px;
+        margin-bottom: 25px;
     }
 }
 
-/* Tombol Daftar Akun Baru sejajar dengan input & tombol Masuk */
-.register-btn {
-    display: block;
-    width: 100%;               /* ✅ sama panjang dengan input dan tombol masuk */
-    padding: 12px;
-    text-align: center;
-    background-color: #eaf8ea;
-    border-radius: 6px;
-    font-weight: bold;
-    color: #000;
-    text-decoration: none;
-    margin-top: 10px;          /* ✅ jarak antar elemen konsisten */
-    border: none;
-    font-size: 15px;
-    box-sizing: border-box;    /* ✅ biar padding tidak menambah panjang total */
-    transition: 0.3s ease;
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .right-panel {
+        padding: 30px 25px;
+    }
+
+    .left-panel {
+        padding: 25px 15px;
+    }
+
+    .logo-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .brand-name {
+        font-size: 22px;
+    }
+
+    .tagline p {
+        font-size: 13px;
+    }
 }
 
-.register-btn:hover {
-    background-color: #d6efd7;
+/* ====== Focus States & Accessibility ====== */
+button:focus,
+input:focus,
+a:focus {
+    outline: 2px solid #8BC899;
+    outline-offset: 2px;
 }
 
+/* ====== Animation ====== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.container {
+    animation: fadeIn 0.5s ease-out;
+}

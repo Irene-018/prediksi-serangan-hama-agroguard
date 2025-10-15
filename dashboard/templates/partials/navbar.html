@@ -8,19 +8,36 @@
 
     <!-- Menu Links -->
     <ul class="nav-links">
-      <li><a href="{% url 'dashboard:home' %}" class="active">Dashboard</a></li>
-      <li><a href="{% url 'dashboard:deteksi' %}">Deteksi Daun</a></li>
-      <li><a href="{% url 'dashboard:rekomendasi' %}">Rekomendasi</a></li>
-      <li><a href="{% url 'dashboard:riwayat' %}">Riwayat</a></li>
+      <li><a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Dashboard</a></li>
+      <li><a href="{% url 'dashboard:deteksi' %}" class="{% if request.resolver_match.url_name == 'deteksi' %}active{% endif %}">Deteksi Daun</a></li>
+      <li><a href="{% url 'dashboard:rekomendasi' %}" class="{% if request.resolver_match.url_name == 'rekomendasi' %}active{% endif %}">Rekomendasi</a></li>
+      <li><a href="{% url 'dashboard:riwayat' %}" class="{% if request.resolver_match.url_name == 'riwayat' %}active{% endif %}">Riwayat</a></li>
     </ul>
 
-    <!-- User Menu -->
+    <!-- User Menu dengan Dropdown -->
     <div class="user-menu">
       <div class="user-info">
-        <span class="username">Irene Krsti</span>
-        <small class="role">Admin</small>
+        <span class="username">{{ user.username|default:"Irene Krsti" }}</span>
+        <small class="role">Petani</small>
       </div>
-      <div class="user-avatar">IK</div>
+      <div class="user-dropdown">
+        <div class="user-avatar">{{ user.username.0|upper|default:"IK" }}</div>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item">
+            <span class="icon">👤</span>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="dropdown-item">
+            <span class="icon">⚙️</span>
+            <span>Pengaturan</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="{% url 'accounts:logout' %}" class="dropdown-item logout">
+            <span class="icon">🚪</span>
+            <span>Logout</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
