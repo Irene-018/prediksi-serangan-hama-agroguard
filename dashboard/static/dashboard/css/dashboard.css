@@ -7,8 +7,8 @@ body {
 
 /* Memberi jarak agar konten tidak tertutup navbar */
 main {
-  padding: 30px 60px;
-  padding-top: 90px; /* ✅ disesuaikan agar pas di bawah navbar */
+  padding: 15px 60px;
+  padding-top: 30px; /* ✅ disesuaikan agar pas di bawah navbar */
 }
 
 .dashboard-container h1 {

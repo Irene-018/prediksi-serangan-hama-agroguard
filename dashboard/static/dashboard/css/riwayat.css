@@ -1,0 +1,196 @@
+/* ==== GLOBAL UNTUK DASHBOARD ==== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+}
+
+/* Memberi jarak agar konten tidak tertutup navbar */
+main {
+  padding: 15px 60px;
+  padding-top: 30px;
+}
+
+.riwayat-section h1 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.riwayat-section > p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.riwayat-section .sub-text {
+    text-align: center;
+    color: #4a4a4a;
+    font-size: 15px;
+    margin-bottom: 40px;
+}
+/* === Search & Export === */
+.search-export {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-export input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-export .export-btn {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.search-export .export-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* === Statistik Cards === */
+.stats-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  text-align: center;
+  padding: 20px;
+  min-width: 180px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card .stat-label {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.stat-card .stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.stat-green {
+  border: 2px solid #7fc87f;
+  background-color: #f3faf3;
+}
+
+.stat-red {
+  border: 2px solid #f6b5b5;
+  background-color: #fff5f5;
+}
+
+.stat-orange {
+  border: 2px solid #ffd59e;
+  background-color: #fffaf2;
+}
+
+/* === Table === */
+.table-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.riwayat-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.riwayat-table thead {
+  background-color: #f0f2f5;
+  text-align: left;
+}
+
+.riwayat-table th,
+.riwayat-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.riwayat-table th {
+  color: #333;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.riwayat-table td {
+  color: #444;
+}
+
+.photo-box {
+  width: 40px;
+  height: 40px;
+  background-color: #eee;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 18px;
+}
+
+.hasil .penyakit {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.hasil .tingkat {
+  color: #666;
+  font-size: 13px;
+}
+
+.detail-btn {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #2e7d32;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.detail-btn:hover {
+  background-color: #c8e6c9;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .riwayat-section {
+    padding: 20px;
+  }
+  .stats-container {
+    flex-direction: column;
+  }
+}

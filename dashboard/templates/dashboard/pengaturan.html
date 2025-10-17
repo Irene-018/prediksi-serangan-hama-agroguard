@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Riwayat Deteksi - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/pengaturan.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1 class="content-title">Pengaturan Akun</h1>
+    <p class="content-subtitle">Kelola informasi personal dan pengaturan akun Anda</p>
+</div>
+
+<!-- Main Container -->
+<div class="main-container">
+    <!-- Tab Navigation - Left Side -->
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="switchTab('account')">
+            Akun Saya
+        </button>
+        <button class="tab-button" onclick="switchTab('monitoring')">
+            Unit Monitoring Saya
+        </button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+        <div id="account-tab" class="tab-panel active">
+            <div class="profile-layout">
+                <!-- Left Section - Profile Picture -->
+                <div class="profile-picture-section">
+                    <div class="profile-avatar-large">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <button class="edit-profile-btn" onclick="document.getElementById('photoInput').click()">
+                        Edit Profil
+                    </button>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                </div>
+
+                <!-- Right Section - Form -->
+                <div class="profile-form-section">
+                    <div class="form-card">
+                        <form class="profile-form" id="profileForm">
+                            <div class="form-group">
+                                <label for="nama">NAMA:</label>
+                                <input type="text" id="nama" name="nama" value="Gadiza" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">EMAIL:</label>
+                                <input type="email" id="email" name="email" value="gadiza@agroguard.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">NO. HANDPHONE:</label>
+                                <input type="tel" id="phone" name="phone" value="+62 812 3456 7890" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="password">PASSWORD:</label>
+                                <input type="password" id="password" name="password" placeholder="Masukkan password saat ini">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword">PASSWORD BARU:</label>
+                                <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan password baru">
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">
+                                    SIMPAN
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="monitoring-tab" class="tab-panel">
+            <div class="monitoring-content">
+                <h3>Unit Monitoring Saya</h3>
+                <p>Konten untuk unit monitoring akan ditampilkan di sini.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_scripts %}
+<script>
+// Tab switching functionality
+function switchTab(tabName) {
+    // Remove active class from all tabs and panels
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    // Add active class to selected tab and panel
+    event.target.classList.add('active');
+    document.getElementById(tabName + '-tab').classList.add('active');
+}
+
+// Image preview functionality
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Create image element if it doesn't exist
+            let img = document.querySelector('.profile-avatar-large img');
+            if (!img) {
+                img = document.createElement('img');
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.borderRadius = '50%';
+                img.style.objectFit = 'cover';
+                document.querySelector('.profile-avatar-large').innerHTML = '';
+                document.querySelector('.profile-avatar-large').appendChild(img);
+            }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Form submission handler
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = 'MENYIMPAN...';
+    submitBtn.disabled = true;
+    
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert('Profile berhasil diperbarui!');
+    }, 2000);
+});
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default active tab
+    document.querySelector('.tab-button').classList.add('active');
+    document.getElementById('account-tab').classList.add('active');
+});
+</script>
+{% endblock %}
+{% endblock %}

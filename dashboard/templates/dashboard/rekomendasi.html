@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rekomendasi Treatment - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/recommendation.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<section class="recommendation-section">
+  <h1>Rekomendasi Treatmeant</h1>
+  <p class="subtitle">Panduan lengkap penanganan hama berdasarkan hasil deteksi</p>
+
+  <!-- === Hasil Deteksi === -->
+  <div class="hama-summary">
+    <div class="hama-photo">
+      <img src="{% static 'recommendation/images/sample-leaf.png' %}" alt="Hama">
+    </div>
+    <div class="hama-info">
+      <h2>Kutu Daun (Aphid)</h2>
+      <p class="latin">Aphis gossypii / Myzus persicae</p>
+      <div class="meta">
+        <span>📅 Waktu : 19 September 2024</span>
+        <span>⚠️ Confidence : 92% (Sangat Tinggi)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- === Dua Kolom === -->
+  <div class="recommendation-grid">
+    <!-- Kolom Kiri: Pestisida -->
+    <div class="card">
+      <h3>💊 Pestisida Rekomendasi</h3>
+      <div class="card-content">
+        <div class="pesticide-item">
+          <strong>Pilihan 1               :</strong>
+          <p>Efektif untuk kutu daun, bekerja sistemik</p>
+        </div>
+        <div class="pesticide-item">
+          <strong>Pilihan 1               :</strong>
+          <p>Efektif untuk kutu daun, bekerja sistemik</p>
+        </div>
+        <div class="pesticide-item">
+          <strong>Pilihan 1               :</strong>
+          <p>Efektif untuk kutu daun, bekerja sistemik</p>
+        </div>
+        <div class="pesticide-item">
+          <strong>Alternatif Organik :</strong>
+          <p>Efektif untuk kutu daun, bekerja sistemik</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kolom Kanan: Dosis -->
+    <div class="card">
+      <h3>Dosis dan Cara Aplikasi</h3>
+      <div class="card-content">
+        <div class="dosage-item">
+          <strong>Dosis                      :</strong>
+        </div>
+        <div class="dosage-item">
+          <strong>Volume Semprot  :</strong>
+        </div>
+        <div class="dosage-item">
+          <strong>Waktu Aplikasi      :</strong>
+        </div>
+        <div class="dosage-item">
+          <strong>Frekuensi               :</strong>
+        </div>
+        <div class="dosage-item">
+          <strong>Interval                   :</strong>
+        </div>
+        <div class="dosage-item">
+          <strong>Masa Tunggu        :</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === Penjelasan Tambahan === -->
+  <div class="info-section">
+    <h4>CARA APLIKASI PEPTISIDA :</h4>
+    <ol class="aplikasi-list">
+      <li>Persiapan : Larutkan peptisida sesuai dosis dalam air bersih, aduk hingga merata</li>
+      <li>Aplikasi : Semprotkan merata pada bagian bawah daun (tempat berkumpul)</li>
+      <li>Coverage: Pastikan seluruh permukaan daun terlapisi, termasuk pucuk tanaman</li>
+      <li>Kondisi Cuaca: Hindari penyemprotan saat hujan atau angin kencang</li>
+      <li>Keamanan: Gunakan APD (masker, sarung tangan, baju lengan panjang)</li>
+    </ol>
+
+    <h4>Strategi Rotasi Peptisida :</h4>
+    <p>Untuk mencegah resistensi hama, rotasi penggunaan pestisida dengan bahan aktif berbeda setiap 2-3 aplikasi. Misalnya: aplikasi 1-2 menggunakan Imidacloprid, aplikasi 3-4 menggunakan Thiamethoxam, kemudian aplikasi 5-6 menggunakan Spirotetramat.</p>
+
+    <h4>Pengendalian Kultur Teknis :</h4>
+    <ol class="kultur-list">
+      <li>Sanitasi kebun dengan membersihkan gulma dan sisa tanaman</li>
+      <li>Penanaman tanaman perangkap (seperti sorghum) di sekitar lahan</li>
+      <li>Penggunaan mulsa plastik perak untuk mengusir kutu daun</li>
+      <li>Monitoring rutin 2 kali seminggu untuk deteksi dini</li>
+      <li>Pemanfaatan musuh alami seperti kepik dan kumbang predator</li>
+    </ol>
+
+    <div class="btn-group">
+      <a href="#" class="btn btn-download">Dwonload  Panduan Lengkap PDF</a>
+      <a href="#" class="btn btn-tutorial">Tutorial YouTube</a>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

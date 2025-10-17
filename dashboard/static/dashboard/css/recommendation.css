@@ -1,0 +1,284 @@
+/* ==== GLOBAL UNTUK DASHBOARD ==== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+}
+
+/* Memberi jarak agar konten tidak tertutup navbar */
+main {
+  padding: 15px 60px;
+  padding-top: 30px;
+}
+
+.recommendation-section h1 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.recommendation-section > p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.recommendation-section .sub-text {
+    text-align: center;
+    color: #4a4a4a;
+    font-size: 15px;
+    margin-bottom: 40px;
+}
+/* === Hasil Deteksi === */
+.hama-summary {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.hama-photo {
+  flex-shrink: 0;
+}
+
+.hama-photo img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #e0e0e0;
+}
+
+.hama-info {
+  flex: 1;
+}
+
+.hama-info h2 {
+  margin: 0 0 6px 0;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.hama-info .latin {
+  color: #666;
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.meta {
+  font-size: 12px;
+  color: #444;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* === Dua Kolom === */
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card h3 {
+  color: #1a1a1a;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Styling untuk Pestisida */
+.pesticide-item {
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.pesticide-item strong {
+  display: block;
+  color: #333;
+  margin-bottom: 3px;
+  font-size: 12px;
+}
+
+.pesticide-item p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Styling untuk Dosis */
+.dosage-item {
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.dosage-item strong {
+  color: #333;
+  font-size: 12px;
+}
+
+/* === Info Section === */
+.info-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.info-section h4 {
+  color: #1a1a1a;
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-section h4:first-child {
+  margin-top: 0;
+}
+
+.info-section ol,
+.info-section ul {
+  margin: 0 0 18px 20px;
+  color: #444;
+  line-height: 1.7;
+  font-size: 13px;
+  padding-left: 0;
+}
+
+.info-section ol li,
+.info-section ul li {
+  margin-bottom: 6px;
+  padding-left: 6px;
+}
+
+.info-section p {
+  color: #444;
+  margin: 0 0 18px 0;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+/* === Tombol === */
+.btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.btn {
+  padding: 11px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-download {
+  background-color: #5cb85c;
+  color: white;
+}
+
+.btn-download:hover {
+  background-color: #4cae4c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(92, 184, 92, 0.3);
+}
+
+.btn-tutorial {
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #2e7d32;
+}
+
+.btn-tutorial:hover {
+  background-color: #c8e6c9;
+  transform: translateY(-1px);
+}
+
+/* === Responsif === */
+@media (max-width: 992px) {
+  .recommendation-section {
+    padding: 25px 20px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hama-summary {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .recommendation-section h1 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .info-section {
+    padding: 20px;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

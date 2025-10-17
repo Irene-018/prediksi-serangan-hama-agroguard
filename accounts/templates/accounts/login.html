@@ -3,17 +3,22 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AgroGuard</title>
     <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 </head>
 <body>
     <div class="container">
         <!-- Panel Kiri -->
         <div class="left-panel">
-            <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
-            <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
-            <p>AgroGuard Siap Mendeteksi Hama Lebih Awal</p>
-            <p>Beri Solusi Tepat Sebelum Masalah Berkembang</p>
+            <div class="logo-container">
+                <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard" class="logo">
+            </div>
+            <div class="tagline">
+                <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
+                <p>AgroGuard siap mendeteksi hama lebih awal</p>
+                <p>Beri solusi tepat sebelum masalah berkembang</p>
+            </div>
         </div>
 
         <!-- Panel Kanan -->
@@ -22,14 +27,19 @@
 
             <form method="POST" action="{% url 'accounts:login' %}">
                 {% csrf_token %}
-                <label>Email atau Username</label>
-                <input type="text" name="username" placeholder="Masukkan Email atau Username" required>
+                <div class="form-group">
+                    <label for="username">Email atau Username</label>
+                    <input type="text" id="username" name="username" placeholder="Masukkan Email atau Username" required>
+                </div>
 
-                <label>Password</label>
-                <input type="password" name="password" placeholder="Masukkan Password" required>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Masukkan Password" required>
+                </div>
 
-                <a href="#" class="forgot">Lupa Password ?</a>
-                <button type="submit" class="login">Masuk</button>
+                <a href="#" class="forgot-link">Lupa Password?</a>
+
+                <button type="submit" class="btn-login">Masuk</button>
             </form>
 
             <p class="login-link">

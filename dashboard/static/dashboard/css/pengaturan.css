@@ -1,0 +1,288 @@
+/* ==== GLOBAL UNTUK DASHBOARD ==== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+}
+
+/* Memberi jarak agar konten tidak tertutup navbar */
+main {
+  padding: 15px 60px;
+  padding-top: 30px;
+}
+
+.pengaturan-section h1 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.pengaturan-section > p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.pengaturan-section .sub-text {
+    text-align: center;
+    color: #4a4a4a;
+    font-size: 15px;
+    margin-bottom: 40px;
+}
+
+/* Main Container */
+.main-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 500px;
+    margin-top: 1rem;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    background: transparent;
+    padding: 0;
+    border-bottom: 1px solid #e0e0e0;
+    width: fit-content;
+    margin: 0;
+}
+
+.tab-button {
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    position: relative;
+    white-space: nowrap;
+}
+
+.tab-button:hover {
+    color: #619D69;
+}
+
+.tab-button.active {
+    color: #619D69;
+    border-bottom-color: #619D69;
+    font-weight: 600;
+}
+
+/* Content Area */
+.content-area {
+    padding: 2rem;
+    background: white;
+    border-radius: 0 0 8px 8px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* Profile Layout */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* Profile Picture Section */
+.profile-picture-section {
+    text-align: center;
+    padding: 2rem;
+}
+
+.profile-avatar-large {
+    width: 150px;
+    height: 150px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    border: 3px solid #e0e0e0;
+}
+
+.profile-avatar-large i {
+    font-size: 4rem;
+    color: #999;
+}
+
+.edit-profile-btn {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+/* Form Section */
+.profile-form-section {
+    padding: 1rem;
+}
+
+.form-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input {
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #619D69;
+    box-shadow: 0 0 0 2px rgba(97, 157, 105, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.save-btn {
+    background: #619D69;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    background: #4a7c52;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(97, 157, 105, 0.3);
+}
+
+/* Monitoring Tab */
+.monitoring-content {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+}
+
+.monitoring-content h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tab-navigation {
+        padding: 0.5rem 0 0 0;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .content-area {
+        padding: 1.5rem;
+    }
+    
+    .profile-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .form-actions {
+        justify-content: center;
+    }
+    
+    .save-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-area {
+        padding: 1rem;
+    }
+    
+    .form-card {
+        padding: 1.5rem;
+    }
+    
+    .profile-avatar-large {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .profile-avatar-large i {
+        font-size: 3rem;
+    }
+    
+    .sidebar-tabs {
+        padding: 0.5rem 0;
+    }
+    
+    .tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}

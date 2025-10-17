@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Riwayat Deteksi - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/riwayat.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="riwayat-section">
+  <h1>Riwayat Deteksi</h1>
+  <p class="subtitle">Histori lengkap deteksi dan treatment tanaman</p>
+
+  <!-- Search dan Export -->
+  <div class="search-export">
+    <input type="text" id="searchInput" placeholder="Cari riwayat deteksi..." />
+    <button class="export-btn">
+      <i class="fas fa-file-pdf"></i> Export PDF
+    </button>
+  </div>
+
+  <!-- Statistik Cards -->
+  <div class="stats-container">
+    <div class="stat-card stat-green">
+      <div class="stat-label">Total Deteksi</div>
+      <div class="stat-value">2</div>
+    </div>
+    <div class="stat-card stat-red">
+      <div class="stat-label">Tanaman Sakit</div>
+      <div class="stat-value">1</div>
+    </div>
+    <div class="stat-card stat-orange">
+      <div class="stat-label">Perlu Penanganan</div>
+      <div class="stat-value">1</div>
+    </div>
+  </div>
+
+  <!-- Tabel Riwayat -->
+  <div class="table-container">
+    <table class="riwayat-table">
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Foto</th>
+          <th>Tanaman</th>
+          <th>Hasil Deteksi</th>
+          <th>Confidence</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23 Sept 2025</td>
+          <td>
+            <div class="photo-box"><i class="fas fa-image"></i></div>
+          </td>
+          <td>Tomat</td>
+          <td>
+            <div class="hasil">
+              <span class="penyakit">Ulat Grayak</span><br />
+              <span class="tingkat">Tingkat : Sedang</span>
+            </div>
+          </td>
+          <td>89.3%</td>
+          <td><button class="detail-btn">Detail</button></td>
+        </tr>
+        <tr>
+          <td>22 Sept 2025</td>
+          <td>
+            <div class="photo-box"><i class="fas fa-image"></i></div>
+          </td>
+          <td>Cabai</td>
+          <td>
+            <div class="hasil">
+              <span class="penyakit">Bercak Daun</span><br />
+              <span class="tingkat">Tingkat : Ringan</span>
+            </div>
+          </td>
+          <td>92.1%</td>
+          <td><button class="detail-btn">Detail</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  const rows = document.querySelectorAll('.riwayat-table tbody tr');
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(searchTerm) ? '' : 'none';
+  });
+});
+
+document.querySelector('.export-btn').addEventListener('click', () => {
+  alert('Fitur Export PDF akan segera tersedia!');
+});
+</script>
+{% endblock %}
