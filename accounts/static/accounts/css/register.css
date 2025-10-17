@@ -1,139 +1,79 @@
-/* ====== Reset & Body ====== */
-body {
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background: url("/static/accounts/images/bg.jpg") no-repeat center center fixed;
-    background-size: cover;
-    position: relative;
-}
-
-/* ====== Blur Background ====== */
-body::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(6px);
-    background-color: rgba(0, 0, 0, 0.25);
-    z-index: 0;
-}
-
-/* ====== Container ====== */
+/* ====== Container (Card Utama) ====== */
 .container {
     display: flex;
-    width: 950px;
-    min-height: 600px;
+    width: 760px;              /* sebelumnya 900px */
+    min-height: 460px;         /* sebelumnya 520px */
     background: #fff;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
     position: relative;
     z-index: 1;
-    border-radius: 15px;
 }
 
 /* ====== Panel Kiri ====== */
 .left-panel {
-    background-color: rgba(118, 180, 125, 0.95);
-    color: #000;
-    flex: 1.1;
+    flex: 1;
+    background: linear-gradient(135deg, #8BC899 0%, #78B587 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px 30px;
+    padding: 30px 25px;        /* sebelumnya 40px 30px */
     text-align: center;
-    border-top-right-radius: 33px;
-    border-bottom-right-radius: 33px;
 }
 
-.left-panel img {
-    width: 230px;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.3));
-}
-
-.left-panel p {
-    margin: 2px 0;
-    font-size: 15px;
-    line-height: 1.3;
-}
-
-/* ====== Panel Kanan ====== */
+/* ====== Panel Kanan (Form Register) ====== */
 .right-panel {
     flex: 1;
-    padding: 35px 50px;
+    padding: 35px 40px;        /* sebelumnya 50px 45px */
     display: flex;
     flex-direction: column;
     justify-content: center;
     background-color: #fff;
 }
 
+/* ====== Judul ====== */
 .right-panel h2 {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 22px;           /* sedikit lebih kecil agar proporsional */
+    font-weight: 700;
     margin-bottom: 20px;
+    color: #1a1a1a;
     text-align: center;
 }
 
-/* ====== Form Input ====== */
-label {
-    font-weight: 500;
-    margin-top: 10px;
-    display: block;
+/* ====== Input & Form Field ====== */
+.form-group {
+    margin-bottom: 14px;
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box;
+    padding: 10px 13px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 13px;
+    background-color: #fafafa;
 }
 
-/* ====== Tombol Register ====== */
-button.register {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #8BC899;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(139, 200, 153, 0.1);
+}
+
+/* ====== Tombol ====== */
+.btn-daftar,
+.btn-login {
     width: 100%;
     padding: 12px;
-    background-color: #8cc08f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 15px;
-    transition: 0.3s ease;
-}
-
-button.register:hover {
-    background-color: #78b07c;
-}
-
-/* ====== Link ke Login ====== */
-.login-link {
-    text-align: center;
-    margin-top: 15px;
+    border-radius: 8px;
     font-size: 14px;
-}
-
-.login-link a {
-    color: #2e6b2e;
-    text-decoration: none;
     font-weight: 600;
-}
-
-.login-link a:hover {
-    text-decoration: underline;
 }
 
 /* ====== Responsif ====== */
@@ -141,10 +81,15 @@ button.register:hover {
     .container {
         flex-direction: column;
         width: 90%;
-        height: auto;
+        max-width: 420px;
+        min-height: auto;
     }
 
     .left-panel {
-        border-radius: 15px 15px 0 0;
+        padding: 25px 20px;
+    }
+
+    .right-panel {
+        padding: 30px 25px;
     }
 }

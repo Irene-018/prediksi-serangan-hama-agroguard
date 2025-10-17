@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deteksi Daun - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'dashboard/css/deteksi.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-container">
+    <h1>Deteksi Hama Pada Daun</h1>
+    <p>Upload foto daun untuk mendeteksi kemungkinan serangan hama dengan teknologi AI.</p>
+
+
+        <div class="upload-area">
+            <label class="upload-label">📸 Upload Foto Daun</label>
+            <div class="upload-box" id="uploadBox">
+                <img src="{% static 'dashboard/images/upload-icon.png' %}" alt="Upload Icon" class="upload-icon">
+                <p><b>Drag & Drop foto di sini</b><br>atau klik untuk browse file</p>
+                <small>Format: JPG, PNG | Max: 5MB</small>
+                <input type="file" name="image" id="fileInput" accept="image/*">
+            </div>
+        </div>
+
+        <div class="result-container">
+            <div class="result-box">
+                <h3>Foto Daun yang Dipilih:</h3>
+                <div class="preview-box" id="previewBox">
+                    <img src="{% static 'dashboard/images/sample-leaf.png' %}" alt="Leaf Preview">
+                </div>
+                <button class="btn-primary">Mulai Deteksi</button>
+
+                <div class="info-box">
+                    <label>📄 Informasi Tambahan:</label>
+                    <select>
+                        <option>-- Pilih Jenis Tanaman --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="result-box">
+                <h3>Hasil Deteksi :</h3>
+                <p class="detected-text">✅ TERDETEKSI SERANGAN HAMA</p>
+                <div class="result-detail">
+                    <ol>
+                        <li>Jenis Hama : <b>Ulat Grayak (Spodoptera frugiperda)</b></li>
+                        <li>Confidence Score : <b>87.5%</b> (Tingkat kepercayaan)</li>
+                        <li>Tingkat Keparahan : <b>SEDANG</b> (Perlu treatment)</li>
+                    </ol>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-secondary">Rekomendasi Treatment</button>
+                    <button class="btn-success">Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-box">
+            <h4>💡 Tips untuk Deteksi Terbaik</h4>
+            <ul>
+                <li>Gunakan kamera dengan pencahayaan cukup.</li>
+                <li>Foto daun dari dekat, hanya 1 daun di frame.</li>
+                <li>Hindari background yang ramai.</li>
+                <li>Pastikan gambar tidak blur.</li>
+            </ul>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

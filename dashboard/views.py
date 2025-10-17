@@ -86,26 +86,20 @@ def detail_pencegahan(request, id):
     data = get_object_or_404(PencegahanHama, id=id)
     return render(request, 'admin_dashboard/detail_pencegahan.html', {'data': data})
 
+def rekomendasi_view(request):
+    return render(request, 'dashboard/rekomendasi.html')
 
-# =======================
-# 🔑 LOGIN & LOGOUT
-# =======================
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+def riwayat_view(request):
+    return render(request, 'dashboard/riwayat.html')
 
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard:admin_dashboard')
-        else:
-            return render(request, 'accounts/login.html', {'error': 'Username atau password salah.'})
+def pengaturan_view(request):
+    return render(request, 'dashboard/pengaturan.html')
 
-    return render(request, 'accounts/login.html')
+from django.shortcuts import render
+
+def profile_view(request):
+    return render(request, 'dashboard/profile.html')
 
 
-@login_required(login_url='dashboard:login')
-def logout_view(request):
-    logout(request)
-    return redirect('dashboard:login')
+
+

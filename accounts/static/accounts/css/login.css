@@ -116,7 +116,7 @@ body::before {
     font-weight: 700;
     margin-bottom: 30px;
     color: #1a1a1a;
-    text-align: left;
+    text-align: center;
 }
 
 /* Form Group */
@@ -177,7 +177,8 @@ input::placeholder {
 
 /* Buttons */
 .btn-login,
-.btn-register {
+.btn-register,
+.btn-daftar {
     width: 100%;
     padding: 14px;
     border: none;
@@ -189,13 +190,15 @@ input::placeholder {
     font-family: inherit;
 }
 
-.btn-login {
+.btn-login,
+.btn-daftar {
     background-color: #8BC899;
     color: #fff;
     margin-bottom: 12px;
 }
 
-.btn-login:hover {
+.btn-login:hover,
+.btn-daftar:hover {
     background-color: #78B587;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(139, 200, 153, 0.4);
@@ -210,6 +213,24 @@ input::placeholder {
 .btn-register:hover {
     background-color: #e5f2e9;
     border-color: #8BC899;
+}
+
+/* Login Link */
+.login-link {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.login-link a {
+    color: #8BC899;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
 }
 
 /* ====== Responsive Design ====== */

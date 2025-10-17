@@ -3,17 +3,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Daftar Akun</title>
-    <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - AgroGuard</title>
+    <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 </head>
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+      Swal.fire({
+        icon: `{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}`,
+        title: '{{ message|escapejs }}',
+        showConfirmButton: false,
+        timer: 2000
+      });
+    {% endfor %}
+  });
+</script>
+{% endif %}
+</body>
+</html>
 <body>
     <div class="container">
         <!-- Panel Kiri -->
         <div class="left-panel">
-            <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
-            <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
-            <p>AgroGuard Siap Mendeteksi Hama Lebih Awal</p>
-            <p>Beri Solusi Tepat Sebelum Masalah Berkembang</p>
+            <div class="logo-container">
+                <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard" class="logo">
+            </div>
+            <div class="tagline">
+                <p><strong>Lindungi Tanaman Agar Tetap Aman</strong></p>
+                <p>AgroGuard siap mendeteksi hama lebih awal</p>
+                <p>Beri solusi tepat sebelum masalah berkembang</p>
+            </div>
         </div>
 
         <!-- Panel Kanan -->
@@ -22,22 +44,23 @@
 
             <form method="POST" action="{% url 'accounts:register' %}">
                 {% csrf_token %}
-                <label>Nama Lengkap</label>
-                <input type="text" name="nama_lengkap" placeholder="Masukkan Nama Lengkap" required>
 
-                <label>Email</label>
-                <input type="email" name="email" placeholder="Masukkan Email" required>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Masukkan Username" required>
+                </div>
 
-                <label>Username</label>
-                <input type="text" name="username" placeholder="Masukkan Username" required>
+                <div class="form-group">
+                    <label for="email">Alamat Email</label>
+                    <input type="email" id="email" name="email" placeholder="Masukkan Email" required>
+                </div>
 
-                <label>Password</label>
-                <input type="password" name="password" placeholder="Masukkan Password" required>
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="password" id="password1" name="password1" placeholder="Masukkan Password" required>
+                </div>
 
-                <label>Konfirmasi Password</label>
-                <input type="password" name="password2" placeholder="Ulangi Password" required>
-
-                <button type="submit" class="register">Daftar</button>
+                <button type="submit" class="btn-daftar">Daftar Sekarang</button>
             </form>
 
             <p class="login-link">

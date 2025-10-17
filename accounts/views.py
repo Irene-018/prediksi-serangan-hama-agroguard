@@ -18,18 +18,14 @@ def login_view(request):
             messages.error(request, "Username atau password salah")
     return render(request, 'accounts/login.html')
 
-# Register
+# Register (versi 1 input password)
 def register_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST.get('password1')
-        password2 = request.POST.get('password2')
 
-        if password != password2:
-            messages.error(request, "Password tidak sama")
-            return redirect('accounts:register')
-
+        # Validasi username & email
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username sudah terdaftar")
             return redirect('accounts:register')
@@ -38,12 +34,14 @@ def register_view(request):
             messages.error(request, "Email sudah terdaftar")
             return redirect('accounts:register')
 
+        # Membuat user baru
         user = User.objects.create_user(username=username, email=email, password=password)
         user.save()
         messages.success(request, "Akun berhasil dibuat, silakan login")
         return redirect('accounts:login')
 
     return render(request, 'accounts/register.html')
+
 
 
 # Logout
