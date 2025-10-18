@@ -1,0 +1,92 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Detail Pencegahan Hama - AgroGuard{% endblock %}
+{% block page_title %}Halaman Library ADMIN{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="header">
+    <div class="header-title">
+        <h1>Detail Pencegahan Hama</h1>
+        <p class="header-subtitle">Selamat datang AgroAdmin</p>
+    </div>
+    <div class="user-profile">
+        <span class="user-name">{{ current_user.get_full_name|default:current_user.username }}</span>
+        <div class="user-avatar">{{ current_user.username.0|upper }}</div>
+    </div>
+</div>
+
+<!-- Detail Content -->
+<div class="detail-container">
+    <div class="detail-card">
+        <h2 class="detail-title">{{ pencegahan.judul }}</h2>
+        
+        <div class="detail-row">
+            <div class="detail-label">Jenis Hama:</div>
+            <div class="detail-value">{{ pencegahan.jenis_hama.nama }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Sumber:</div>
+            <div class="detail-value">
+                <a href="{{ pencegahan.sumber }}" target="_blank" class="detail-link">
+                    {{ pencegahan.sumber }}
+                </a>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Status:</div>
+            <div class="detail-value">
+                <span class="status-badge status-{{ pencegahan.status }}">
+                    {{ pencegahan.get_status_display }}
+                </span>
+            </div>
+        </div>
+
+        {% if pencegahan.deskripsi %}
+        <div class="detail-row full-width">
+            <div class="detail-label">Deskripsi:</div>
+            <div class="detail-value detail-description">
+                {{ pencegahan.deskripsi|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="detail-row">
+            <div class="detail-label">Dibuat Oleh:</div>
+            <div class="detail-value">{{ pencegahan.created_by.get_full_name|default:pencegahan.created_by.username|default:'-' }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Tanggal Dibuat:</div>
+            <div class="detail-value">{{ pencegahan.created_at|date:"d F Y, H:i" }}</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Terakhir Diupdate:</div>
+            <div class="detail-value">{{ pencegahan.updated_at|date:"d F Y, H:i" }}</div>
+        </div>
+
+        <div class="detail-actions">
+            <a href="{% url 'admin_dashboard:library' %}" class="btn btn-back">Kembali</a>
+            <a href="{% url 'admin_dashboard:library_edit' pencegahan.id %}" class="btn btn-edit">Edit</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .detail-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        max-width: 900px;

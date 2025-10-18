@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AgroGuard - Admin Dashboard{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="{% static 'images/logo.png' %}" alt="AgroGuard Logo" class="logo-icon">
+            
+        </div>
+
+        <a href="{% url 'admin_dashboard:dashboard' %}" class="menu-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <span class="menu-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="{% url 'admin_dashboard:library' %}" class="menu-item {% if 'library' in request.resolver_match.url_name %}active{% endif %}">
+            <span class="menu-icon">🐛</span>
+            <span>Pencegahan Hama</span>
+        </a>
+
+        <form method="post" action="{% url 'dashboard:logout' %}" style="margin-top: auto;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">
+                <span>🚪</span>
+                <span>Keluar</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="page-title">{% block page_title %}Halaman Dashboard ADMIN{% endblock %}</div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Content -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{% static 'admin_dashboard/js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

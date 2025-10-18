@@ -1,0 +1,162 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Admin - AgroGuard{% endblock %}
+{% block page_title %}Halaman Dashboard ADMIN{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="header">
+    <div class="header-title">
+        <h1>Dashboard Admin</h1>
+        <p class="header-subtitle">Selamat datang AgroAdmin</p>
+    </div>
+    <div class="user-profile">
+        <span class="user-name">{{ current_user.get_full_name|default:current_user.username }}</span>
+        <div class="user-avatar">{{ current_user.username.0|upper }}</div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card card1">
+        <b><div class="stat-label">TOTAL User </div></b>
+        <div class="stat-value">{{ total_card1 }}</div>
+        <div class="stat-desc">High Priority</div>
+    </div>
+    <div class="stat-card card2">
+        <b><div class="stat-label">TOTAL Terdeteksi </div></b>
+        <div class="stat-value">{{ total_card2 }}</div>
+        <div class="stat-desc">Medium Priority</div>
+    </div>
+    <div class="stat-card card3">
+        <b><div class="stat-label">TOTAL Hama Terdeteksi </div></b>
+        <div class="stat-value">{{ total_card3 }}</div>
+        <div class="stat-desc">Low Priority</div>
+    </div>
+</div>
+
+<!-- Top 3 Jenis Hama -->
+<div class="top-hama-section">
+    <h2 class="section-title">Top 3 Jenis hama</h2>
+    <div class="hama-grid">
+        {% for hama in top_hama %}
+        <div class="hama-item">{{ hama.nama }}</div>
+        {% empty %}
+        <div class="hama-item">-</div>
+        <div class="hama-item">-</div>
+        <div class="hama-item">-</div>
+        {% endfor %}
+    </div>
+    <div class="hama-frequent">
+        {% if hama_sering %}
+            Jenis Hama yang sering Menyerang: {{ hama_sering.nama }}
+        {% else %}
+            Jenis Hama yang sering Menyerang Tanaman
+        {% endif %}
+    </div>
+</div>
+
+<!-- Analysis Section -->
+<div class="analysis-section">
+    <h2 class="section-title">Analisis serangan Hama</h2>
+    <div class="analysis-content">
+        <div class="chart-container">
+            <div class="chart-legend">
+                <div class="legend-item-inline">
+                    <div class="legend-color" style="background: #FF6B6B;"></div>
+                    <span>H</span>
+                </div>
+                <div class="legend-item-inline">
+                    <div class="legend-color" style="background: #FFA500;"></div>
+                    <span>M</span>
+                </div>
+                <div class="legend-item-inline">
+                    <div class="legend-color" style="background: #4CAF50;"></div>
+                    <span>S</span>
+                </div>
+            </div>
+            <canvas id="hamaChart"></canvas>
+        </div>
+        <div class="legend-container">
+            <div class="legend-item">
+                <span class="legend-label">High</span>
+                <span class="legend-value">{{ high_percent }}%</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-label">Medium</span>
+                <span class="legend-value">{{ medium_percent }}%</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-label">Low</span>
+                <span class="legend-value">{{ low_percent }}%</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Chart Configuration with Django data
+    const ctx = document.getElementById('hamaChart').getContext('2d');
+    const chartData = {{ chart_data|safe }};
+    
+    const hamaChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'High',
+                data: chartData.high,
+                borderColor: '#FF6B6B',
+                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Medium',
+                data: chartData.medium,
+                borderColor: '#FFA500',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Low',
+                data: chartData.low,
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#ffffff'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
