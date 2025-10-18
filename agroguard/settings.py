@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # Apps lokal kamu
     'dashboard',
     'accounts',
+    'admin_dashboard',
 ]
 
 
@@ -128,6 +129,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",                      # folder static utama proyek
     BASE_DIR / "accounts" / "static",         # folder static milik app accounts
     BASE_DIR / "dashboard" / "static",        # opsional
+    BASE_DIR / "admin_dashboard" / "static",
     BASE_DIR / "detection" / "static",        # opsional
     BASE_DIR / "recommendation" / "static",   # opsional
 ]
