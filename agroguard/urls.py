@@ -7,6 +7,8 @@ urlpatterns = [
     # Dashboard (namespace opsional)
     path('dashboard/', include(('dashboard.urls', 'dashboard'), namespace='dashboard')),
 
+    path('admin-dashboard/', include(('admin_dashboard.urls', 'admin_dashboard'), namespace='admin_dashboard')),
+
     # Accounts
     path('accounts/', include('accounts.urls')),
 

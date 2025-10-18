@@ -13,19 +13,10 @@ urlpatterns = [
     path('riwayat/', views.riwayat_view, name='riwayat'),
     path('pengaturan/', views.pengaturan_view, name='pengaturan'),
     path('profile/', views.profile_view, name='profile'),
-    # ======================
-    # ADMIN DASHBOARD
-    # ======================
-    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
     # ======================
-    # CRUD PENCEGAHAN HAMA
+    # LOGIN & LOGOUT
     # ======================
-    path('pencegahan/', views.pencegahan_list, name='pencegahan_list'),
-    path('pencegahan/tambah/', views.tambah_pencegahan, name='tambah_pencegahan'),
-    path('pencegahan/<int:id>/edit/', views.edit_pencegahan, name='edit_pencegahan'),
-    path('pencegahan/<int:id>/hapus/', views.hapus_pencegahan, name='hapus_pencegahan'),
-    path('pencegahan/<int:id>/', views.detail_pencegahan, name='detail_pencegahan'),
-
-
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 ]
