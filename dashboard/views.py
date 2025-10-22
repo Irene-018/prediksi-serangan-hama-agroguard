@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 
 
 # =======================
@@ -57,3 +60,23 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('dashboard:login')
+
+# =======================
+# 🔄 PASSWORD CHANGE AJAX
+@login_required(login_url='dashboard:login')
+def change_password_ajax(request):
+    if request.method == 'POST' and request.is_ajax():
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+
+        user = request.user
+        if not user.check_password(current_password):
+            return JsonResponse({'status': 'error', 'message': 'Password saat ini salah.'})
+
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)  # Agar user tidak logout setelah ganti password
+
+        return JsonResponse({'status': 'success', 'message': 'Password berhasil diubah.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Permintaan tidak valid.'})
