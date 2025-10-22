@@ -61,18 +61,20 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="password">PASSWORD SAAT INI:</label>
-                                <input type="password" id="password" name="password" placeholder="Masukkan password saat ini" required>
+                                <label for="password">PASSWORD:</label>
+                                <input type="password" id="password" name="password" placeholder="Masukkan password saat ini">
                             </div>
+                            
                             <div class="form-group">
                                 <label for="newPassword">PASSWORD BARU:</label>
-                                <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan password baru" required>
+                                <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan password baru">
                             </div>
-                            <div class="form-group">
-                                <label for="confirmPassword">KONFIRMASI PASSWORD BARU:</label>
-                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password baru" required>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">
+                                    SIMPAN
+                                </button>
                             </div>
-                            <button type="submit" class="save-btn">SIMPAN PERUBAHAN</button>
                         </form>
                     </div>
                 </div>
@@ -90,19 +92,27 @@
 
 {% block extra_scripts %}
 <script>
-// Tab switching
+// Tab switching functionality
 function switchTab(tabName) {
-    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+    // Remove active class from all tabs and panels
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    // Add active class to selected tab and panel
     event.target.classList.add('active');
     document.getElementById(tabName + '-tab').classList.add('active');
 }
 
-// Preview foto
+// Image preview functionality
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
+            // Create image element if it doesn't exist
             let img = document.querySelector('.profile-avatar-large img');
             if (!img) {
                 img = document.createElement('img');
@@ -119,66 +129,26 @@ function previewImage(input) {
     }
 }
 
-// 🔔 Fungsi tampilkan notifikasi (berhasil/gagal)
-function showNotification(message, success = true) {
-    const notif = document.createElement('div');
-    notif.textContent = message;
-    notif.style.position = 'fixed';
-    notif.style.top = '20px';
-    notif.style.right = '20px';
-    notif.style.padding = '12px 20px';
-    notif.style.borderRadius = '8px';
-    notif.style.color = 'white';
-    notif.style.fontWeight = '600';
-    notif.style.zIndex = '9999';
-    notif.style.transition = 'opacity 0.6s ease';
-    notif.style.opacity = '1';
-    notif.style.backgroundColor = success ? '#4CAF50' : '#E53935'; // hijau atau merah
-
-    document.body.appendChild(notif);
-
-    setTimeout(() => {
-        notif.style.opacity = '0';
-        setTimeout(() => notif.remove(), 600);
-    }, 3000);
-}
-
-// 🧠 Form handler
+// Form submission handler
 document.getElementById('profileForm').addEventListener('submit', function(e) {
     e.preventDefault();
-
-    const currentPw = document.getElementById('password').value.trim();
-    const newPw = document.getElementById('newPassword').value.trim();
+    
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-
+    
     submitBtn.innerHTML = 'MENYIMPAN...';
     submitBtn.disabled = true;
-
+    
     setTimeout(() => {
-        // ⚙️ Simulasi password saat ini yang benar = "gadiza123"
-        const correctPw = "gadiza123";
-
-        if (currentPw === "") {
-            showNotification("Masukkan password saat ini!", false);
-        } else if (currentPw !== correctPw) {
-            showNotification("Password saat ini tidak sesuai!", false);
-        } else if (newPw === "") {
-            showNotification("Masukkan password baru!", false);
-        } else {
-            showNotification("Password berhasil diubah!", true);
-            // kosongkan field setelah berhasil
-            document.getElementById('password').value = "";
-            document.getElementById('newPassword').value = "";
-        }
-
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-    }, 1000);
+        alert('Profile berhasil diperbarui!');
+    }, 2000);
 });
 
-// default aktif tab akun
+// Initialize page
 document.addEventListener('DOMContentLoaded', function() {
+    // Set default active tab
     document.querySelector('.tab-button').classList.add('active');
     document.getElementById('account-tab').classList.add('active');
 });

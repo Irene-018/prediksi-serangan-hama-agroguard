@@ -25,15 +25,6 @@
         <div class="right-panel">
             <h2>Masuk ke Akun Anda</h2>
 
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert" style="color: red; font-size: 14px; margin-bottom: 10px; text-align: center;">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
-
-
             <form method="POST" action="{% url 'accounts:login' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -46,7 +37,7 @@
                     <input type="password" id="password" name="password" placeholder="Masukkan Password" required>
                 </div>
 
-                <a href="{% url 'accounts:forgot_password' %}" class="forgot-link">Lupa Password?</a>
+                <a href="#" class="forgot-link">Lupa Password?</a>
 
                 <button type="submit" class="btn-login">Masuk</button>
             </form>
@@ -57,17 +48,5 @@
             </p>
         </div>
     </div>
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const alerts = document.querySelectorAll(".alert");
-  alerts.forEach((alert) => {
-    setTimeout(() => {
-      alert.classList.add("fade-out");
-      setTimeout(() => alert.remove(), 600); // hapus dari DOM setelah animasi selesai
-    }, 4000); // tampil 4 detik sebelum fade-out
-  });
-});
-</script>
-
 </body>
 </html>

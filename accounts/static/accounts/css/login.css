@@ -175,7 +175,6 @@ input::placeholder {
     color: #666;
 }
 
-
 /* Buttons */
 .btn-login,
 .btn-register,
@@ -322,57 +321,4 @@ a:focus {
 
 .container {
     animation: fadeIn 0.5s ease-out;
-}
-
-/* ====== Django Messages (Alerts) ====== */
-.alert {
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 18px;
-    text-align: center;
-    animation: fadeIn 0.4s ease;
-}
-
-/* Warna berdasarkan tipe pesan */
-.alert-success {
-    background-color: #e6f4ea;
-    color: #2d5f3f;
-    border: 1px solid #cce3d3;
-}
-
-.alert-error,
-.alert-danger {
-    background-color: #fdecea;
-    color: #b02a37;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-warning {
-    background-color: #fff4e5;
-    color: #8a6d3b;
-    border: 1px solid #ffe0b3;
-}
-
-.alert-info {
-    background-color: #e7f3fe;
-    color: #31708f;
-    border: 1px solid #b3d8ff;
-}
-
-/* ====== Alert Animation (Fade Out) ====== */
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-.alert.fade-out {
-    animation: fadeOut 0.6s ease forwards;
 }
