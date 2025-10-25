@@ -14,9 +14,9 @@
 
 
         <div class="upload-area">
-            <label class="upload-label">📸 Upload Foto Daun</label>
+            <label class="upload-label"><i class="fas fa-camera"></i> Upload Foto Daun</label>
             <div class="upload-box" id="uploadBox">
-                <img src="{% static 'dashboard/images/upload-icon.png' %}" alt="Upload Icon" class="upload-icon">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
                 <p><b>Drag & Drop foto di sini</b><br>atau klik untuk browse file</p>
                 <small>Format: JPG, PNG | Max: 5MB</small>
                 <input type="file" name="image" id="fileInput" accept="image/*">
@@ -27,12 +27,13 @@
             <div class="result-box">
                 <h3>Foto Daun yang Dipilih:</h3>
                 <div class="preview-box" id="previewBox">
-                    <img src="{% static 'dashboard/images/sample-leaf.png' %}" alt="Leaf Preview">
+                    <i class="fas fa-leaf preview-icon"></i>
+                    <p class="preview-text">Preview gambar akan muncul di sini</p>
                 </div>
                 <button class="btn-primary">Mulai Deteksi</button>
 
                 <div class="info-box">
-                    <label>📄 Informasi Tambahan:</label>
+                    <label><i class="fas fa-file-alt"></i> Informasi Tambahan:</label>
                     <select>
                         <option>-- Pilih Jenis Tanaman --</option>
                     </select>
@@ -41,7 +42,7 @@
 
             <div class="result-box">
                 <h3>Hasil Deteksi :</h3>
-                <p class="detected-text">✅ TERDETEKSI SERANGAN HAMA</p>
+                <p class="detected-text"><i class="fas fa-exclamation-triangle"></i> TERDETEKSI SERANGAN HAMA</p>
                 <div class="result-detail">
                     <ol>
                         <li>Jenis Hama : <b>Ulat Grayak (Spodoptera frugiperda)</b></li>
@@ -57,7 +58,7 @@
         </div>
 
         <div class="tips-box">
-            <h4>💡 Tips untuk Deteksi Terbaik</h4>
+            <h4><i class="fas fa-lightbulb"></i> Tips untuk Deteksi Terbaik</h4>
             <ul>
                 <li>Gunakan kamera dengan pencahayaan cukup.</li>
                 <li>Foto daun dari dekat, hanya 1 daun di frame.</li>
@@ -68,4 +69,24 @@
 
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const previewBox = document.getElementById('previewBox');
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewBox.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
 {% endblock %}

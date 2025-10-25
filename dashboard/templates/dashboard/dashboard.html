@@ -15,18 +15,22 @@
     <!-- STAT CARDS -->
     <div class="stats">
         <div class="card sehat">
+            <div class="card-icon"><i class="fas fa-seedling"></i></div>
             <h2>100</h2>
             <p>Tanaman Sehat</p>
         </div>
         <div class="card sakit">
+            <div class="card-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <h2>127</h2>
             <p>Tanaman Sakit</p>
         </div>
         <div class="card risiko">
+            <div class="card-icon"><i class="fas fa-bug"></i></div>
             <h2>31%</h2>
             <p>Risiko Serangan Hama</p>
         </div>
         <div class="card kelembapan">
+            <div class="card-icon"><i class="fas fa-tint"></i></div>
             <h2>75%</h2>
             <p>Kelembapan</p>
         </div>
@@ -34,38 +38,38 @@
 
     <!-- ALERT -->
     <div class="alert">
-        ⚠️ Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
+        <i class="fas fa-exclamation-triangle"></i> Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
     </div>
 
     <!-- CHART -->
     <div class="chart-box">
-        <h3>📊 Data Sensor Real-Time</h3>
+        <h3><i class="fas fa-chart-line"></i> Data Sensor Real-Time</h3>
         <canvas id="sensorChart"></canvas>
     </div>
 
     <!-- SENSOR DATA -->
     <div class="sensor-box">
-        <h4>📅 Data Sensor Terbaru</h4>
+        <h4><i class="fas fa-calendar-alt"></i> Data Sensor Terbaru</h4>
         <p style="margin-bottom: 15px; color: #666;">Update terakhir: 14 Okt 2025, 21:30 WIB</p>
         <div class="sensor-stats">
             <div class="sensor-item">
-                <span class="sensor-label">🌡️ Suhu:</span>
+                <span class="sensor-label"><i class="fas fa-thermometer-half"></i> Suhu:</span>
                 <span class="sensor-value">28°C</span>
             </div>
             <div class="sensor-item">
-                <span class="sensor-label">💧 Kelembapan:</span>
+                <span class="sensor-label"><i class="fas fa-tint"></i> Kelembapan:</span>
                 <span class="sensor-value">75%</span>
             </div>
             <div class="sensor-item">
-                <span class="sensor-label">☀️ Cahaya:</span>
+                <span class="sensor-label"><i class="fas fa-sun"></i> Cahaya:</span>
                 <span class="sensor-value">850 lux</span>
             </div>
             <div class="sensor-item">
-                <span class="sensor-label">🌱 pH Tanah:</span>
+                <span class="sensor-label"><i class="fas fa-seedling"></i> pH Tanah:</span>
                 <span class="sensor-value">6.5</span>
             </div>
         </div>
-        <button class="btn-warning">⚠️ Lihat Peringatan</button>
+        <button class="btn-warning"><i class="fas fa-exclamation-triangle"></i> Lihat Peringatan</button>
     </div>
 </section>
 {% endblock %}
