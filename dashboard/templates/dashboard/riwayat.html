@@ -24,14 +24,17 @@
   <!-- Statistik Cards -->
   <div class="stats-container">
     <div class="stat-card stat-green">
+      <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
       <div class="stat-label">Total Deteksi</div>
       <div class="stat-value">2</div>
     </div>
     <div class="stat-card stat-red">
+      <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
       <div class="stat-label">Tanaman Sakit</div>
       <div class="stat-value">1</div>
     </div>
     <div class="stat-card stat-orange">
+      <div class="stat-icon"><i class="fas fa-tools"></i></div>
       <div class="stat-label">Perlu Penanganan</div>
       <div class="stat-value">1</div>
     </div>
@@ -52,7 +55,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>23 Sept 2025</td>
+          <td><i class="fas fa-calendar-alt"></i> 23 Sept 2025</td>
           <td>
             <div class="photo-box"><i class="fas fa-image"></i></div>
           </td>
@@ -63,11 +66,11 @@
               <span class="tingkat">Tingkat : Sedang</span>
             </div>
           </td>
-          <td>89.3%</td>
+          <td><i class="fas fa-percentage"></i> 89.3%</td>
           <td><button class="detail-btn">Detail</button></td>
         </tr>
         <tr>
-          <td>22 Sept 2025</td>
+          <td><i class="fas fa-calendar-alt"></i> 22 Sept 2025</td>
           <td>
             <div class="photo-box"><i class="fas fa-image"></i></div>
           </td>
@@ -78,7 +81,7 @@
               <span class="tingkat">Tingkat : Ringan</span>
             </div>
           </td>
-          <td>92.1%</td>
+          <td><i class="fas fa-percentage"></i> 92.1%</td>
           <td><button class="detail-btn">Detail</button></td>
         </tr>
       </tbody>
@@ -101,3 +104,4 @@ document.querySelector('.export-btn').addEventListener('click', () => {
 });
 </script>
 {% endblock %}
+
