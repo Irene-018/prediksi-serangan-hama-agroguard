@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Riwayat Deteksi - AgroGuard{% endblock %}
+{% block title %}Pengaturan Akun - AgroGuard{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/pengaturan.css' %}">
@@ -14,23 +14,19 @@
     <p class="content-subtitle">Kelola informasi personal dan pengaturan akun Anda</p>
 </div>
 
-<!-- Main Container -->
 <div class="main-container">
-    <!-- Tab Navigation - Left Side -->
     <div class="tab-navigation">
-        <button class="tab-button active" onclick="switchTab('account')">
+        <button class="tab-button active" onclick="switchTab(event, 'account')">
             Akun Saya
         </button>
-        <button class="tab-button" onclick="switchTab('monitoring')">
+        <button class="tab-button" onclick="switchTab(event, 'monitoring')">
             Unit Monitoring Saya
         </button>
     </div>
 
-    <!-- Content Area -->
     <div class="content-area">
         <div id="account-tab" class="tab-panel active">
             <div class="profile-layout">
-                <!-- Left Section - Profile Picture -->
                 <div class="profile-picture-section">
                     <div class="profile-avatar-large">
                         <i class="fas fa-user"></i>
@@ -40,36 +36,29 @@
                     </button>
                     <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
                 </div>
-
-                <!-- Right Section - Form -->
                 <div class="profile-form-section">
                     <div class="form-card">
                         <form class="profile-form" id="profileForm">
-                            <div class="form-group">
+                            {% csrf_token %} <div class="form-group">
                                 <label for="nama">NAMA:</label>
                                 <input type="text" id="nama" name="nama" value="Gadiza" required>
                             </div>
-                            
                             <div class="form-group">
                                 <label for="email">EMAIL:</label>
                                 <input type="email" id="email" name="email" value="gadiza@agroguard.com" required>
                             </div>
-                            
                             <div class="form-group">
                                 <label for="phone">NO. HANDPHONE:</label>
                                 <input type="tel" id="phone" name="phone" value="+62 812 3456 7890" required>
                             </div>
-                            
                             <div class="form-group">
                                 <label for="password">PASSWORD:</label>
                                 <input type="password" id="password" name="password" placeholder="Masukkan password saat ini">
                             </div>
-                            
                             <div class="form-group">
                                 <label for="newPassword">PASSWORD BARU:</label>
                                 <input type="password" id="newPassword" name="newPassword" placeholder="Masukkan password baru">
                             </div>
-                            
                             <div class="form-actions">
                                 <button type="submit" class="save-btn">
                                     SIMPAN
@@ -82,9 +71,45 @@
         </div>
 
         <div id="monitoring-tab" class="tab-panel">
-            <div class="monitoring-content">
-                <h3>Unit Monitoring Saya</h3>
-                <p>Konten untuk unit monitoring akan ditampilkan di sini.</p>
+            <div class="monitoring-form-container">
+                <form class="monitoring-form" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="image-upload-area">
+                        <img id="monitoringImagePreview" src="{% static 'images/default_farm.jpg' %}" alt="Unit Monitoring Image" style="width: 300px; height: 180px; object-fit: cover; border-radius: 8px;">
+                        <input type="file" id="monitoringPhotoInput" name="monitoring_photo" accept="image/*" style="display: none;" onchange="previewMonitoringImage(this)">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('monitoringPhotoInput').click()">
+                            Ubah Foto Unit
+                        </button>
+                    </div>
+                    
+                    <div class="form-card-monitoring">
+                        <div class="form-group-monitoring">
+                            <label for="nama_unit">NAMA UNIT:</label>
+                            <input type="text" id="nama_unit" name="nama_unit" required>
+                        </div>
+                        
+                        <div class="form-group-monitoring">
+                            <label for="lokasi">LOKASI:</label>
+                            <input type="text" id="lokasi" name="lokasi" required>
+                        </div>
+                        
+                        <div class="form-group-monitoring">
+                            <label for="luas_area">LUAS AREA:</label>
+                            <input type="text" id="luas_area" name="luas_area" placeholder="Contoh: 100 m²" required>
+                        </div>
+                        
+                        <div class="form-group-monitoring">
+                            <label for="deskripsi">DESKRIPSI:</label>
+                            <textarea id="deskripsi" name="deskripsi" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-actions-monitoring">
+                            <button type="submit" class="save-btn-monitoring">
+                                SIMPAN
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -93,7 +118,7 @@
 {% block extra_scripts %}
 <script>
 // Tab switching functionality
-function switchTab(tabName) {
+function switchTab(event, tabName) {
     // Remove active class from all tabs and panels
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
@@ -107,12 +132,11 @@ function switchTab(tabName) {
     document.getElementById(tabName + '-tab').classList.add('active');
 }
 
-// Image preview functionality
+// Image preview functionality for Account Tab (Existing code)
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            // Create image element if it doesn't exist
             let img = document.querySelector('.profile-avatar-large img');
             if (!img) {
                 img = document.createElement('img');
@@ -129,7 +153,19 @@ function previewImage(input) {
     }
 }
 
-// Form submission handler
+// NEW Image preview functionality for Monitoring Tab
+function previewMonitoringImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('monitoringImagePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+
+// Form submission handler for Account Tab (Existing code)
 document.getElementById('profileForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -146,10 +182,32 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
     }, 2000);
 });
 
+// Form submission handler for Monitoring Tab (You may need to adjust the ID/Class)
+document.querySelector('.monitoring-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('.save-btn-monitoring');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = 'MENYIMPAN...';
+    submitBtn.disabled = true;
+    
+    // Logic untuk AJAX/fetch POST ke backend akan diletakkan di sini
+    // ...
+    
+    setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        alert('Data Unit Monitoring berhasil diperbarui!');
+    }, 2000);
+});
+
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
     // Set default active tab
-    document.querySelector('.tab-button').classList.add('active');
+    // Catatan: Fungsi switchTab yang di atas menggunakan event, jadi kita panggil tab-button secara manual di sini
+    document.querySelector('.tab-navigation .tab-button:nth-child(1)').classList.add('active');
     document.getElementById('account-tab').classList.add('active');
 });
 </script>

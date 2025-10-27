@@ -1,0 +1,82 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Data Hama - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/data_hama.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <!-- Header dengan profil admin -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1>Data Hama</h1>
+    </div>
+    <div class="admin-profile">
+      <div class="profile-info">
+        <p class="name">Admin</p>
+        <p class="role">Administrator</p>
+      </div>
+      <div class="profile-circle">AD</div>
+    </div>
+  </div>
+
+  <!-- Container Tabel Hama -->
+  <div class="log-section">
+    <div class="log-header">
+      <h2>Daftar Jenis Hama ({{ hama_list|length }})</h2>
+<button class="btn-tambah" onclick="window.location.href='{% url 'admin_dashboard:tambah_hama' %}'">
+  <i class="fas fa-plus-circle"></i> Tambah Jenis Hama
+</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Hama</th>
+            <th>Nama Latin</th>
+            <th>Gejala</th>
+            <th>Deskripsi</th>
+            <th>Gambar</th>
+            <th style="text-align: center;">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for hama in hama_list %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td class="hama-name">{{ hama.nama }}</td>
+            <td>{{ hama.nama_latin|default:"-" }}</td>
+            <td>{{ hama.gejala|truncatewords:10|default:"-" }}</td>
+            <td class="hama-desc">{{ hama.deskripsi|truncatewords:15 }}</td>
+            <td>
+              {% if hama.gambar %}
+                <img src="{{ hama.gambar.url }}" width="60">
+              {% else %}
+              -
+              {% endif %}
+            </td>
+            <td>
+  <a href="{% url 'admin_dashboard:edit_hama' hama.id %}" class="btn-action btn-edit">Edit</a>
+  <a href="{% url 'admin_dashboard:hapus_hama' hama.id %}" class="btn-action btn-delete">Hapus</a>
+</td>
+
+
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
+              Belum ada data hama
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

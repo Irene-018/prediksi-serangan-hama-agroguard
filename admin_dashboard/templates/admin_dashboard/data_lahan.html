@@ -1,0 +1,101 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Data Lahan - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/data_lahan.css' %}">
+<style>
+/* Style tambahan khusus untuk Status di Data Lahan */
+.status-lahan {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: inline-block;
+}
+
+.status-lahan.aktif {
+    background-color: #d4edda; /* Green Light */
+    color: #155724; /* Green Dark */
+}
+
+.status-lahan.nonaktif {
+    background-color: #f8d7da; /* Red Light */
+    color: #721c24; /* Red Dark */
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="header-left">
+            <h1>Data Lahan</h1>
+        </div>
+        <div class="admin-profile">
+            <div class="profile-info">
+                <p class="name">{{ current_user.username|title }}</p>
+                <p class="role">Administrator</p>
+            </div>
+            <div class="profile-circle">{{ current_user.username|slice:":2"|upper }}</div>
+        </div>
+    </div>
+
+    <div class="log-section">
+        <div class="log-header">
+            <h2>Daftar Lahan ({{ lahan_list|length }})</h2>
+            <button class="btn-tambah" onclick="window.location.href='{% url 'admin_dashboard:tambah_lahan' %}'">
+                <i class="fas fa-plus-circle"></i> Tambah Lahan
+            </button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Petani</th>
+                        <th>Nama Lahan</th>
+                        <th>Lokasi</th>
+                        <th>Luas</th>
+                        <th>Jenis Tanaman</th>
+                        <th>Status</th>
+                        <th style="text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lahan in lahan_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ lahan.petani.nama_lengkap }}</td>
+                        <td class="hama-name">{{ lahan.nama_lahan }}</td>
+                        <td>{{ lahan.lokasi }}</td>
+                        <td>{{ lahan.luas_daerah }}</td>
+                        <td>{{ lahan.jenis_tanaman }}</td>
+                        <td>
+                            <span class="status-lahan {% if lahan.status_aktif %}aktif{% else %}nonaktif{% endif %}">
+                                {% if lahan.status_aktif %}Aktif{% else %}Tidak Aktif{% endif %}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <div class="action-buttons">
+                                <a href="{% url 'admin_dashboard:edit_lahan' lahan.id %}" class="btn-action btn-edit">Edit</a>
+                                <a href="{% url 'admin_dashboard:hapus_lahan' lahan.id %}" class="btn-action btn-delete" 
+                                   onclick="return confirm('Yakin ingin menghapus lahan {{ lahan.nama_lahan }}?');">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
+                            Belum ada data lahan
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

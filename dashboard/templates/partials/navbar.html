@@ -1,9 +1,10 @@
 {% load static %}
 <nav class="navbar">
   <div class="nav-container">
-    <!-- Logo -->
     <div class="logo">
-      <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
+      <a href="{% url 'dashboard:home' %}">
+        <img src="{% static 'accounts/images/logo.png' %}" alt="Logo AgroGuard">
+      </a>
     </div>
 
     <!-- Menu Links -->
@@ -25,12 +26,12 @@
         <div class="dropdown-menu">
           </a>
           <a href="{% url 'dashboard:pengaturan' %}" class="dropdown-item">
-            <span class="icon">⚙️</span>
+            <span class="icon"><i class="fas fa-cog"></i></span>
             <span>Pengaturan</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="{% url 'accounts:login' %}" class="dropdown-item logout">
-    <span class="icon">🚪</span>
+          <a href="{% url 'accounts:logout' %}" class="dropdown-item logout">
+    <span class="icon"><i class="fas fa-door-open"></i></span>
     <span>Logout</span>
 </a>
 

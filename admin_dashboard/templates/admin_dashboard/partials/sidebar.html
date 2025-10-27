@@ -1,0 +1,125 @@
+{% load static %}
+
+<!-- Tombol Hamburger (mobile) -->
+<button class="hamburger" id="hamburgerBtn">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Overlay untuk Mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <img src="{% static 'images/logo.png' %}" alt="Logo AgroGuard" class="logo-img">
+  </div>
+
+  <nav class="menu">
+    <button class="menu-btn {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+      onclick="window.location.href='{% url 'admin_dashboard:dashboard' %}'">
+      <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
+    </button>
+
+    <button class="menu-btn {% if request.resolver_match.url_name == 'kelola_user' or request.resolver_match.url_name == 'tambah_user' or request.resolver_match.url_name == 'edit_user' %}active{% endif %}"
+      onclick="window.location.href='{% url 'admin_dashboard:kelola_user' %}'">
+      <i class="fa-solid fa-users"></i><span>Kelola User</span>
+    </button>
+
+    <button class="menu-btn {% if request.resolver_match.url_name == 'data_hama' or request.resolver_match.url_name == 'tambah_hama' or request.resolver_match.url_name == 'edit_hama' %}active{% endif %}"
+      onclick="window.location.href='{% url 'admin_dashboard:data_hama' %}'">
+      <i class="fa-solid fa-bug"></i><span>Data Hama</span>
+    </button>
+
+    <button class="menu-btn {% if request.resolver_match.url_name == 'data_pencegahan' or request.resolver_match.url_name == 'tambah_pencegahan' or request.resolver_match.url_name == 'edit_pencegahan' %}active{% endif %}"
+      onclick="window.location.href='{% url 'admin_dashboard:data_pencegahan' %}'">
+      <i class="fa-solid fa-shield-virus"></i><span>Data Pencegahan</span>
+    </button>
+
+    <button class="menu-btn {% if request.resolver_match.url_name == 'data_lahan' or request.resolver_match.url_name == 'tambah_lahan' or request.resolver_match.url_name == 'edit_lahan' %}active{% endif %}"
+      onclick="window.location.href='{% url 'admin_dashboard:data_lahan' %}'">
+      <i class="fa-solid fa-map-marked-alt"></i><span>Data Lahan</span>
+    </button>
+  </nav>
+
+  <!-- Logout Button (Dipindahkan ke bawah sidebar) -->
+  <div class="logout-section">
+    <button class="logout-btn" onclick="if(confirm('Yakin ingin keluar?')) window.location.href='{% url 'accounts:logout' %}'">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Keluar</span>
+    </button>
+  </div>
+</aside>
+
+<script>
+// Inisialisasi elemen
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const hamburger = document.getElementById('hamburgerBtn');
+
+// Fungsi untuk toggle sidebar di mobile
+function toggleSidebar() {
+  if (window.innerWidth <= 768) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Toggle icon hamburger
+    const icon = hamburger.querySelector('i');
+    if (sidebar.classList.contains('active')) {
+      icon.classList.remove('fa-bars');
+      icon.classList.add('fa-times');
+    } else {
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  }
+}
+
+// Event listener untuk hamburger button
+hamburger.addEventListener('click', toggleSidebar);
+
+// Event listener untuk overlay (tutup sidebar saat klik overlay)
+overlay.addEventListener('click', () => {
+  if (window.innerWidth <= 768) {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    
+    const icon = hamburger.querySelector('i');
+    icon.classList.remove('fa-times');
+    icon.classList.add('fa-bars');
+  }
+});
+
+// Adjust layout saat resize window
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    // Reset state di mobile jika di-resize
+    if (window.innerWidth <= 768) {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      
+      const icon = hamburger.querySelector('i');
+      icon.classList.remove('fa-times');
+      icon.classList.add('fa-bars');
+    }
+  }, 250);
+});
+
+// Tutup sidebar saat menu diklik (untuk mobile)
+const menuButtons = document.querySelectorAll('.menu-btn');
+menuButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        
+        const icon = hamburger.querySelector('i');
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }, 200);
+    }
+  });
+});
+</script>

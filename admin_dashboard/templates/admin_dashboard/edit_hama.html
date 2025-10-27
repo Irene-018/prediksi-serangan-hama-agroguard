@@ -1,0 +1,62 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Edit Jenis Hama - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <h2><i class="fas fa-edit"></i> Edit Jenis Hama</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="form-group">
+      <label>Nama Hama <span class="required">*</span></label>
+      <input type="text" name="nama" value="{{ hama.nama }}" required>
+    </div>
+
+    <div class="form-group">
+      <label>Nama Latin</label>
+      <input type="text" name="nama_latin" value="{{ hama.nama_latin }}">
+    </div>
+
+    <div class="form-group">
+      <label>Deskripsi <span class="required">*</span></label>
+      <textarea name="deskripsi" rows="3" required>{{ hama.deskripsi }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Gejala Serangan</label>
+      <textarea name="gejala" rows="3">{{ hama.gejala }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Gambar Hama</label>
+      {% if hama.gambar %}
+        <img src="{{ hama.gambar.url }}" alt="{{ hama.nama }}" class="preview-image">
+        <p class="image-info">Upload gambar baru untuk mengganti</p>
+      {% endif %}
+      <input type="file" name="gambar" accept="image/*">
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-update">
+        <i class="fas fa-save"></i> Update
+      </button>
+      <a href="{% url 'admin_dashboard:data_hama' %}" class="btn-batal">
+        <i class="fas fa-times"></i> Batal
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

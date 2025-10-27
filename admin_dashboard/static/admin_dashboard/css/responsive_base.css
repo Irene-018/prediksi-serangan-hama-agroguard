@@ -1,0 +1,253 @@
+/* ========================================
+   RESPONSIVE BASE STYLES
+   Tambahkan ini ke base.html atau buat file terpisah
+======================================== */
+
+/* Container utama */
+.dashboard-container {
+  margin-left: 250px;
+  padding: 40px 50px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+======================================== */
+
+/* Large Tablet - 1024px */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 30px 35px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .admin-profile {
+    align-self: flex-end;
+  }
+
+  .header-left h1 {
+    font-size: 1.75rem;
+  }
+
+  .log-section h2 {
+    font-size: 1rem;
+  }
+
+  .btn-tambah {
+    padding: 9px 18px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Tablet - 768px */
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 80px 20px 20px 20px; /* Top padding untuk hamburger button */
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .header-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-profile {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .profile-circle {
+    width: 45px;
+    height: 45px;
+    font-size: 0.9rem;
+  }
+
+  /* Log Section Header */
+  .log-header,
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .log-section h2 {
+    font-size: 1.05rem;
+  }
+
+  .btn-tambah {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+  }
+
+  /* Table Responsive */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .log-table {
+    min-width: 800px;
+    font-size: 0.85rem;
+  }
+
+  .log-table th,
+  .log-table td {
+    padding: 12px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn-action {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+
+  /* Card/Log Section */
+  .log-section {
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Small Mobile - 480px */
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 70px 15px 15px 15px;
+  }
+
+  .header-left h1 {
+    font-size: 1.3rem;
+  }
+
+  .profile-info .name {
+    font-size: 0.8rem;
+  }
+
+  .profile-info .role {
+    font-size: 0.65rem;
+  }
+
+  .profile-circle {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+  }
+
+  .log-section h2 {
+    font-size: 0.95rem;
+  }
+
+  .btn-tambah {
+    font-size: 0.8rem;
+    padding: 10px 16px;
+  }
+
+  .btn-tambah i {
+    font-size: 0.85rem;
+  }
+
+  .log-table {
+    min-width: 700px;
+    font-size: 0.8rem;
+  }
+
+  .log-table th,
+  .log-table td {
+    padding: 10px 8px;
+    font-size: 0.75rem;
+  }
+
+  /* Status Badge */
+  .status {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+
+  /* Images in table */
+  .log-table img {
+    max-width: 50px !important;
+  }
+}
+
+/* Extra Small - 360px */
+@media (max-width: 360px) {
+  .dashboard-container {
+    padding: 65px 10px 10px 10px;
+  }
+
+  .header-left h1 {
+    font-size: 1.2rem;
+  }
+
+  .log-section {
+    padding: 15px;
+  }
+
+  .log-header,
+  .section-header {
+    padding: 15px;
+  }
+
+  .log-section h2 {
+    font-size: 0.9rem;
+  }
+
+  .btn-tambah {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+
+  .log-table {
+    min-width: 650px;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+======================================== */
+
+/* Hide scrollbar on mobile but keep functionality */
+@media (max-width: 768px) {
+  .table-wrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: #5fa86b;
+    border-radius: 10px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #4d8a5a;
+  }
+}
