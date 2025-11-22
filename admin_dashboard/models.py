@@ -9,9 +9,13 @@ class JenisHama(models.Model):
     Master Data Jenis Hama untuk Admin
     """
     nama = models.CharField(max_length=100, verbose_name="Nama Hama")
+<<<<<<< HEAD
     nama_latin = models.CharField(max_length=100, blank=True, null=True, verbose_name="Nama Latin")
     deskripsi = models.TextField(verbose_name="Deskripsi")
     gejala = models.TextField(blank=True, null=True, verbose_name="Gejala Serangan")
+=======
+    deskripsi = models.TextField(verbose_name="Deskripsi")
+>>>>>>> 002ca9f904786c4b20dacc25f539d698733278cc
     gambar = models.ImageField(
         upload_to='hama/', 
         blank=True, 

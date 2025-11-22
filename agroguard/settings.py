@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # Apps lokal kamu
     'dashboard',
     'accounts',
+    'admin_dashboard',
 ]
 
 
@@ -82,8 +83,16 @@ WSGI_APPLICATION = 'agroguard.wsgi.application'
 # ==========================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'agroguard_db',           # Nama database di phpMyAdmin
+        'USER': 'root',                    # Username MySQL (biasanya 'root')
+        'PASSWORD': '',                    # Password MySQL (kosongkan jika default XAMPP)
+        'HOST': 'localhost',               # atau '127.0.0.1'
+        'PORT': '3306',                    # Port MySQL default
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -127,9 +136,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",                      # folder static utama proyek
     BASE_DIR / "accounts" / "static",         # folder static milik app accounts
-    BASE_DIR / "dashboard" / "static",        # opsional
-    BASE_DIR / "detection" / "static",        # opsional
-    BASE_DIR / "recommendation" / "static",   # opsional
 ]
 
 # Folder hasil collectstatic
@@ -152,3 +158,11 @@ LOGOUT_REDIRECT_URL = "/login/"
 # DEFAULT PRIMARY KEY
 # ==========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# ==========================
+# LOGIN / LOGOUT REDIRECTS
+# ==========================
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = 'dashboard:home'  # Default redirect setelah login
+LOGOUT_REDIRECT_URL = 'accounts:login'

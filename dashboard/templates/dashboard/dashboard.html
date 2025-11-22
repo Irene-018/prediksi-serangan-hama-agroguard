@@ -5,11 +5,42 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<!-- Font Awesome -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-8N4+aWnms0ZqU3SbdVQ2pEoPEt0kXUS6T2qBlWWdUBxYfFdFaYxC6mGmXK7sCVG7mAJGcK1wz5P8lYz8v3Bvw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<style>
+    .chart-title, .sensor-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .sensor-label i {
+        margin-right: 6px;
+    }
+
+    .sensor-label i:hover {
+        transform: scale(1.2);
+        transition: 0.2s ease;
+    }
+
+    .alert i {
+        margin-right: 6px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <section class="dashboard-container">
     <h1>Dashboard Monitoring</h1>
+
     <p>Selamat datang kembali, Ahmad! Berikut ringkasan kondisi tanaman Anda hari ini.</p>
 
     <!-- STAT CARDS -->
@@ -34,38 +65,41 @@
 
     <!-- ALERT -->
     <div class="alert">
-        ⚠️ Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
+        <i class="fa-solid fa-triangle-exclamation" style="color: #FFD43B;"></i>
+        Kondisi kelembapan tanah rendah terdeteksi pada area. Segera lakukan penyiraman untuk mencegah stress pada tanaman.
     </div>
 
     <!-- CHART -->
     <div class="chart-box">
-        <h3>📊 Data Sensor Real-Time</h3>
+        <h3 class="chart-title">
+            <i class="fa-solid fa-chart-simple" style="color:#2c3e50;"></i> Data Sensor Real-Time
+        </h3>
         <canvas id="sensorChart"></canvas>
     </div>
 
     <!-- SENSOR DATA -->
     <div class="sensor-box">
-        <h4>📅 Data Sensor Terbaru</h4>
+        <h4 class="sensor-title">
+            <i class="fa-solid fa-calendar-day" style="color:#2c3e50;"></i> Data Sensor Terbaru
+        </h4>
         <p style="margin-bottom: 15px; color: #666;">Update terakhir: 14 Okt 2025, 21:30 WIB</p>
         <div class="sensor-stats">
             <div class="sensor-item">
-                <span class="sensor-label">🌡️ Suhu:</span>
+                <span class="sensor-label">
+                    <i class="fa-solid fa-temperature-three-quarters" style="color:#e74c3c;"></i> Suhu:
+                </span>
                 <span class="sensor-value">28°C</span>
             </div>
             <div class="sensor-item">
-                <span class="sensor-label">💧 Kelembapan:</span>
+                <span class="sensor-label">
+                    <i class="fa-solid fa-droplet" style="color:#3498db;"></i> Kelembapan:
+                </span>
                 <span class="sensor-value">75%</span>
             </div>
-            <div class="sensor-item">
-                <span class="sensor-label">☀️ Cahaya:</span>
-                <span class="sensor-value">850 lux</span>
-            </div>
-            <div class="sensor-item">
-                <span class="sensor-label">🌱 pH Tanah:</span>
-                <span class="sensor-value">6.5</span>
-            </div>
         </div>
-        <button class="btn-warning">⚠️ Lihat Peringatan</button>
+        <button class="btn-warning">
+            <i class="fa-solid fa-triangle-exclamation"></i> Lihat Peringatan
+        </button>
     </div>
 </section>
 {% endblock %}
@@ -75,7 +109,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-// Data dummy untuk grafik sensor
 const ctx = document.getElementById('sensorChart').getContext('2d');
 
 const sensorChart = new Chart(ctx, {
@@ -105,28 +138,6 @@ const sensorChart = new Chart(ctx, {
                 pointRadius: 4,
                 pointHoverRadius: 6
             },
-            {
-                label: 'Cahaya (x10 lux)',
-                data: [0, 10, 60, 85, 90, 40, 5],
-                borderColor: '#f39c12',
-                backgroundColor: 'rgba(243, 156, 18, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            },
-            {
-                label: 'pH Tanah',
-                data: [6.5, 6.4, 6.6, 6.5, 6.7, 6.5, 6.4],
-                borderColor: '#27ae60',
-                backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }
         ]
     },
     options: {
@@ -201,7 +212,6 @@ const sensorChart = new Chart(ctx, {
     }
 });
 
-// Animasi saat load
 window.addEventListener('load', function() {
     sensorChart.update('active');
 });
