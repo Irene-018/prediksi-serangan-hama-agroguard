@@ -1,0 +1,98 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Kelola User - AgroGuard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'admin_dashboard/css/data_hama.css' %}">
+<style>
+/* Style tambahan khusus untuk Kelola User, misal untuk badge status */
+.status {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-align: center;
+    display: inline-block;
+}
+
+.status.aktif {
+    background-color: #ecfdf5; /* green-50 */
+    color: #059669; /* green-600 */
+}
+
+.status.nonaktif {
+    background-color: #fef2f2; /* red-50 */
+    color: #ef4444; /* red-500 */
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="header-left">
+            <h1>Kelola User</h1>
+        </div>
+        <div class="admin-profile">
+            <div class="profile-info">
+                <p class="name">Admin</p>
+                <p class="role">Administrator</p>
+            </div>
+            <div class="profile-circle">AD</div>
+        </div>
+    </div>
+
+    <div class="log-section">
+        <div class="log-header">
+            <h2>Daftar Pengguna ({{ pengguna_list|length }})</h2>
+            <button class="btn-tambah" onclick="window.location.href='{% url 'admin_dashboard:tambah_user' %}'">
+                <i class="fas fa-plus-circle"></i> Tambah Pengguna Baru
+            </button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Tanggal Daftar</th>
+                        <th>Status</th>
+                        <th style="text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in pengguna_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="hama-name">{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            <span class="status {% if user.is_active %}aktif{% else %}nonaktif{% endif %}">
+                                {% if user.is_active %}Aktif{% else %}Nonaktif{% endif %}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <div class="action-buttons">
+                                <a href="{% url 'admin_dashboard:edit_user' user.id %}" class="btn-action btn-edit">Edit</a>
+                                <a href="{% url 'admin_dashboard:hapus_user' user.id %}" class="btn-action btn-delete"
+                                   onclick="return confirm('Yakin ingin menghapus user ini?');">Hapus</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
+                            Belum ada pengguna
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

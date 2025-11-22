@@ -1,0 +1,100 @@
+/* ==== Layout utama ==== */
+.dashboard-container {
+  padding: 2rem;
+  background-color: #f8faf8;
+  min-height: 100vh;
+}
+
+/* ==== Card utama ==== */
+.user-card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 24px 28px;
+}
+
+/* ==== Header (judul + tombol tambah) ==== */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.user-header h2 {
+  font-size: 1.5rem;
+  color: #1B4332;
+  font-weight: 700;
+}
+
+/* ==== Tombol tambah ==== */
+.btn-add {
+  background-color: #1B4332;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-add:hover {
+  background-color: #2D6A4F;
+}
+
+/* ==== Tabel pengguna ==== */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-table thead {
+  background-color: #E9F5EE;
+}
+
+.user-table th {
+  text-align: left;
+  padding: 12px 16px;
+  color: #1B4332;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.user-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-size: 0.93rem;
+}
+
+.user-table tr:hover {
+  background-color: #F9FFF9;
+}
+
+/* ==== Pesan kosong ==== */
+.empty-msg {
+  text-align: center;
+  font-style: italic;
+  color: #6c757d;
+  padding: 20px 0;
+}
+
+/* ==== Responsif ==== */
+@media (max-width: 768px) {
+  .user-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,243 @@
+/* ========================================
+   SIDEBAR STYLES - FIXED VERSION
+======================================== */
+
+/* === Sidebar Container === */
+.sidebar {
+  background: linear-gradient(180deg, #5fa86b 0%, #4d8a5a 100%);
+  width: 260px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-top-right-radius: 28px;
+  border-bottom-right-radius: 28px;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 25px 0 20px 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* === Header Logo === */
+.sidebar-header {
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 20px;
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}
+
+.logo-img {
+  width: 80px;
+  height: auto;
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* === Menu === */
+.menu {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  padding: 12px 22px;
+  margin: 4px 20px;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.menu-btn i {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+.menu-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* === Logout Button (Dipindah ke Bawah) === */
+.logout-section {
+  padding: 0 20px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.logout-btn {
+  width: 100%;
+  background: #3e6e41;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn:hover {
+  background: #2d5230;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+/* === Hamburger Button === */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #5fa86b;
+  border: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+  background: #4d8a5a;
+  transform: scale(1.05);
+}
+
+/* === Overlay (Mobile) === */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+/* Desktop - Sidebar selalu visible */
+@media (min-width: 769px) {
+  body {
+    padding-left: 260px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  body {
+    padding-left: 220px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    padding-left: 0 !important;
+  }
+  
+  .sidebar {
+    transform: translateX(-100%);
+    border-radius: 0;
+    width: 260px;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .hamburger {
+    display: block;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 75%;
+    max-width: 280px;
+  }
+
+  .menu-btn {
+    font-size: 14px;
+    padding: 10px 16px;
+    margin: 4px 15px;
+  }
+
+  .logo-img {
+    width: 70px;
+  }
+  
+  .logo-text {
+    font-size: 1.1rem;
+  }
+  
+  .hamburger {
+    top: 15px;
+    left: 15px;
+    padding: 10px 13px;
+    font-size: 18px;
+  }
+}

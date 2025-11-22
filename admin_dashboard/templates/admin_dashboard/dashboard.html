@@ -1,0 +1,247 @@
+{% extends 'admin_dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-left">
+            <h1>Dashboard Admin</h1>
+            <p class="welcome-text">Selamat datang, {{ current_user.username|title }}</p>
+        </div>
+        <div class="admin-profile">
+            <div class="profile-info">
+                <p class="name">{{ current_user.username|title }}</p>
+                <p class="role">Administrator</p>
+            </div>
+            <div class="profile-circle">{{ current_user.username|slice:":2"|upper }}</div>
+        </div>
+    </div>
+
+    <!-- Statistik Cards -->
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="card-header">
+                <span class="card-label">Total User</span>
+                <div class="card-icon user-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <p class="stat-value">{{ total_users|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <div class="card-header">
+                <span class="card-label">Total Deteksi</span>
+                <div class="card-icon detection-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <p class="stat-value">{{ deteksi_hari_ini|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <div class="card-header">
+                <span class="card-label">Hama Terdeteksi</span>
+                <div class="card-icon pest-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+            </div>
+            <p class="stat-value">{{ total_hama|default:0 }}</p>
+        </div>
+    </div>
+
+    <!-- Top 3 Jenis Hama -->
+    <div class="top-pests-section">
+        <h2>Top 3 Jenis Hama Terdeteksi</h2>
+        <div class="top-pests-grid">
+            <div class="pest-card pest-1">
+                <h3>Wereng Coklat</h3>
+                <p class="pest-count">{{ top_pest_1_count|default:0 }}</p>
+                <p class="pest-label">deteksi</p>
+            </div>
+            <div class="pest-card pest-2">
+                <h3>Ulat Grayak</h3>
+                <p class="pest-count">{{ top_pest_2_count|default:0 }}</p>
+                <p class="pest-label">deteksi</p>
+            </div>
+            <div class="pest-card pest-3">
+                <h3>Kutu Daun</h3>
+                <p class="pest-count">{{ top_pest_3_count|default:0 }}</p>
+                <p class="pest-label">deteksi</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart dan Legend Section -->
+    <div class="analysis-section">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2>Analisis Serangan Hama</h2>
+                <p class="chart-subtitle">Tingkat serangan per bulan (2025)</p>
+            </div>
+            <div class="chart-area">
+                <canvas id="pestAnalysisChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="legend-container">
+            <h3>Tingkat Serangan</h3>
+            <div class="legend-items">
+                <div class="legend-item high">
+                    <div class="legend-color"></div>
+                    <div class="legend-text">
+                        <p class="legend-title">Tinggi</p>
+                        <p class="legend-range">21-59%</p>
+                    </div>
+                </div>
+                <div class="legend-item medium">
+                    <div class="legend-color"></div>
+                    <div class="legend-text">
+                        <p class="legend-title">Sedang</p>
+                        <p class="legend-range">8-21%</p>
+                    </div>
+                </div>
+                <div class="legend-item low">
+                    <div class="legend-color"></div>
+                    <div class="legend-text">
+                        <p class="legend-title">Rendah</p>
+                        <p class="legend-range">0-8%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Aktivitas -->
+    <div class="log-section">
+        <h2>Deteksi Terbaru (10 Terakhir)</h2>
+        <div class="table-wrapper">
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Pengguna</th>
+                        <th>Hasil</th>
+                        <th>Confidence</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if logs %}
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.waktu }}</td>
+                            <td>{{ log.pengguna }}</td>
+                            <td>{{ log.hasil }}</td>
+                            <td><strong>{{ log.confidence }}%</strong></td>
+                            <td>
+                                <span class="status {% if log.status == 'Selesai' %}selesai{% else %}diproses{% endif %}">
+                                    {{ log.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>28 Sep 2025</td>
+                            <td>Pak Budi</td>
+                            <td>Aphid</td>
+                            <td><strong>92%</strong></td>
+                            <td><span class="status diproses">Diproses</span></td>
+                        </tr>
+                        <tr>
+                            <td>28 Sep 2025</td>
+                            <td>Pak Budi</td>
+                            <td>Aphid</td>
+                            <td><strong>92%</strong></td>
+                            <td><span class="status selesai">Selesai</span></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('pestAnalysisChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ago', 'Sep', 'Okt'],
+                datasets: [{
+                    label: 'Tingkat Serangan',
+                    data: [15, 12, 18, 22, 19, 16, 20, 14, 17, 13],
+                    borderColor: '#5d9970',
+                    backgroundColor: 'rgba(93, 153, 112, 0.1)',
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#4a7c59',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        titleColor: '#2d4a35',
+                        bodyColor: '#2d4a35',
+                        borderColor: '#5d9970',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Serangan: ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 60,
+                        grid: {
+                            color: '#e5e7eb'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                if (value === 0) return 'Rendah';
+                                if (value === 30) return 'Sedang';
+                                if (value === 60) return 'Tinggi';
+                                return '';
+                            },
+                            color: '#9cb3a5',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9cb3a5',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
