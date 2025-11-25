@@ -6,25 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Akun - AgroGuard</title>
     <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+    <!-- Font Awesome untuk icon mata -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-{% if messages %}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    {% for message in messages %}
-      Swal.fire({
-        icon: `{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}`,
-        title: '{{ message|escapejs }}',
-        showConfirmButton: false,
-        timer: 2000
-      });
-    {% endfor %}
-  });
-</script>
-{% endif %}
-</body>
-</html>
 <body>
+    {% if messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+          Swal.fire({
+            icon: `{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}`,
+            title: '{{ message|escapejs }}',
+            showConfirmButton: false,
+            timer: 2000
+          });
+        {% endfor %}
+      });
+    </script>
+    {% endif %}
+
     <div class="container">
         <!-- Panel Kiri -->
         <div class="left-panel">
@@ -46,18 +47,29 @@
                 {% csrf_token %}
 
                 <div class="form-group">
+                    <label for="nama_lengkap">Nama Lengkap</label>
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" 
+                           placeholder="Masukkan Nama Lengkap" required>
+                </div>
+
+                <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Masukkan Username" required>
+                    <input type="text" id="username" name="username" 
+                           placeholder="Masukkan Username" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Alamat Email</label>
-                    <input type="email" id="email" name="email" placeholder="Masukkan Email" required>
+                    <input type="email" id="email" name="email" 
+                           placeholder="Masukkan Email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password1">Password</label>
-                    <input type="password" id="password1" name="password1" placeholder="Masukkan Password" required>
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" 
+                               placeholder="Minimal 8 karakter" required>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn-daftar">Daftar Sekarang</button>
@@ -69,5 +81,20 @@
             </p>
         </div>
     </div>
+
+    <script>
+        // Toggle show/hide password
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // Toggle icon
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
 </html>

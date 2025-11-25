@@ -286,3 +286,171 @@ main {
         font-size: 0.9rem;
     }
 }
+
+/* ==================================== */
+/* ==== STYLING UNTUK TAB MONITORING ==== */
+/* ==================================== */
+
+/* Container utama di dalam tab-panel Monitoring */
+.monitoring-form-container {
+    /* Mengikuti layout kartu besar di gambar */
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    /* Box shadow opsional jika ingin menonjolkan dari content-area, 
+       tapi dihilangkan karena content-area sudah punya padding */
+}
+
+/* Form layout - menampung gambar dan card form */
+.monitoring-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Untuk menengahkan gambar dan form */
+}
+
+/* Area Gambar Unit Monitoring */
+.image-upload-area {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Memastikan lebar penuh untuk centering */
+}
+
+.image-upload-area img {
+    /* Style yang diterapkan langsung di HTML, dipindahkan ke CSS untuk konsistensi */
+    width: 350px; /* Ukuran yang lebih besar agar menonjol */
+    height: 200px; 
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #e0e0e0;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.image-upload-area .upload-btn {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.image-upload-area .upload-btn:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+
+/* Form Card untuk Input Data Unit */
+.form-card-monitoring {
+    width: 100%;
+    max-width: 600px; /* Batasi lebar form agar tidak terlalu lebar */
+    margin: 0 auto;
+    padding: 1rem 0;
+    /* Hilangkan border dan shadow karena sudah ada di main-container */
+}
+
+.form-group-monitoring {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Label di kiri, Input di kanan */
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-group-monitoring label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    text-align: right; /* Label rata kanan */
+}
+
+.form-group-monitoring input,
+.form-group-monitoring textarea {
+    padding: 0.75rem;
+    border: 1px solid #ccc; /* Lebih tipis dari Akun Saya */
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box; /* Memastikan padding tidak menambah lebar */
+}
+
+.form-group-monitoring textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group-monitoring input:focus,
+.form-group-monitoring textarea:focus {
+    outline: none;
+    border-color: #619D69;
+    box-shadow: 0 0 0 2px rgba(97, 157, 105, 0.1);
+}
+
+/* Aksi Form (Tombol Simpan) */
+.form-actions-monitoring {
+    text-align: right; /* Tombol simpan di kanan bawah form */
+    margin-top: 3rem;
+    padding-right: 1.5rem; /* Memberi ruang agar tidak terlalu mepet ke kanan */
+}
+
+.save-btn-monitoring {
+    /* Style tombol SIMPAN (Hijau Pastel) */
+    background: #8FC48F; /* Hijau yang lebih cerah/pastel */
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(143, 196, 143, 0.4);
+}
+
+.save-btn-monitoring:hover {
+    background: #619D69; /* Lebih gelap saat di-hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(97, 157, 105, 0.3);
+}
+
+
+/* Responsive Adjustments for Monitoring Tab */
+@media (max-width: 768px) {
+    .image-upload-area img {
+        width: 100%; 
+        max-width: 300px;
+        height: auto;
+    }
+    
+    .form-group-monitoring {
+        grid-template-columns: 1fr; /* Ubah ke satu kolom */
+        gap: 0.5rem; /* Kurangi jarak antar elemen */
+        margin-bottom: 1rem;
+    }
+    
+    .form-group-monitoring label {
+        text-align: left; /* Rata kiri saat satu kolom */
+        margin-bottom: 0.25rem;
+    }
+
+    .form-actions-monitoring {
+        text-align: center; /* Tombol simpan di tengah */
+        margin-top: 2rem;
+        padding-right: 0;
+    }
+
+    .save-btn-monitoring {
+        width: 100%;
+    }
+}

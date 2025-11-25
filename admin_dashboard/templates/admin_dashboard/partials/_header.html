@@ -1,0 +1,13 @@
+<header class="header">
+  <div class="header-left">
+    <i class="fa-solid fa-sun"></i>
+    <h1>Manajemen Data</h1>
+  </div>
+  <div class="header-right">
+    <div class="user-circle">{{ request.user.username|slice:":2"|upper }}</div>
+    <div class="user-info">
+      <p class="user-name">{{ request.user.username }}</p>
+      <p class="user-role">Administrator</p>
+    </div>
+  </div>
+</header>

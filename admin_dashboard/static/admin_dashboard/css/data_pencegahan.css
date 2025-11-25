@@ -1,0 +1,290 @@
+/* ========================================
+   DATA PENCEGAHAN STYLES - CONSISTENT WITH DATA HAMA
+======================================== */
+
+/* Salin penuh isi dari data_hama.css */
+/* Gunakan class yang sama dengan dashboard */
+.dashboard-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ========================================
+   HEADER SECTION (SAMA DENGAN DASHBOARD)
+======================================== */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-left h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d4a35;
+  margin: 0;
+}
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-info {
+  text-align: right;
+}
+
+.profile-info .name {
+  font-weight: 600;
+  color: #2d4a35;
+  font-size: 0.85rem;
+  margin: 0 0 2px 0;
+}
+
+.profile-info .role {
+  font-size: 0.7rem;
+  color: #9cb3a5;
+  margin: 0;
+}
+
+.profile-circle {
+  width: 50px;
+  height: 50px;
+  background: #5d9970;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* ========================================
+   LOG SECTION (DIGUNAKAN UNTUK TABLE)
+======================================== */
+.log-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Header dengan tombol tambah - SEJAJAR */
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px 16px 28px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: nowrap;
+}
+
+.log-section h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d4a35;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Tombol Tambah */
+.btn-tambah {
+  background: #5d9970;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.btn-tambah:hover {
+  background: #4d8960;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(93, 153, 112, 0.3);
+}
+
+.btn-tambah i {
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   TABLE STYLING (SAMA DENGAN LOG TABLE)
+======================================== */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.log-table thead {
+  background: #f9fafb;
+}
+
+.log-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #2d4a35;
+  font-size: 0.8rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.log-table tbody td {
+  padding: 14px 16px;
+  text-align: left;
+  color: #2d4a35;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.log-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.log-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Cell Styling (Disesuaikan untuk pencegahan/lahan) */
+.hama-name, .judul-pencegahan, .lahan-name {
+  font-weight: 500;
+  color: #2d4a35;
+}
+
+.hama-desc {
+  color: #6b8f7a;
+}
+
+/* ========================================
+   ACTION BUTTONS (TETAP SAMA)
+======================================== */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-action {
+  padding: 6px 10px; /* Sedikit dikecilkan untuk tombol dengan ikon/form */
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: flex; /* Untuk ikon */
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-edit {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+.btn-edit:hover {
+  background: #d1d5db;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-delete:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN (TETAP SAMA)
+======================================== */
+@media (max-width: 1024px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .admin-profile {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .log-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 15px 12px 15px;
+  }
+
+  .log-section h2 {
+    font-size: 1rem;
+  }
+
+  .btn-tambah {
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .log-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-tambah {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-wrapper {
+    overflow-x: scroll;
+  }
+
+  .log-table {
+    min-width: 700px; /* Perluas sedikit karena kolomnya banyak */
+  }
+
+  .log-table th,
+  .log-table td {
+    padding: 12px 10px;
+    font-size: 0.75rem;
+  }
+
+  .action-buttons {
+    flex-direction: row; /* Biarkan tombol aksi horizontal jika tidak terlalu padat */
+    gap: 5px;
+  }
+
+  .btn-action {
+    /* Atur agar lebih ringkas di mobile */
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+}

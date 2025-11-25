@@ -5,134 +5,194 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-8N4+aWnms0ZqU3SbdVQ2pEoPEt0kXUS6T2qBlWWdUBxYfFdFaYxC6mGmXK7sCVG7mAJGcK1wz5P8lYz8v3Bvw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<style>
+    .chart-title, .sensor-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .sensor-label i {
+        margin-right: 6px;
+    }
+
+    .sensor-label i:hover {
+        transform: scale(1.2);
+        transition: 0.2s ease;
+    }
+
+    .alert i {
+        margin-right: 6px;
+    }
+
+    #refreshChart {
+        transition: transform 0.5s ease;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <section class="dashboard-container">
     <h1>Dashboard Monitoring</h1>
-    <p>Selamat datang kembali, Ahmad! Berikut ringkasan kondisi tanaman Anda hari ini.</p>
+
+    <p>
+        Selamat datang kembali, 
+        {% if request.user.petani_profile %}
+            {{ request.user.petani_profile.nama_lengkap|default:request.user.username }}
+        {% else %}
+            {{ request.user.first_name|default:request.user.username }}
+        {% endif %}!
+        Berikut ringkasan kondisi tanaman Anda hari ini.
+    </p>
 
     <!-- STAT CARDS -->
     <div class="stats">
         <div class="card sehat">
-            <h2>100</h2>
-            <p>Tanaman Sehat</p>
+            <h2 id="totalDeteksi">-</h2>
+            <p>Total Deteksi</p>
         </div>
         <div class="card sakit">
-            <h2>127</h2>
-            <p>Tanaman Sakit</p>
+            <h2 id="hamaDetected">-</h2>
+            <p>Hama Terdeteksi</p>
         </div>
         <div class="card risiko">
-            <h2>31%</h2>
+            <h2 id="risikoSerangan">-</h2>
             <p>Risiko Serangan Hama</p>
         </div>
         <div class="card kelembapan">
-            <h2>75%</h2>
+            <h2 id="kelembapanCard">-</h2>
             <p>Kelembapan</p>
         </div>
     </div>
 
     <!-- ALERT -->
-    <div class="alert">
-        ⚠️ Kondisi kelembapan tinggi terdeteksi. Risiko serangan hama meningkat 75%.
+    <div class="alert" id="alertBox" style="display: none;">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #FFD43B;"></i>
+        <span id="alertMessage">Loading...</span>
     </div>
 
     <!-- CHART -->
     <div class="chart-box">
-        <h3>📊 Data Sensor Real-Time</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 class="chart-title">
+                <i class="fa-solid fa-chart-simple" style="color:#2c3e50;"></i> Data Sensor Real-Time
+            </h3>
+            
+            <!-- TIME RANGE SELECTOR -->
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <label style="font-size: 14px; color: #666;">Tampilkan:</label>
+                <select id="timeRange" style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; cursor: pointer;">
+                    <option value="30">30 Menit Terakhir</option>
+                    <option value="60" selected>1 Jam Terakhir</option>
+                    <option value="180">3 Jam Terakhir</option>
+                    <option value="360">6 Jam Terakhir</option>
+                    <option value="720">12 Jam Terakhir</option>
+                    <option value="1440">24 Jam Terakhir</option>
+                </select>
+                
+                <button id="refreshChart" style="padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                </button>
+            </div>
+        </div>
+        
+        <!-- Status Indicator -->
+        <div id="chartStatus" style="font-size: 12px; color: #666; margin-bottom: 10px;">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Memuat data...
+        </div>
+        
         <canvas id="sensorChart"></canvas>
     </div>
 
     <!-- SENSOR DATA -->
     <div class="sensor-box">
-        <h4>📅 Data Sensor Terbaru</h4>
-        <p style="margin-bottom: 15px; color: #666;">Update terakhir: 14 Okt 2025, 21:30 WIB</p>
+        <h4 class="sensor-title">
+            <i class="fa-solid fa-calendar-day" style="color:#2c3e50;"></i> Data Sensor Terbaru
+        </h4>
+        <p id="lastUpdate" style="margin-bottom: 15px; color: #666;">Update terakhir: Loading...</p>
         <div class="sensor-stats">
             <div class="sensor-item">
-                <span class="sensor-label">🌡️ Suhu:</span>
-                <span class="sensor-value">28°C</span>
+                <span class="sensor-label">
+                    <i class="fa-solid fa-temperature-three-quarters" style="color:#e74c3c;"></i> Suhu:
+                </span>
+                <span class="sensor-value" id="currentTemp">-°C</span>
             </div>
             <div class="sensor-item">
-                <span class="sensor-label">💧 Kelembapan:</span>
-                <span class="sensor-value">75%</span>
-            </div>
-            <div class="sensor-item">
-                <span class="sensor-label">☀️ Cahaya:</span>
-                <span class="sensor-value">850 lux</span>
-            </div>
-            <div class="sensor-item">
-                <span class="sensor-label">🌱 pH Tanah:</span>
-                <span class="sensor-value">6.5</span>
+                <span class="sensor-label">
+                    <i class="fa-solid fa-droplet" style="color:#3498db;"></i> Kelembapan:
+                </span>
+                <span class="sensor-value" id="currentHumidity">-%</span>
             </div>
         </div>
-        <button class="btn-warning">⚠️ Lihat Peringatan</button>
+        <button class="btn-warning" onclick="window.location.href='{% url 'dashboard:rekomendasi' %}'">
+            <i class="fa-solid fa-lightbulb"></i> Lihat Rekomendasi
+        </button>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-// Data dummy untuk grafik sensor
+// ===========================================
+// CONFIGURATION
+// ===========================================
+const API_BASE = window.location.origin + '/dashboard';
+let UPDATE_INTERVAL = 30000;
+let updateTimer = null;
+let currentTimeRange = 60;
+
+// ===========================================
+// INITIALIZE CHART
+// ===========================================
 const ctx = document.getElementById('sensorChart').getContext('2d');
 
 const sensorChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+        labels: [],
         datasets: [
             {
                 label: 'Suhu (°C)',
-                data: [24, 23, 26, 29, 31, 28, 25],
+                data: [],
                 borderColor: '#e74c3c',
                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 3,
+                borderWidth: 2,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
+                pointRadius: 2,
+                pointHoverRadius: 4
             },
             {
                 label: 'Kelembapan (%)',
-                data: [80, 82, 78, 75, 72, 75, 78],
+                data: [],
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                borderWidth: 3,
+                borderWidth: 2,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
+                pointRadius: 2,
+                pointHoverRadius: 4
             },
-            {
-                label: 'Cahaya (x10 lux)',
-                data: [0, 10, 60, 85, 90, 40, 5],
-                borderColor: '#f39c12',
-                backgroundColor: 'rgba(243, 156, 18, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            },
-            {
-                label: 'pH Tanah',
-                data: [6.5, 6.4, 6.6, 6.5, 6.7, 6.5, 6.4],
-                borderColor: '#27ae60',
-                backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }
         ]
     },
     options: {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 2.5,
+        animation: {
+            duration: 750
+        },
         plugins: {
             legend: {
                 display: true,
@@ -168,6 +228,8 @@ const sensorChart = new Chart(ctx, {
         scales: {
             y: {
                 beginAtZero: false,
+                suggestedMin: 20,
+                suggestedMax: 85,
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)',
                     drawBorder: false
@@ -177,19 +239,25 @@ const sensorChart = new Chart(ctx, {
                         family: "'Poppins', sans-serif",
                         size: 12
                     },
-                    padding: 10
+                    padding: 10,
+                    stepSize: 10
                 }
             },
             x: {
                 grid: {
-                    display: false
+                    display: true,
+                    color: 'rgba(0, 0, 0, 0.05)'
                 },
                 ticks: {
                     font: {
                         family: "'Poppins', sans-serif",
-                        size: 12
+                        size: 11
                     },
-                    padding: 10
+                    padding: 10,
+                    maxRotation: 0,
+                    autoSkip: true,
+                    autoSkipPadding: 50,
+                    maxTicksLimit: getMaxTicksLimit()
                 }
             }
         },
@@ -201,9 +269,202 @@ const sensorChart = new Chart(ctx, {
     }
 });
 
-// Animasi saat load
+// ===========================================
+// HELPER FUNCTIONS
+// ===========================================
+function getMaxTicksLimit() {
+    if (currentTimeRange <= 60) return 12;
+    if (currentTimeRange <= 360) return 18;
+    return 24;
+}
+
+function updateStatus(message, type = 'loading') {
+    const statusEl = document.getElementById('chartStatus');
+    if (!statusEl) return;
+    
+    const icons = {
+        loading: '<i class="fa-solid fa-circle-notch fa-spin"></i>',
+        success: '<i class="fa-solid fa-circle-check"></i>',
+        error: '<i class="fa-solid fa-circle-exclamation"></i>'
+    };
+    
+    statusEl.innerHTML = `${icons[type]} ${message}`;
+}
+
+// ===========================================
+// FETCH DASHBOARD STATISTICS
+// ===========================================
+async function fetchDashboardStats() {
+    try {
+        const response = await fetch(`${API_BASE}/api/sensor/statistics/`);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            const stats = result.data;
+            
+            // Update cards
+            document.getElementById('totalDeteksi').textContent = stats.total_records || 0;
+            document.getElementById('hamaDetected').textContent = stats.alerts || 0;
+            
+            // Calculate risk percentage
+            const riskPercentage = stats.avg_humidity < 60 || stats.avg_humidity > 80 ? 
+                                   Math.round((Math.abs(70 - stats.avg_humidity) / 70) * 100) : 0;
+            document.getElementById('risikoSerangan').textContent = `${riskPercentage}%`;
+            
+            // Alert handling
+            const alertBox = document.getElementById('alertBox');
+            const alertMsg = document.getElementById('alertMessage');
+            
+            if (stats.avg_humidity < 60) {
+                alertBox.style.display = 'flex';
+                alertMsg.textContent = `Kondisi kelembapan tanah rendah (${Math.round(stats.avg_humidity)}%). Segera lakukan penyiraman untuk mencegah stress pada tanaman.`;
+            } else if (stats.avg_humidity > 80) {
+                alertBox.style.display = 'flex';
+                alertMsg.textContent = `Kondisi kelembapan tanah tinggi (${Math.round(stats.avg_humidity)}%). Periksa sistem drainase untuk mencegah pembusukan akar.`;
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error fetching statistics:', error);
+    }
+}
+
+// ===========================================
+// FETCH LATEST SENSOR DATA
+// ===========================================
+async function fetchLatestData() {
+    try {
+        const response = await fetch(`${API_BASE}/api/sensor/latest/`);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            const data = result.data;
+            
+            // Update sensor values
+            document.getElementById('currentTemp').textContent = `${data.temperature}°C`;
+            document.getElementById('currentHumidity').textContent = `${data.humidity}%`;
+            document.getElementById('kelembapanCard').textContent = `${Math.round(data.humidity)}%`;
+            
+            // Update timestamp
+            const timestamp = new Date(data.timestamp);
+            const options = {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Jakarta'
+            };
+            const formattedTime = timestamp.toLocaleString('id-ID', options);
+            document.getElementById('lastUpdate').textContent = `Update terakhir: ${formattedTime} WIB`;
+            
+            console.log('✅ Latest data updated:', data);
+        }
+    } catch (error) {
+        console.error('❌ Error fetching latest data:', error);
+        document.getElementById('currentTemp').textContent = 'N/A';
+        document.getElementById('currentHumidity').textContent = 'N/A';
+    }
+}
+
+// ===========================================
+// FETCH CHART DATA
+// ===========================================
+async function fetchChartData() {
+    try {
+        updateStatus('Memuat data grafik...', 'loading');
+        
+        const hours = currentTimeRange / 60;
+        const response = await fetch(`${API_BASE}/api/sensor/chart/raw/?hours=${hours}`);
+        const result = await response.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+            const chartData = result.data;
+            
+            sensorChart.data.labels = chartData.map(item => item.time);
+            sensorChart.data.datasets[0].data = chartData.map(item => item.temperature);
+            sensorChart.data.datasets[1].data = chartData.map(item => item.humidity);
+            
+            sensorChart.options.scales.x.ticks.maxTicksLimit = getMaxTicksLimit();
+            sensorChart.update('active');
+            
+            const dataPoints = chartData.length;
+            const lastTime = chartData[chartData.length - 1].time;
+            
+            updateStatus(`${dataPoints} data point • Update: ${lastTime}`, 'success');
+            console.log('✅ Chart updated:', dataPoints, 'points');
+        } else {
+            updateStatus('Belum ada data. ESP8266 sedang mengumpulkan data...', 'error');
+            console.warn('⚠️ No chart data available');
+        }
+    } catch (error) {
+        updateStatus('Error memuat data. Coba refresh.', 'error');
+        console.error('❌ Error fetching chart data:', error);
+    }
+}
+
+// ===========================================
+// UPDATE ALL
+// ===========================================
+function updateDashboard() {
+    const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    console.log('🔄 Updating at', now);
+    
+    fetchDashboardStats();
+    fetchLatestData();
+    fetchChartData();
+}
+
+// ===========================================
+// AUTO-UPDATE
+// ===========================================
+function startAutoUpdate() {
+    if (updateTimer) clearInterval(updateTimer);
+    
+    if (currentTimeRange <= 60) {
+        UPDATE_INTERVAL = 30000;
+    } else if (currentTimeRange <= 360) {
+        UPDATE_INTERVAL = 60000;
+    } else {
+        UPDATE_INTERVAL = 120000;
+    }
+    
+    updateTimer = setInterval(updateDashboard, UPDATE_INTERVAL);
+    console.log(`⏰ Auto-update: every ${UPDATE_INTERVAL/1000} seconds`);
+}
+
+// ===========================================
+// EVENT LISTENERS
+// ===========================================
+document.getElementById('timeRange').addEventListener('change', function(e) {
+    currentTimeRange = parseInt(e.target.value);
+    console.log(`📅 Time range changed to: ${currentTimeRange} minutes`);
+    
+    updateDashboard();
+    startAutoUpdate();
+});
+
+document.getElementById('refreshChart').addEventListener('click', function() {
+    console.log('🔄 Manual refresh triggered');
+    updateDashboard();
+    
+    this.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+        this.style.transform = 'rotate(0deg)';
+    }, 500);
+});
+
+// ===========================================
+// INITIALIZE
+// ===========================================
 window.addEventListener('load', function() {
-    sensorChart.update('active');
+    console.log('🚀 AgroGuard Dashboard loaded');
+    console.log('📡 API:', API_BASE);
+    console.log('📅 Default time range:', currentTimeRange, 'minutes');
+    
+    updateDashboard();
+    startAutoUpdate();
 });
 </script>
 {% endblock %}

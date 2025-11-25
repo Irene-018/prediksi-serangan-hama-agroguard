@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard Admin - AgroGuard{% endblock %}</title>
+
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS utama -->
+  <link rel="stylesheet" href="{% static 'admin_dashboard/css/sidebar.css' %}">
+  <link rel="stylesheet" href="{% static 'admin_dashboard/css/dashboard.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Tombol hamburger untuk mobile -->
+  <button class="hamburger" id="hamburgerBtn">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <!-- Overlay (klik untuk menutup sidebar di mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  {% include 'admin_dashboard/partials/sidebar.html' %}
+
+  <!-- Konten utama -->
+  <main>
+    <div class="dashboard-container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <script>
+    // Toggle sidebar di mobile
+    const hamburger = document.getElementById('hamburgerBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

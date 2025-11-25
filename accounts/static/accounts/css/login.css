@@ -36,8 +36,8 @@ body::before {
 /* ====== Container ====== */
 .container {
     display: flex;
-    width: 900px;
-    min-height: 520px;
+    width: 800px;
+    min-height: 450px;
     background: #fff;
     border-radius: 20px;
     overflow: hidden;
@@ -54,9 +54,10 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 30px;
+    padding: 15px 5px;
     text-align: center;
     position: relative;
+    border-radius: 0 40px 40px 0;
 }
 
 /* Logo Container dengan Shield Background */
@@ -78,8 +79,8 @@ body::before {
 
 /* Brand Name */
 .brand-name {
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 500;
     color: #2d5f3f;
     margin-bottom: 30px;
     letter-spacing: 0.5px;
@@ -93,12 +94,12 @@ body::before {
 
 .tagline p {
     margin: 8px 0;
-    font-size: 15px;
+    font-size: 11px;
 }
 
 .tagline p:first-child {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 /* ====== Panel Kanan ====== */
@@ -112,8 +113,8 @@ body::before {
 }
 
 .right-panel h2 {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     margin-bottom: 30px;
     color: #1a1a1a;
     text-align: center;

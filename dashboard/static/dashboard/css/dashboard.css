@@ -134,3 +134,35 @@ main {
 .btn-warning:hover {
   background-color: #d4ac0d;
 }
+
+    /* Existing styles... */
+    
+    #timeRange {
+        transition: all 0.3s ease;
+    }
+    
+    #timeRange:hover {
+        border-color: #3498db;
+    }
+    
+    #refreshChart {
+        transition: all 0.3s ease;
+    }
+    
+    #refreshChart:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    #refreshChart:active {
+        transform: translateY(0);
+    }
+    
+    .chart-status-ok {
+        color: #27ae60 !important;
+    }
+    
+    .chart-status-error {
+        color: #e74c3c !important;
+    }
