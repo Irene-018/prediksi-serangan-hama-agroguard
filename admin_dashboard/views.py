@@ -9,13 +9,17 @@ from .models import JenisHama, PencegahanHama
 User = get_user_model()
 
 # ============================================
-# USER MANAGEMENT VIEWS (tetap sama seperti sebelumnya)
+# DASHBOARD
 # ============================================
 
 @login_required(login_url='/accounts/login/')
 def dashboard_view(request):
     """Dashboard Admin"""
     return render(request, 'admin_dashboard/dashboard.html')
+
+# ============================================
+# USER MANAGEMENT VIEWS
+# ============================================
 
 @login_required(login_url='/accounts/login/')
 def kelola_user_view(request):
@@ -215,7 +219,6 @@ def tambah_pencegahan_view(request):
         sumber = request.POST.get('sumber')
         deskripsi = request.POST.get('deskripsi', '')
         
-        # Validasi
         if not jenis_hama_id or not judul or not sumber:
             messages.error(request, 'Jenis hama, judul, dan sumber harus diisi!')
             hama_list = JenisHama.objects.all()
@@ -224,7 +227,6 @@ def tambah_pencegahan_view(request):
         try:
             jenis_hama = JenisHama.objects.get(id=jenis_hama_id)
             
-            # Buat pencegahan baru
             pencegahan = PencegahanHama.objects.create(
                 jenis_hama=jenis_hama,
                 judul=judul,
@@ -242,7 +244,6 @@ def tambah_pencegahan_view(request):
             hama_list = JenisHama.objects.all()
             return render(request, 'admin_dashboard/tambah_pencegahan.html', {'hama_list': hama_list})
     
-    # GET request
     hama_list = JenisHama.objects.all()
     return render(request, 'admin_dashboard/tambah_pencegahan.html', {'hama_list': hama_list})
 
@@ -261,7 +262,6 @@ def edit_pencegahan_view(request, id):
         try:
             jenis_hama = JenisHama.objects.get(id=jenis_hama_id)
             
-            # Update data
             pencegahan.jenis_hama = jenis_hama
             pencegahan.judul = judul
             pencegahan.sumber = sumber
@@ -275,7 +275,6 @@ def edit_pencegahan_view(request, id):
         except JenisHama.DoesNotExist:
             messages.error(request, 'Jenis hama tidak ditemukan!')
     
-    # GET request
     hama_list = JenisHama.objects.all()
     context = {
         'pencegahan': pencegahan,
