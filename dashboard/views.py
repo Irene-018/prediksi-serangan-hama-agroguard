@@ -342,3 +342,53 @@ def test_api(request):
         'message': 'AgroGuard API is running!',
         'timestamp': timezone.now()
     })
+
+#function_ai
+# Di views.py - simple fix untuk testing
+@api_view(['POST'])
+@login_required
+def proses_deteksi_ai(request):
+    try:
+        from .ai_service import pest_ai
+        import tempfile
+        import os
+        
+        # Validasi file
+        if 'image' not in request.FILES:
+            return Response({'success': False, 'error': 'No image'})
+        
+        image_file = request.FILES['image']
+        
+        # Save temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
+            for chunk in image_file.chunks():
+                tmp_file.write(chunk)
+            temp_path = tmp_file.name
+        
+        # AI Prediction saja, TANPA save database dulu
+        hasil = pest_ai.predict(temp_path)
+        
+        # Cleanup
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+        
+        if not hasil.get('success', False):
+            return Response({
+                'success': False,
+                'error': hasil.get('error', 'AI error')
+            })
+        
+        # Return AI result TANPA database saving
+        return Response({
+            'success': True,
+            'prediction': hasil['prediction'],
+            'mode': hasil.get('mode', 'development'),
+            'note': 'AI prediction successful (database saving skipped for testing)',
+            'database_saved': False  # ← Flag bahwa tidak save ke DB
+        })
+        
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': str(e)
+        })

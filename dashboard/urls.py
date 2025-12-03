@@ -20,4 +20,5 @@ urlpatterns = [
     path('api/sensor/history/', views.get_sensor_history, name='get_sensor_history'),
     path('api/sensor/statistics/', views.get_statistics, name='get_statistics'),  # ← TAMBAH INI
     path('api/sensor/chart/raw/', views.get_sensor_chart_raw, name='get_sensor_chart_raw'),
+    path('api/ai/detect/', views.proses_deteksi_ai, name='proses_deteksi_ai'),
 ]

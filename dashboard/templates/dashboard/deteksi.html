@@ -7,6 +7,69 @@
 <!-- Font Awesome 6 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'dashboard/css/deteksi.css' %}">
+<style>
+    /* Status Box Styles */
+    .status-box {
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        border: 2px solid;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .status-sehat {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border-color: #28a745;
+        color: #155724;
+    }
+    
+    .status-terdeteksi {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .severity-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+        margin-left: 5px;
+    }
+    
+    .severity-aman {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #28a745;
+    }
+    
+    .severity-rendah {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffc107;
+    }
+    
+    .severity-sedang {
+        background: #ffe5b4;
+        color: #8b4513;
+        border: 1px solid #ff8c00;
+    }
+    
+    .severity-tinggi {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #dc3545;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -16,15 +79,25 @@
 
     <!-- Upload Section -->
     <div class="upload-area">
-        <label class="upload-label">
-            <i class="fa-solid fa-camera"></i> Upload Foto Daun
-        </label>
-        <div class="upload-box" id="uploadBox">
-            <i class="fa-solid fa-cloud-arrow-up upload-icon" style="font-size: 48px; color: #16a085;"></i>
-            <p><b>Drag & Drop foto di sini</b><br>atau klik untuk browse file</p>
-            <small><i class="fa-solid fa-file-image"></i> Format: JPG, PNG | <i class="fa-solid fa-weight-hanging"></i> Max: 5MB</small>
-            <input type="file" name="image" id="fileInput" accept="image/*">
-        </div>
+        <form id="uploadForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label class="upload-label">
+                <i class="fa-solid fa-camera"></i> Upload Foto Daun
+            </label>
+            
+            <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up upload-icon" style="font-size: 48px; color: #16a085;"></i>
+                <p><b>Drag & Drop foto di sini</b><br>atau klik untuk browse file</p>
+                <small><i class="fa-solid fa-file-image"></i> Format: JPG, PNG | <i class="fa-solid fa-weight-hanging"></i> Max: 5MB</small>
+                <input type="file" name="image" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(this)">
+            </div>
+
+            <!-- Tombol Deteksi -->
+            <button type="submit" class="btn-primary" id="detectBtn" style="margin-top: 15px;">
+                <i class="fa-solid fa-magnifying-glass"></i> Mulai Deteksi AI
+            </button>
+        </form>
     </div>
 
     <!-- Result Section -->
@@ -34,8 +107,8 @@
             <div class="preview-box" id="previewBox">
                 <img src="{% static 'dashboard/images/sample-leaf.png' %}" alt="Leaf Preview">
             </div>
-            <button class="btn-primary">Mulai Deteksi</button>
-
+            
+            <!-- Info Box Existing -->
             <div class="info-box">
                 <label><i class="fa-solid fa-leaf"></i> Informasi Tambahan:</label>
                 <select>
@@ -46,19 +119,22 @@
 
         <div class="result-box">
             <h3><i class="fa-solid fa-circle-check"></i> Hasil Deteksi :</h3>
-            <p class="detected-text">
-                <i class="fa-solid fa-check"></i> TERDETEKSI SERANGAN HAMA
-            </p>
+            
+            <!-- Status Box - Dinamis berubah warna -->
+            <div id="statusBox" class="status-box status-terdeteksi">
+                <i class="fa-solid fa-exclamation-triangle"></i> TERDETEKSI SERANGAN HAMA
+            </div>
+            
             <div class="result-detail">
-                <ol>
-                    <li>Jenis Hama : <b>Ulat Grayak (Spodoptera frugiperda)</b></li>
-                    <li>Confidence Score : <b>87.5%</b> (Tingkat kepercayaan)</li>
-                    <li>Tingkat Keparahan : <b>SEDANG</b> (Perlu treatment)</li>
-                </ol>
+                <ol id="resultList">
+                    <li>Kondisi Daun : <b id="leafCondition"></b></li>
+                    <li>Jenis Hama/Penyakit : <b id="pestName"></b></li>
+                    <li>Confidence Score : <b id="confidenceScore">..%</b></li>
+                    <li>Tingkat Keparahan : <b id="severityLevel"></b> 
             </div>
             <div class="btn-group">
                 <button class="btn-secondary">Rekomendasi Treatment</button>
-                <button class="btn-success"></i> Simpan</button>
+                <button class="btn-success">Simpan</button>
             </div>
         </div>
     </div>
@@ -74,4 +150,341 @@
         </ul>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Preview Image Function
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewBox').innerHTML = 
+                `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 8px;">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Loading Overlay Function
+function showLoading(message = 'AI sedang menganalisis gambar...') {
+    const existingLoading = document.getElementById('customLoading');
+    if (existingLoading) existingLoading.remove();
+    
+    const loadingHTML = `
+        <div id="customLoading" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        ">
+            <div style="
+                background: white;
+                padding: 40px;
+                border-radius: 15px;
+                text-align: center;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                min-width: 300px;
+            ">
+                <div class="spinner-container" style="margin-bottom: 20px;">
+                    <svg class="spinner" width="80" height="80" viewBox="0 0 50 50">
+                        <circle class="spinner-path" cx="25" cy="25" r="20" fill="none" stroke="#16a085" stroke-width="4"></circle>
+                    </svg>
+                </div>
+                <p style="
+                    margin: 0;
+                    color: #333;
+                    font-size: 16px;
+                    font-weight: 500;
+                ">${message}</p>
+            </div>
+        </div>
+        <style>
+            .spinner {
+                animation: rotate 2s linear infinite;
+            }
+            .spinner-path {
+                stroke-linecap: round;
+                animation: dash 1.5s ease-in-out infinite;
+            }
+            @keyframes rotate {
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes dash {
+                0% {
+                    stroke-dasharray: 1, 150;
+                    stroke-dashoffset: 0;
+                }
+                50% {
+                    stroke-dasharray: 90, 150;
+                    stroke-dashoffset: -35;
+                }
+                100% {
+                    stroke-dasharray: 90, 150;
+                    stroke-dashoffset: -124;
+                }
+            }
+        </style>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', loadingHTML);
+}
+
+function hideLoading() {
+    const loading = document.getElementById('customLoading');
+    if (loading) loading.remove();
+}
+
+// Notification Function
+function showNotification(message, type = 'error') {
+    const existingNotif = document.getElementById('customNotification');
+    if (existingNotif) existingNotif.remove();
+    
+    const icons = {
+        error: '<i class="fa-solid fa-circle-exclamation" style="color: #e74c3c;"></i>',
+        warning: '<i class="fa-solid fa-triangle-exclamation" style="color: #f39c12;"></i>',
+        success: '<i class="fa-solid fa-circle-check" style="color: #27ae60;"></i>',
+        info: '<i class="fa-solid fa-circle-info" style="color: #3498db;"></i>'
+    };
+    
+    const colors = {
+        error: '#e74c3c',
+        warning: '#f39c12',
+        success: '#27ae60',
+        info: '#3498db'
+    };
+    
+    const notificationHTML = `
+        <div id="customNotification" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease;
+        ">
+            <div style="
+                background: white;
+                padding: 30px 40px;
+                border-radius: 12px;
+                text-align: center;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                animation: slideDown 0.3s ease;
+            ">
+                <div style="font-size: 48px; margin-bottom: 15px;">
+                    ${icons[type]}
+                </div>
+                <p style="
+                    margin: 0 0 20px 0;
+                    color: #333;
+                    font-size: 16px;
+                    line-height: 1.5;
+                ">${message}</p>
+                <button onclick="hideNotification()" style="
+                    background: ${colors[type]};
+                    color: white;
+                    border: none;
+                    padding: 10px 30px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.3s;
+                ">OK</button>
+            </div>
+        </div>
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideDown {
+                from { transform: translateY(-50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            #customNotification button:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', notificationHTML);
+    
+    setTimeout(hideNotification, 3000);
+}
+
+function hideNotification() {
+    const notification = document.getElementById('customNotification');
+    if (notification) notification.remove();
+}
+
+// AI Detection Handler
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 AI Detection System Ready');
+    
+    const uploadForm = document.getElementById('uploadForm');
+    const detectBtn = document.getElementById('detectBtn');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (!uploadForm) {
+        console.error('❌ Form tidak ditemukan');
+        return;
+    }
+    
+    // Handle form submission
+    uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validasi file
+        if (!fileInput.files.length) {
+            showNotification('Pilih foto daun terlebih dahulu!', 'warning');
+            return;
+        }
+        
+        // Validasi file type
+        const file = fileInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            showNotification('Format file tidak didukung. Gunakan JPG atau PNG!', 'error');
+            return;
+        }
+        
+        // Validasi file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showNotification('Ukuran file terlalu besar. Maksimal 5MB!', 'error');
+            return;
+        }
+        
+        // Show loading
+        showLoading('AI sedang menganalisis gambar...');
+        detectBtn.disabled = true;
+        
+        try {
+            // Prepare form data
+            const formData = new FormData(uploadForm);
+            
+            console.log('📤 Sending to AI API...');
+            
+            // Send to AI API
+            const response = await fetch('/dashboard/api/ai/detect/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const result = await response.json();
+            console.log('📥 AI Response:', result);
+            
+            hideLoading();
+            
+            if (result.success) {
+                // Update UI dengan hasil AI
+                updateDetectionUI(result);
+                showNotification('Deteksi berhasil!', 'success');
+            } else {
+                showNotification('Error: ' + result.error, 'error');
+            }
+            
+        } catch (error) {
+            console.error('❌ Detection error:', error);
+            hideLoading();
+            showNotification('Terjadi kesalahan sistem. Coba lagi.', 'error');
+        } finally {
+            detectBtn.disabled = false;
+        }
+    });
+});
+
+function updateDetectionUI(aiResult) {
+    console.log('✅ Updating UI with AI results:', aiResult);
+    
+    const prediction = aiResult.prediction;
+    const condition = aiResult.condition;
+    
+    // 1. Update status box dengan warna yang sesuai
+    const statusBox = document.getElementById('statusBox');
+    if (statusBox) {
+        if (condition === 'SEHAT') {
+            statusBox.className = 'status-box status-sehat';
+            statusBox.innerHTML = '<i class="fa-solid fa-check-circle"></i> TANAMAN SEHAT - TIDAK ADA HAMA';
+        } else {
+            statusBox.className = 'status-box status-terdeteksi';
+            statusBox.innerHTML = '<i class="fa-solid fa-exclamation-triangle"></i> TERDETEKSI SERANGAN HAMA/PENYAKIT';
+        }
+    }
+    
+    // 2. Update kondisi daun
+    const leafCondition = document.getElementById('leafCondition');
+    if (leafCondition) {
+        leafCondition.textContent = condition === 'SEHAT' ? 'Sehat' : 'Terkena Penyakit';
+        leafCondition.style.color = condition === 'SEHAT' ? '#27ae60' : '#e74c3c';
+    }
+    
+    // 3. Update jenis hama/penyakit
+    const pestName = document.getElementById('pestName');
+    if (pestName) {
+        pestName.textContent = prediction.pest_name || prediction.class_name;
+    }
+    
+    // 4. Update confidence score
+    const confidenceScore = document.getElementById('confidenceScore');
+    if (confidenceScore) {
+        confidenceScore.textContent = prediction.confidence + '%';
+    }
+    
+    // 5. Update tingkat keparahan dengan badge
+    const severityLevel = document.getElementById('severityLevel');
+    if (severityLevel) {
+        const severity = prediction.severity;
+        let badgeClass = 'severity-aman';
+        
+        if (severity === 'Rendah') badgeClass = 'severity-rendah';
+        else if (severity === 'Sedang') badgeClass = 'severity-sedang';
+        else if (severity === 'Tinggi') badgeClass = 'severity-tinggi';
+        
+        severityLevel.innerHTML = `${severity} <span class="severity-badge ${badgeClass}">${severity.toUpperCase()}</span>`;
+    }
+    
+    // 6. Show development mode note if applicable
+    if (aiResult.mode === 'development') {
+        const existingNote = document.querySelector('.dev-note');
+        if (existingNote) existingNote.remove();
+        
+        const noteElement = document.createElement('div');
+        noteElement.className = 'dev-note';
+        noteElement.style.cssText = 'background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 12px; color: #856404;';
+        noteElement.innerHTML = `<i class="fa-solid fa-flask"></i> <strong>Mode Development:</strong> ${aiResult.note}`;
+        
+        const resultBox = document.querySelector('.result-box:last-child');
+        if (resultBox) {
+            resultBox.appendChild(noteElement);
+        }
+    }
+    
+    // Scroll ke hasil
+    const resultsSection = document.querySelector('.result-container');
+    if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    console.log('✅ UI updated successfully');
+}
+</script>
 {% endblock %}
