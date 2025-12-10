@@ -8,8 +8,14 @@ from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Avg, Max, Min
-from .models import SensorData
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+import os
+import tempfile
+
+from .models import SensorData, CitraDaun, HasilDeteksi, JenisHama, RiwayatDeteksi, Lahan
 from .serializers import SensorDataSerializer
+from .ai_service import pest_ai
 
 @login_required(login_url='/accounts/login/')
 def dashboard_view(request):
@@ -343,48 +349,252 @@ def test_api(request):
         'timestamp': timezone.now()
     })
 
-#function_ai
-# Di views.py - simple fix untuk testing
+
+# ========================================
+# 🔥 AI DETECTION WITH DATABASE SAVING
+# ========================================
+
 @api_view(['POST'])
 @login_required
 def proses_deteksi_ai(request):
+    """
+    Proses deteksi AI dengan penyimpanan ke database
+    Flow:
+    1. Upload foto → CitraDaun
+    2. AI Prediction → HasilDeteksi
+    3. Log History → RiwayatDeteksi
+    """
     try:
-        from .ai_service import pest_ai
-        import tempfile
-        import os
+        print("\n" + "="*60)
+        print("🚀 AI DETECTION STARTED")
+        print("="*60)
         
-        # Validasi file
-        if 'image' not in request.FILES:
-            return Response({'success': False, 'error': 'No image'})
-        
-        image_file = request.FILES['image']
-        
-        # Save temp file
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
-            for chunk in image_file.chunks():
-                tmp_file.write(chunk)
-            temp_path = tmp_file.name
-        
-        # AI Prediction saja, TANPA save database dulu
-        hasil = pest_ai.predict(temp_path)
-        
-        # Cleanup
-        if os.path.exists(temp_path):
-            os.unlink(temp_path)
-        
-        if not hasil.get('success', False):
+        # 1. Validasi User & File
+        if not hasattr(request.user, 'petani_profile'):
             return Response({
                 'success': False,
-                'error': hasil.get('error', 'AI error')
+                'error': 'User tidak memiliki profil petani'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        petani = request.user.petani_profile
+        print(f"👤 User: {petani.nama_lengkap}")
+        
+        if 'image' not in request.FILES:
+            return Response({
+                'success': False,
+                'error': 'Tidak ada file gambar yang diupload'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        image_file = request.FILES['image']
+        print(f"📷 File: {image_file.name} ({image_file.size} bytes)")
+        
+        # 2. Simpan ke CitraDaun dulu (status: pending)
+        citra = CitraDaun.objects.create(
+            petani=petani,
+            nama_file=image_file.name,
+            path_file=image_file,
+            jenis_tanaman=request.POST.get('jenis_tanaman', 'Cabai'),
+            status_deteksi='processing'
+        )
+        print(f"✅ CitraDaun created: ID={citra.id}")
+        
+        # 3. Proses AI Prediction
+        temp_path = None
+        try:
+            # Save to temp file for AI processing
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
+                for chunk in image_file.chunks():
+                    tmp_file.write(chunk)
+                temp_path = tmp_file.name
+            
+            print(f"🤖 Running AI prediction...")
+            hasil_ai = pest_ai.predict(temp_path)
+            print(f"📊 AI Result: {hasil_ai}")
+            
+            if not hasil_ai.get('success', False):
+                citra.status_deteksi = 'failed'
+                citra.save()
+                return Response({
+                    'success': False,
+                    'error': hasil_ai.get('error', 'AI prediction failed')
+                })
+            
+            prediction = hasil_ai['prediction']
+            class_name = prediction['class_name']
+            confidence = prediction['confidence']
+            severity = prediction['severity']
+            
+            # 4. Cari atau Buat JenisHama
+            # Mapping class_name ke database
+            hama_mapping = {
+                'hama': 'Hama Terdeteksi',
+                'sehat': 'Tidak ada tanda Penyakit atau Hama'
+            }
+            
+            nama_hama = hama_mapping.get(class_name.lower(), class_name)
+            
+            jenis_hama, created = JenisHama.objects.get_or_create(
+                nama=nama_hama,
+                defaults={
+                    'nama_latin': f'{class_name.title()}',
+                    'deskripsi': f'Deteksi otomatis dari AI: {class_name}',
+                    'gejala': 'Terdeteksi melalui analisis citra AI',
+                    'cara_pencegahan': 'Lakukan monitoring rutin',
+                    'cara_penanganan': 'Konsultasikan dengan ahli pertanian'
+                }
+            )
+            
+            if created:
+                print(f"🆕 JenisHama baru dibuat: {nama_hama}")
+            else:
+                print(f"♻️ Menggunakan JenisHama existing: {nama_hama}")
+            
+            # 5. Simpan HasilDeteksi
+            # Map severity ke tingkat_serangan
+            tingkat_mapping = {
+                'Rendah': 'ringan',
+                'Sedang': 'sedang',
+                'Tinggi': 'berat'
+            }
+            tingkat_serangan = tingkat_mapping.get(severity, 'sedang')
+            
+            # Generate rekomendasi berdasarkan hasil
+            if class_name.lower() == 'sehat':
+                rekomendasi = "✅ Tanaman dalam kondisi sehat. Lanjutkan perawatan rutin dan monitoring berkala."
+            else:
+                rekomendasi = f"⚠️ Terdeteksi serangan hama dengan tingkat keparahan {severity}. "
+                if severity == 'Tinggi':
+                    rekomendasi += "Segera lakukan tindakan pengendalian dan konsultasi dengan ahli."
+                elif severity == 'Sedang':
+                    rekomendasi += "Lakukan monitoring lebih intensif dan siapkan tindakan pencegahan."
+                else:
+                    rekomendasi += "Tingkatkan monitoring dan terapkan pencegahan standar."
+            
+            hasil_deteksi = HasilDeteksi.objects.create(
+                citra=citra,
+                jenis_hama=jenis_hama,
+                confidence_score=confidence,
+                tingkat_serangan=tingkat_serangan,
+                jumlah_daun_terinfeksi=1,
+                rekomendasi=rekomendasi,
+                waktu_deteksi=timezone.now()
+            )
+            print(f"✅ HasilDeteksi created: Confidence={confidence}%, Severity={severity}")
+            
+            # 6. Update status CitraDaun
+            citra.status_deteksi = 'completed'
+            citra.waktu_deteksi = timezone.now()
+            citra.save()
+            
+            # 7. Buat RiwayatDeteksi (optional - bisa ambil lahan dari request)
+            lahan_id = request.POST.get('lahan_id', None)
+            lahan = None
+            if lahan_id:
+                try:
+                    lahan = Lahan.objects.get(id=lahan_id, petani=petani)
+                except Lahan.DoesNotExist:
+                    pass
+            
+            riwayat = RiwayatDeteksi.objects.create(
+                petani=petani,
+                hasil_deteksi=hasil_deteksi,
+                lahan=lahan,
+                catatan_petani='',
+                status_penanganan='belum'
+            )
+            print(f"✅ RiwayatDeteksi created: ID={riwayat.id}")
+            
+            print("="*60)
+            print("✅ AI DETECTION COMPLETED & SAVED TO DATABASE")
+            print("="*60 + "\n")
+            
+            # 8. Return response lengkap
+            return Response({
+                'success': True,
+                'message': 'Deteksi berhasil dan tersimpan ke database',
+                'database_saved': True,
+                'data': {
+                    'citra_id': citra.id,
+                    'hasil_deteksi_id': hasil_deteksi.citra_id,
+                    'riwayat_id': riwayat.id
+                },
+                'prediction': {
+                    'class_name': class_name,
+                    'pest_name': nama_hama,
+                    'confidence': confidence,
+                    'severity': severity
+                },
+                'condition': 'SEHAT' if class_name.lower() == 'sehat' else 'HAMA TERDETEKSI',
+                'mode': hasil_ai.get('mode', 'production'),
+                'note': hasil_ai.get('note', '')
+            })
+            
+        finally:
+            # Cleanup temp file
+            if temp_path and os.path.exists(temp_path):
+                os.unlink(temp_path)
+                print("🗑️ Temp file cleaned up")
+        
+    except Exception as e:
+        print(f"❌ ERROR in proses_deteksi_ai: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        # Update status jika ada error
+        if 'citra' in locals():
+            citra.status_deteksi = 'failed'
+            citra.save()
+        
+        return Response({
+            'success': False,
+            'error': f'Terjadi kesalahan: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ========================================
+# API UNTUK MENGAMBIL RIWAYAT DETEKSI
+# ========================================
+
+@api_view(['GET'])
+@login_required
+def get_detection_history(request):
+    """Ambil riwayat deteksi user"""
+    try:
+        if not hasattr(request.user, 'petani_profile'):
+            return Response({
+                'success': False,
+                'error': 'User tidak memiliki profil petani'
             })
         
-        # Return AI result TANPA database saving
+        petani = request.user.petani_profile
+        
+        # Ambil semua riwayat deteksi
+        riwayat = RiwayatDeteksi.objects.filter(
+            petani=petani
+        ).select_related(
+            'hasil_deteksi__jenis_hama',
+            'hasil_deteksi__citra',
+            'lahan'
+        ).order_by('-created_at')[:10]  # 10 terbaru
+        
+        data = []
+        for r in riwayat:
+            hasil = r.hasil_deteksi
+            data.append({
+                'id': r.id,
+                'tanggal': r.created_at.strftime('%Y-%m-%d %H:%M'),
+                'gambar': hasil.citra.path_file.url if hasil.citra.path_file else None,
+                'jenis_hama': hasil.jenis_hama.nama,
+                'confidence': float(hasil.confidence_score),
+                'tingkat_serangan': hasil.tingkat_serangan,
+                'status_penanganan': r.status_penanganan,
+                'lahan': r.lahan.nama_lahan if r.lahan else 'Tidak ada lahan'
+            })
+        
         return Response({
             'success': True,
-            'prediction': hasil['prediction'],
-            'mode': hasil.get('mode', 'development'),
-            'note': 'AI prediction successful (database saving skipped for testing)',
-            'database_saved': False  # ← Flag bahwa tidak save ke DB
+            'count': len(data),
+            'data': data
         })
         
     except Exception as e:

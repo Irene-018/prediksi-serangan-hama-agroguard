@@ -1,4 +1,4 @@
-# dashboard/ai_service.py - IMPROVED VERSION
+# dashboard/ai_service.py - SIMPLE TRAINED VERSION
 import os
 import tensorflow as tf
 import numpy as np
@@ -10,11 +10,7 @@ logger = logging.getLogger(__name__)
 class PestDetectionAI:
     def __init__(self):
         self.model = None
-        # Class names yang lebih deskriptif
-        self.class_names = [
-            "Daun Cabai Sehat",
-            "Penyakit Bercak Bakteri (Bacterial Spot)"
-        ]
+        self.class_names = ['sehat', 'hama']
         self.model_loaded = False
         self.load_model()
     
@@ -25,63 +21,16 @@ class PestDetectionAI:
             if os.path.exists(model_path):
                 self.model = tf.keras.models.load_model(model_path)
                 self.model_loaded = True
-                logger.info("✅ Model CNN terlatih berhasil dimuat")
+                logger.info("✅ Trained CNN model loaded successfully")
             else:
-                logger.warning("⚠️ Model terlatih tidak ditemukan")
+                logger.warning("⚠️ Trained model not found, using fallback mode")
                 self.model_loaded = False
         except Exception as e:
             logger.error(f"❌ Error loading model: {e}")
             self.model_loaded = False
     
-    def get_disease_info(self, class_name, confidence):
-        """Get detailed disease information based on prediction"""
-        
-        disease_database = {
-            "Daun Cabai Sehat": {
-                "status": "SEHAT",
-                "pest_name": "Tidak Ada Hama Dan Penyakit",
-                "description": "Tanaman dalam kondisi sehat",
-                "symptoms": "Daun berwarna hijau segar, tidak ada bercak atau kerusakan",
-                "recommendation": "Pertahankan perawatan rutin. Monitor kondisi tanaman setiap minggu."
-            },
-            "Penyakit Bercak Bakteri (Bacterial Spot)": {
-                "status": "",
-                "pest_name": "Penyakit Bercak Bakteri (Bacterial Spot)",
-                "description": "Penyakit bercak bakteri pada daun cabai",
-                "symptoms": "Bercak kecil berair pada daun, berubah menjadi coklat dengan pinggiran kuning",
-                "causes": "Bakteri Xanthomonas campestris pv. vesicatoria",
-                "recommendation": "1. Gunakan fungisida tembaga\n2. Buang daun terinfeksi parah\n3. Hindari penyiraman di atas daun\n4. Rotasi tanaman"
-            }
-        }
-        
-        # Default jika tidak ditemukan
-        default_info = {
-            "status": "TERDETEKSI" if class_name != "Daun Cabai Sehat" else "SEHAT",
-            "pest_name": class_name,
-            "description": class_name,
-            "recommendation": "Konsultasikan dengan penyuluh pertanian"
-        }
-        
-        return disease_database.get(class_name, default_info)
-    
-    def determine_severity_level(self, confidence, class_name):
-        """Tentukan tingkat keparahan: Aman, Rendah, Sedang, Tinggi"""
-        
-        if class_name == "Daun Cabai Sehat":
-            return "Aman"
-        
-        # Logika untuk penyakit
-        if confidence >= 0.90:
-            return "Tinggi"
-        elif confidence >= 0.75:
-            return "Sedang"
-        elif confidence >= 0.60:
-            return "Rendah"
-        else:
-            return "Aman"
-    
     def predict(self, image_path, lahan_id=None):
-        """Predict dengan output yang lebih informatif"""
+        """Predict using trained model or fallback"""
         try:
             if self.model_loaded and self.model:
                 # Load and preprocess image
@@ -96,101 +45,49 @@ class PestDetectionAI:
                 class_idx = int(np.argmax(predictions[0]))
                 class_name = self.class_names[class_idx]
                 
-                # Get disease info
-                disease_info = self.get_disease_info(class_name, confidence)
-                
                 # Determine severity
-                severity = self.determine_severity_level(confidence, class_name)
-                
-                # Determine overall condition
-                condition = "SEHAT" if class_name == "Daun Cabai Sehat" else "TERKENA PENYAKIT"
-                
-                # Prepare detailed response
-                result = {
-                    'success': True,
-                    'condition': condition,
-                    'prediction': {
-                        'pest_name': disease_info['pest_name'],
-                        'class_name': class_name,
-                        'confidence': round(confidence * 100, 2),
-                        'severity': severity,
-                        'status': disease_info['status'],
-                        'description': disease_info['description'],
-                        'symptoms': disease_info.get('symptoms', ''),
-                        'causes': disease_info.get('causes', ''),
-                        'recommendation': disease_info['recommendation']
-                    },
-                    'mode': 'trained_cnn',
-                    'note': 'Hasil dari model CNN terlatih'
-                }
-                
-                logger.info(f"Prediction: {class_name} ({confidence*100:.1f}%) - {condition}")
-                return result
-                
-            else:
-                # Fallback mode dengan output yang lebih baik
-                import time
-                time.sleep(1)
-                
-                # Simulasi prediksi untuk development
-                simulated_diseases = [
-                    {
-                        "class_name": "Daun Cabai Sehat",
-                        "pest_name": "Tidak Ada Hama dan Penyakit",
-                        "condition": "SEHAT"
-                    },
-                    {
-                        "class_name": "Penyakit Bercak Bakteri (Bacterial Spot)",
-                        "pest_name": "Penyakit Bercak Bakteri (Bacterial Spot)",
-                        "condition": "TERKENA PENYAKIT"
-                    },
-                    {
-                        "class_name": "Penyakit Daun Keriting (Leaf Curl)",
-                        "pest_name": "Hama Kutu Daun (Aphids)",
-                        "condition": "TERKENA PENYAKIT"
-                    },
-                    {
-                        "class_name": "Penyakit Layu Fusarium",
-                        "pest_name": "Jamur Fusarium oxysporum",
-                        "condition": "TERKENA PENYAKIT"
-                    }
-                ]
-                
-                import random
-                selected = random.choice(simulated_diseases)
-                confidence = random.uniform(0.75, 0.95)
-                
-                # Tentukan severity
-                severity = self.determine_severity_level(confidence, selected['class_name'])
-                
-                # Simulasi info penyakit
-                if selected['condition'] == "SEHAT":
-                    recommendation = "Tanaman dalam kondisi baik. Lanjutkan perawatan rutin."
+                if confidence >= 0.85:
+                    severity = "Tinggi"
+                elif confidence >= 0.70:
+                    severity = "Sedang"
                 else:
-                    recommendation = "Disarankan konsultasi dengan penyuluh pertanian dan lakukan treatment sesuai jenis penyakit."
+                    severity = "Rendah"
                 
                 return {
                     'success': True,
-                    'condition': selected['condition'],
                     'prediction': {
-                        'pest_name': selected['pest_name'],
-                        'class_name': selected['class_name'],
+                        'class_name': class_name,
                         'confidence': round(confidence * 100, 2),
-                        'severity': severity,
-                        'status': selected['condition'],
-                        'description': selected['class_name'],
-                        'recommendation': recommendation
+                        'severity': severity
+                    },
+                    'mode': 'trained_cnn',
+                    'note': 'Trained CNN Model (2 classes)'
+                }
+            else:
+                # Fallback to development mode
+                import time
+                time.sleep(1)
+                
+                # Simple random prediction for development
+                class_name = np.random.choice(self.class_names)
+                confidence = np.random.uniform(0.75, 0.95)
+                
+                return {
+                    'success': True,
+                    'prediction': {
+                        'class_name': class_name,
+                        'confidence': round(confidence * 100, 2),
+                        'severity': 'Tinggi' if confidence > 0.85 else 'Sedang'
                     },
                     'mode': 'development',
-                    'note': 'Mode pengembangan - hasil simulasi'
+                    'note': 'Development mode (trained model not available)'
                 }
                 
         except Exception as e:
-            logger.error(f"Prediction error: {e}")
+            logger.error(f"❌ Prediction error: {e}")
             return {
                 'success': False,
-                'error': str(e),
-                'note': 'Terjadi kesalahan saat analisis gambar'
+                'error': str(e)
             }
     
     def get_status(self):
@@ -198,8 +95,7 @@ class PestDetectionAI:
         return {
             'model_loaded': self.model_loaded,
             'classes': self.class_names,
-            'total_classes': len(self.class_names),
-            'model_name': 'CNN Deteksi Penyakit Daun Cabai'
+            'model_name': 'Pepper Disease CNN'
         }
 
 # Create global instance
