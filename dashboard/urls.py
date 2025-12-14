@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.dashboard_view, name='home'),
     path('deteksi/', views.deteksi_view, name='deteksi'),
     path('rekomendasi/', views.rekomendasi_view, name='rekomendasi'),
+    path("rekomendasi/<int:detection_id>/", views.recommendation_detail, name="recommendation_detail"),
     path('riwayat/', views.riwayat_view, name='riwayat'),
     path('pengaturan/', views.pengaturan_view, name='pengaturan'),
     path('profile/', views.profile_view, name='profile'),

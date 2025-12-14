@@ -31,6 +31,10 @@ def rekomendasi_view(request):
     return render(request, 'dashboard/rekomendasi.html')
 
 @login_required(login_url='/accounts/login/')
+def recommendation_detail(request, detection_id):
+    return render(request, "dashboard/rekomendasi_detail.html", {})
+
+@login_required(login_url='/accounts/login/')
 def riwayat_view(request):
     return render(request, 'dashboard/riwayat.html')
 
