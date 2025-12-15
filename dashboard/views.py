@@ -15,7 +15,8 @@ import tempfile
 
 from .models import SensorData, CitraDaun, HasilDeteksi, JenisHama, RiwayatDeteksi, Lahan
 from .serializers import SensorDataSerializer
-from .ai_service import pest_ai
+# from .ai_service import pest_ai
+
 
 @login_required(login_url='/accounts/login/')
 def dashboard_view(request):

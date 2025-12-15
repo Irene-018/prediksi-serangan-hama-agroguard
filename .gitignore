@@ -10,3 +10,9 @@ media/
 staticfiles/
 node_modules/
 .env
+# AI / ML artifacts
+dashboard/Training/
+media/
+uploads/
+*.h5
+*.keras
