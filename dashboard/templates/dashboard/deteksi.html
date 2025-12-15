@@ -133,8 +133,8 @@
                     <li>Tingkat Keparahan : <b id="severityLevel"></b> 
             </div>
             <div class="btn-group">
-                <button class="btn-secondary">Rekomendasi Treatment</button>
-                <button class="btn-success">Simpan</button>
+                <button class="btn-secondary" id="btnRekomendasi" type="button">Rekomendasi Treatment</button>
+                <button class="btn-success" id="btnSimpan" type="button">Simpan</button>
             </div>
         </div>
     </div>
@@ -334,6 +334,7 @@ function hideNotification() {
 }
 
 // AI Detection Handler
+let detectionSaved = false;
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 AI Detection System Ready');
     
@@ -397,7 +398,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 // Update UI dengan hasil AI
                 updateDetectionUI(result);
-                showNotification('Deteksi berhasil!', 'success');
+                detectionSaved = true;
+                showNotification('Deteksi berhasil! Hasil sudah tersimpan, Anda bisa melihat rekomendasi treatment.', 'success');
             } else {
                 showNotification('Error: ' + result.error, 'error');
             }
@@ -486,5 +488,31 @@ function updateDetectionUI(aiResult) {
     
     console.log('✅ UI updated successfully');
 }
+
+// Tombol aksi: Rekomendasi Treatment & Simpan
+document.addEventListener('DOMContentLoaded', function() {
+    const btnRekom = document.getElementById('btnRekomendasi');
+    const btnSimpan = document.getElementById('btnSimpan');
+
+    if (btnRekom) {
+        btnRekom.addEventListener('click', function() {
+            if (!detectionSaved) {
+                showNotification('Lakukan deteksi terlebih dahulu sebelum melihat rekomendasi treatment.', 'warning');
+                return;
+            }
+            window.location.href = "{% url 'dashboard:rekomendasi' %}";
+        });
+    }
+
+    if (btnSimpan) {
+        btnSimpan.addEventListener('click', function() {
+            if (!detectionSaved) {
+                showNotification('Belum ada hasil deteksi yang bisa disimpan.', 'warning');
+                return;
+            }
+            showNotification('Hasil deteksi sudah tersimpan di riwayat Anda.', 'success');
+        });
+    }
+});
 </script>
 {% endblock %}

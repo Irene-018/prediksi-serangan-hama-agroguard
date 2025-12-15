@@ -15,4 +15,5 @@ dashboard/Training/
 media/
 uploads/
 *.h5
-*.keras
+*.keras.DS_Store
+yolo-env/

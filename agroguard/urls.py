@@ -6,10 +6,11 @@ from django.conf.urls.static import static
 from dashboard import views   # kalau views kamu pindahkan ke dashboard
 
 urlpatterns = [
+    # Root URL will point to the dashboard home
+    path('', include('dashboard.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path("rekomendasi/<int:detection_id>/", views.recommendation_detail, name="rekomendasi_detail"),
     path('admin_dashboard/', include('admin_dashboard.urls')),
     path("rekomendasi/<int:detection_id>/", views.recommendation_detail, name="rekomendasi_detail"),
 ]

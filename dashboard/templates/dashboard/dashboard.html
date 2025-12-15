@@ -296,15 +296,27 @@ function updateStatus(message, type = 'loading') {
 // ===========================================
 async function fetchDashboardStats() {
     try {
-        const response = await fetch(`${API_BASE}/api/sensor/statistics/`);
-        const result = await response.json();
+        // Fetch statistik deteksi AI (Total Deteksi & Hama Terdeteksi)
+        const deteksiResponse = await fetch(`${API_BASE}/api/deteksi/statistics/`, {
+            credentials: 'include'  // Include cookies untuk authentication
+        });
+        const deteksiResult = await deteksiResponse.json();
         
-        if (result.success && result.data) {
-            const stats = result.data;
-            
-            // Update cards
-            document.getElementById('totalDeteksi').textContent = stats.total_records || 0;
-            document.getElementById('hamaDetected').textContent = stats.alerts || 0;
+        // Update kartu Total Deteksi dan Hama Terdeteksi dari data deteksi AI
+        if (deteksiResult.success && deteksiResult.data) {
+            document.getElementById('totalDeteksi').textContent = deteksiResult.data.total_deteksi || 0;
+            document.getElementById('hamaDetected').textContent = deteksiResult.data.hama_terdeteksi || 0;
+        } else {
+            document.getElementById('totalDeteksi').textContent = 0;
+            document.getElementById('hamaDetected').textContent = 0;
+        }
+        
+        // Fetch statistik sensor (untuk Kelembapan & Risiko Serangan)
+        const sensorResponse = await fetch(`${API_BASE}/api/sensor/statistics/`);
+        const sensorResult = await sensorResponse.json();
+        
+        if (sensorResult.success && sensorResult.data) {
+            const stats = sensorResult.data;
             
             // Calculate risk percentage
             const riskPercentage = stats.avg_humidity < 60 || stats.avg_humidity > 80 ? 
@@ -324,9 +336,29 @@ async function fetchDashboardStats() {
             } else {
                 alertBox.style.display = 'none';
             }
+        } else {
+            // Tidak ada data sensor untuk hari ini
+            document.getElementById('risikoSerangan').textContent = '0%';
+            document.getElementById('kelembapanCard').textContent = '-';
+
+            const alertBox = document.getElementById('alertBox');
+            const alertMsg = document.getElementById('alertMessage');
+            
+            // Hanya tampilkan alert jika ada data deteksi tapi tidak ada data sensor
+            if (deteksiResult.success && deteksiResult.data && deteksiResult.data.total_deteksi > 0) {
+                alertBox.style.display = 'flex';
+                alertMsg.textContent = 'Belum ada data sensor untuk hari ini, tapi Anda sudah memiliki hasil deteksi.';
+            } else if (!deteksiResult.success || !deteksiResult.data || deteksiResult.data.total_deteksi === 0) {
+                alertBox.style.display = 'flex';
+                alertMsg.textContent = 'Belum ada data sensor dan deteksi untuk hari ini.';
+            }
         }
     } catch (error) {
         console.error('❌ Error fetching statistics:', error);
+        // Fallback: set ke 0 jika error
+        document.getElementById('totalDeteksi').textContent = 0;
+        document.getElementById('hamaDetected').textContent = 0;
+        document.getElementById('risikoSerangan').textContent = '0%';
     }
 }
 

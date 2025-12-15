@@ -21,23 +21,23 @@
     </button>
   </div>
 
-  <!-- Statistik Cards -->
+  <!-- Statistik Cards (dinamis dari database) -->
   <div class="stats-container">
     <div class="stat-card stat-green">
       <div class="stat-label">Total Deteksi</div>
-      <div class="stat-value">2</div>
+      <div class="stat-value">{{ total_deteksi|default:"0" }}</div>
     </div>
     <div class="stat-card stat-red">
       <div class="stat-label">Tanaman Sakit</div>
-      <div class="stat-value">1</div>
+      <div class="stat-value">{{ total_sakit|default:"0" }}</div>
     </div>
     <div class="stat-card stat-orange">
       <div class="stat-label">Perlu Penanganan</div>
-      <div class="stat-value">1</div>
+      <div class="stat-value">{{ perlu_penanganan|default:"0" }}</div>
     </div>
   </div>
 
-  <!-- Tabel Riwayat -->
+  <!-- Tabel Riwayat (dinamis dari RiwayatDeteksi) -->
   <div class="table-container">
     <table class="riwayat-table">
       <thead>
@@ -47,40 +47,53 @@
           <th>Tanaman</th>
           <th>Hasil Deteksi</th>
           <th>Confidence</th>
-          <th>Aksi</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
+        {% for r in riwayat_list %}
         <tr>
-          <td>23 Sept 2025</td>
+          <td>{{ r.created_at|date:"d M Y H:i" }}</td>
           <td>
-            <div class="photo-box"><i class="fas fa-image"></i></div>
+            {% if r.hasil_deteksi.citra.path_file %}
+              <div class="photo-box">
+                <img src="{{ r.hasil_deteksi.citra.path_file.url }}" alt="Citra" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+              </div>
+            {% else %}
+              <div class="photo-box"><i class="fas fa-image"></i></div>
+            {% endif %}
           </td>
-          <td>Tomat</td>
+          <td>
+            {% if r.lahan %}
+              {{ r.lahan.jenis_tanaman }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
           <td>
             <div class="hasil">
-              <span class="penyakit">Ulat Grayak</span><br />
-              <span class="tingkat">Tingkat : Sedang</span>
+              <span class="penyakit">{{ r.hasil_deteksi.jenis_hama.nama }}</span><br />
+              <span class="tingkat">
+                Tingkat :
+                {% if r.hasil_deteksi.tingkat_serangan == 'ringan' %}Ringan
+                {% elif r.hasil_deteksi.tingkat_serangan == 'sedang' %}Sedang
+                {% elif r.hasil_deteksi.tingkat_serangan == 'berat' %}Berat
+                {% else %}-{% endif %}
+              </span>
             </div>
           </td>
-          <td>89.3%</td>
-          <td><button class="detail-btn">Detail</button></td>
+          <td>{{ r.hasil_deteksi.confidence_score }}%</td>
+          <td>
+            {{ r.get_status_penanganan_display|default:r.status_penanganan }}
+          </td>
         </tr>
+        {% empty %}
         <tr>
-          <td>22 Sept 2025</td>
-          <td>
-            <div class="photo-box"><i class="fas fa-image"></i></div>
+          <td colspan="6" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
+            Belum ada riwayat deteksi
           </td>
-          <td>Cabai</td>
-          <td>
-            <div class="hasil">
-              <span class="penyakit">Bercak Daun</span><br />
-              <span class="tingkat">Tingkat : Ringan</span>
-            </div>
-          </td>
-          <td>92.1%</td>
-          <td><button class="detail-btn">Detail</button></td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>

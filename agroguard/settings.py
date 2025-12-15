@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'agroguard_db',           # Nama database di phpMyAdmin
         'USER': 'root',                    # Username MySQL (biasanya 'root')
-        'PASSWORD': 'password_baru',                    # Password MySQL (kosongkan jika default XAMPP)
+        'PASSWORD': '',                    # Password MySQL (kosongkan jika default XAMPP)
         'HOST': 'localhost',               # atau '127.0.0.1'
         'PORT': '3306',                    # Port MySQL default
         'OPTIONS': {

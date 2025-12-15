@@ -14,6 +14,16 @@
     <p class="content-subtitle">Kelola informasi personal dan pengaturan akun Anda</p>
 </div>
 
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+        <div class="alert-message alert-{{ message.tags|default:'info' }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="main-container">
     <div class="tab-navigation">
         <button class="tab-button active" onclick="switchTab(event, 'account')">
@@ -38,18 +48,38 @@
                 </div>
                 <div class="profile-form-section">
                     <div class="form-card">
-                        <form class="profile-form" id="profileForm">
-                            {% csrf_token %} <div class="form-group">
+                        <form class="profile-form" id="profileForm" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="account">
+                            <div class="form-group">
                                 <label for="nama">NAMA:</label>
-                                <input type="text" id="nama" name="nama" placeholder="Masukkan nama">
+                                <input
+                                    type="text"
+                                    id="nama"
+                                    name="nama"
+                                    placeholder="Masukkan nama"
+                                    value="{{ petani.nama_lengkap|default:user_obj.first_name|default:user_obj.username }}"
+                                >
                             </div>
                             <div class="form-group">
                                 <label for="email">EMAIL:</label>
-                                <input type="email" id="email" name="email" placeholder="Masukkan alamat email">
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Masukkan alamat email"
+                                    value="{{ user_obj.email }}"
+                                >
                             </div>
                             <div class="form-group">
                                 <label for="phone">NO. HANDPHONE:</label>
-                                <input type="tel" id="phone" name="phone" placeholder="Masukkan No Handphone">
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="Masukkan No Handphone"
+                                    value="{% if petani %}{{ petani.no_handphone }}{% else %}{{ user_obj.no_handphone }}{% endif %}"
+                                >
                             </div>
                             <div class="form-group">
                                 <label for="password">PASSWORD:</label>
@@ -72,10 +102,15 @@
 
         <div id="monitoring-tab" class="tab-panel">
             <div class="monitoring-form-container">
-                <form class="monitoring-form" method="POST" enctype="multipart/form-data">
+            <form class="monitoring-form" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
+                    <input type="hidden" name="form_type" value="monitoring">
                     <div class="image-upload-area">
-                        <img id="monitoringImagePreview" src="{% static 'images/default_farm.jpg' %}" alt="Unit Monitoring Image" style="width: 300px; height: 180px; object-fit: cover; border-radius: 8px;">
+                        {% if lahan_utama and lahan_utama.foto_unit %}
+                            <img id="monitoringImagePreview" src="{{ lahan_utama.foto_unit.url }}" alt="Unit Monitoring Image" style="width: 300px; height: 180px; object-fit: cover; border-radius: 8px;">
+                        {% else %}
+                            <img id="monitoringImagePreview" src="{% static 'images/default_farm.jpg' %}" alt="Unit Monitoring Image" style="width: 300px; height: 180px; object-fit: cover; border-radius: 8px;">
+                        {% endif %}
                         <input type="file" id="monitoringPhotoInput" name="monitoring_photo" accept="image/*" style="display: none;" onchange="previewMonitoringImage(this)">
                         <button type="button" class="upload-btn" onclick="document.getElementById('monitoringPhotoInput').click()">
                             Ubah Foto Unit
@@ -85,22 +120,41 @@
                     <div class="form-card-monitoring">
                         <div class="form-group-monitoring">
                             <label for="nama_unit">NAMA UNIT:</label>
-                            <input type="text" id="nama_unit" name="nama_unit" required>
+                            <input
+                                type="text"
+                                id="nama_unit"
+                                name="nama_unit"
+                                required
+                                value="{{ lahan_utama.nama_lahan|default:'' }}"
+                            >
                         </div>
                         
                         <div class="form-group-monitoring">
                             <label for="lokasi">LOKASI:</label>
-                            <input type="text" id="lokasi" name="lokasi" required>
+                            <input
+                                type="text"
+                                id="lokasi"
+                                name="lokasi"
+                                required
+                                value="{{ lahan_utama.lokasi|default:'' }}"
+                            >
                         </div>
                         
                         <div class="form-group-monitoring">
                             <label for="luas_area">LUAS AREA:</label>
-                            <input type="text" id="luas_area" name="luas_area" placeholder="Contoh: 100 m²" required>
+                            <input
+                                type="text"
+                                id="luas_area"
+                                name="luas_area"
+                                placeholder="Contoh: 100 m²"
+                                required
+                                value="{{ lahan_utama.luas_daerah|default:'' }}"
+                            >
                         </div>
                         
                         <div class="form-group-monitoring">
                             <label for="deskripsi">DESKRIPSI:</label>
-                            <textarea id="deskripsi" name="deskripsi" rows="3"></textarea>
+                            <textarea id="deskripsi" name="deskripsi" rows="3">{{ lahan_utama.deskripsi|default:'' }}</textarea>
                         </div>
                         
                         <div class="form-actions-monitoring">
@@ -164,44 +218,60 @@ function previewMonitoringImage(input) {
     }
 }
 
-
-// Form submission handler for Account Tab (Existing code)
-document.getElementById('profileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Auto-append " m²" to luas_area input
+function setupLuasAreaAutoFormat() {
+    const luasAreaInput = document.getElementById('luas_area');
+    if (!luasAreaInput) return;
     
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+    // Handle input event
+    luasAreaInput.addEventListener('input', function(e) {
+        let value = this.value.trim();
+        
+        // Remove existing " m²" if present
+        value = value.replace(/\s*m²\s*$/i, '');
+        
+        // If value is not empty and contains numbers, add " m²"
+        if (value && /\d/.test(value)) {
+            // Get cursor position before adding suffix
+            const cursorPos = this.selectionStart;
+            
+            // Add " m²" if not already there
+            if (!value.endsWith(' m²')) {
+                value = value + ' m²';
+                this.value = value;
+                
+                // Restore cursor position (adjust for added " m²")
+                const newCursorPos = Math.min(cursorPos, value.length - 3);
+                this.setSelectionRange(newCursorPos, newCursorPos);
+            }
+        }
+    });
     
-    submitBtn.innerHTML = 'MENYIMPAN...';
-    submitBtn.disabled = true;
+    // Handle blur event (when user leaves the field)
+    luasAreaInput.addEventListener('blur', function(e) {
+        let value = this.value.trim();
+        
+        // Remove existing " m²" if present
+        value = value.replace(/\s*m²\s*$/i, '');
+        
+        // If value is not empty and contains numbers, ensure " m²" is added
+        if (value && /\d/.test(value)) {
+            if (!value.endsWith(' m²')) {
+                this.value = value + ' m²';
+            }
+        }
+    });
     
-    setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        alert('Profile berhasil diperbarui!');
-    }, 2000);
-});
-
-// Form submission handler for Monitoring Tab (You may need to adjust the ID/Class)
-document.querySelector('.monitoring-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const submitBtn = this.querySelector('.save-btn-monitoring');
-    const originalText = submitBtn.innerHTML;
-    
-    submitBtn.innerHTML = 'MENYIMPAN...';
-    submitBtn.disabled = true;
-    
-    // Logic untuk AJAX/fetch POST ke backend akan diletakkan di sini
-    // ...
-    
-    setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        alert('Data Unit Monitoring berhasil diperbarui!');
-    }, 2000);
-});
-
+    // Handle focus event - if field already has value from DB, ensure format
+    luasAreaInput.addEventListener('focus', function(e) {
+        let value = this.value.trim();
+        if (value && /\d/.test(value) && !value.endsWith(' m²')) {
+            // If value from DB doesn't have " m²", add it
+            value = value.replace(/\s*m²\s*$/i, '');
+            this.value = value + ' m²';
+        }
+    });
+}
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
@@ -209,6 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Catatan: Fungsi switchTab yang di atas menggunakan event, jadi kita panggil tab-button secara manual di sini
     document.querySelector('.tab-navigation .tab-button:nth-child(1)').classList.add('active');
     document.getElementById('account-tab').classList.add('active');
+    
+    // Setup auto-format for luas_area
+    setupLuasAreaAutoFormat();
 });
 </script>
 {% endblock %}

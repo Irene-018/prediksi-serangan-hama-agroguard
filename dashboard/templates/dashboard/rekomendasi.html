@@ -15,19 +15,49 @@
 {% block content %}
 <section class="recommendation-section">
   <h1> Rekomendasi Treatment</h1>
-  <p class="subtitle">Panduan lengkap penanganan hama berdasarkan hasil deteksi</p>
+  <p class="subtitle">
+    {% if hasil %}
+      Panduan penanganan untuk hasil deteksi terbaru tanaman Anda.
+    {% else %}
+      Belum ada hasil deteksi. Lakukan deteksi terlebih dahulu untuk mendapatkan rekomendasi.
+    {% endif %}
+  </p>
+
+  {% if not hasil %}
+    <div class="info-section" style="margin-top: 20px;">
+      <p>
+        Tidak ditemukan data deteksi pada akun Anda. Silakan unggah foto daun di menu
+        <strong>Deteksi</strong> untuk mendapatkan rekomendasi treatment yang spesifik.
+      </p>
+    </div>
+  {% else %}
 
   <!-- === Hasil Deteksi === -->
   <div class="hama-summary">
     <div class="hama-photo">
-      <img src="{% static 'recommendation/images/sample-leaf.png' %}" alt="Hama">
+      {% if hasil.citra.path_file %}
+        <img src="{{ hasil.citra.path_file.url }}" alt="Hasil Deteksi">
+      {% else %}
+        <img src="{% static 'recommendation/images/sample-leaf.png' %}" alt="Hama">
+      {% endif %}
     </div>
     <div class="hama-info">
-      <h2>Kutu Daun (Aphid)</h2>
-      <p class="latin"><i class="fa-solid fa-leaf"></i> Aphis gossypii / Myzus persicae</p>
+      <h2>{{ hasil.jenis_hama.nama }}</h2>
+      <p class="latin">
+        <i class="fa-solid fa-leaf"></i>
+        {{ hasil.jenis_hama.nama_latin|default:"Nama latin belum diisi" }}
+      </p>
       <div class="meta">
-        <span><i class="fa-solid fa-calendar-days"></i> Waktu : 19 September 2024</span>
-        <span><i class="fa-solid fa-triangle-exclamation"></i> Confidence : 92% (Sangat Tinggi)</span>
+        <span>
+          <i class="fa-solid fa-calendar-days"></i>
+          Waktu :
+          {{ hasil.waktu_deteksi|date:"d M Y H:i" }}
+        </span>
+        <span>
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Confidence :
+          {{ hasil.confidence_score }}%
+        </span>
       </div>
     </div>
   </div>
@@ -38,22 +68,11 @@
     <div class="card">
       <h3> Pestisida Rekomendasi</h3>
       <div class="card-content">
-        <div class="pesticide-item">
-          <strong>Pilihan 1:</strong>
-          <p>Efektif untuk kutu daun, bekerja sistemik</p>
-        </div>
-        <div class="pesticide-item">
-          <strong>Pilihan 2:</strong>
-          <p>Bahan aktif Thiamethoxam, kontak dan sistemik</p>
-        </div>
-        <div class="pesticide-item">
-          <strong>Pilihan 3:</strong>
-          <p>Bekerja cepat pada populasi tinggi kutu daun</p>
-        </div>
-        <div class="pesticide-item">
-          <strong>Alternatif Organik:</strong>
-          <p>Ekstrak neem oil atau larutan sabun insektisida</p>
-        </div>
+        {% if hasil.jenis_hama.cara_penanganan %}
+          <p>{{ hasil.jenis_hama.cara_penanganan|linebreaks }}</p>
+        {% else %}
+          <p>Belum ada data penanganan khusus untuk hama ini. Silakan konsultasikan dengan penyuluh pertanian.</p>
+        {% endif %}
       </div>
     </div>
 
@@ -62,22 +81,20 @@
       <h3>Dosis dan Cara Aplikasi</h3>
       <div class="card-content">
         <div class="dosage-item">
-          <strong>Dosis :</strong> 2 ml/L air
+          <strong>Tingkat Serangan :</strong>
+          {% if hasil.tingkat_serangan == 'ringan' %}
+            Ringan
+          {% elif hasil.tingkat_serangan == 'sedang' %}
+            Sedang
+          {% elif hasil.tingkat_serangan == 'berat' %}
+            Berat
+          {% else %}
+            Tidak diketahui
+          {% endif %}
         </div>
         <div class="dosage-item">
-          <strong>Volume Semprot :</strong> 400–600 L/ha
-        </div>
-        <div class="dosage-item">
-          <strong>Waktu Aplikasi :</strong> Pagi atau sore hari
-        </div>
-        <div class="dosage-item">
-          <strong>Frekuensi :</strong> Setiap 7–10 hari
-        </div>
-        <div class="dosage-item">
-          <strong>Interval :</strong> Minimal 7 hari antar aplikasi
-        </div>
-        <div class="dosage-item">
-          <strong>Masa Tunggu :</strong> 7 hari sebelum panen
+          <strong>Rekomendasi Sistem :</strong>
+          {{ hasil.rekomendasi }}
         </div>
       </div>
     </div>
@@ -85,30 +102,15 @@
 
   <!-- === Penjelasan Tambahan === -->
   <div class="info-section">
-    <h4>Cara Aplikasi Pestisida:</h4>
-    <ol class="aplikasi-list">
-      <li>Persiapan: Larutkan pestisida sesuai dosis dalam air bersih, aduk hingga merata.</li>
-      <li>Aplikasi: Semprotkan merata pada bagian bawah daun (tempat berkumpulnya hama).</li>
-      <li>Coverage: Pastikan seluruh permukaan daun terlapisi, termasuk pucuk tanaman.</li>
-      <li>Kondisi Cuaca: Hindari penyemprotan saat hujan atau angin kencang.</li>
-      <li>Keamanan: Gunakan APD (masker, sarung tangan, baju lengan panjang).</li>
-    </ol>
-
-    <h4>Strategi Rotasi Pestisida:</h4>
+    <h4>Gejala Serangan:</h4>
     <p>
-      Untuk mencegah resistensi hama, rotasi penggunaan pestisida dengan bahan aktif berbeda setiap 2–3 aplikasi.
-      Misalnya: aplikasi  menggunakan <b>Imidacloprid</b>, aplikasi  menggunakan <b>Thiamethoxam</b>,
-      kemudian aplikasi  menggunakan <b>Spirotetramat</b>.
+      {{ hasil.jenis_hama.gejala|default:"Belum ada data gejala yang tersimpan untuk hama ini." }}
     </p>
 
-    <h4>Pengendalian Kultur Teknis:</h4>
-    <ol class="kultur-list">
-      <li>Sanitasi kebun dengan membersihkan gulma dan sisa tanaman.</li>
-      <li>Penanaman tanaman perangkap (seperti sorghum) di sekitar lahan.</li>
-      <li>Penggunaan mulsa plastik perak untuk mengusir kutu daun.</li>
-      <li>Monitoring rutin 2 kali seminggu untuk deteksi dini.</li>
-      <li>Pemanfaatan musuh alami seperti kepik dan kumbang predator.</li>
-    </ol>
+    <h4>Pencegahan Umum:</h4>
+    <p>
+      {{ hasil.jenis_hama.cara_pencegahan|default:"Belum ada data pencegahan yang tersimpan untuk hama ini." }}
+    </p>
 
     <div class="btn-group">
       <a href="#" class="btn btn-download">
@@ -119,5 +121,6 @@
       </a>
     </div>
   </div>
+  {% endif %}
 </section>
 {% endblock %}

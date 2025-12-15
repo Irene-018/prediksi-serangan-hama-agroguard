@@ -3,7 +3,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.db.models import Count
+
 from .models import JenisHama, PencegahanHama
+from dashboard.models import HasilDeteksi, Lahan
+from accounts.models import Petani
 
 # Dapatkan model User yang benar (CustomUser)
 User = get_user_model()
@@ -14,8 +19,63 @@ User = get_user_model()
 
 @login_required(login_url='/accounts/login/')
 def dashboard_view(request):
-    """Dashboard Admin"""
-    return render(request, 'admin_dashboard/dashboard.html')
+    """
+    Dashboard Admin dengan data nyata dari database:
+    - total user
+    - total deteksi hari ini
+    - total jenis hama
+    - top 3 jenis hama terbanyak
+    - log deteksi terbaru
+    """
+    today = timezone.now().date()
+
+    total_users = User.objects.count()
+    total_hama = JenisHama.objects.count()
+    deteksi_hari_ini = HasilDeteksi.objects.filter(waktu_deteksi__date=today).count()
+
+    # Top 3 jenis hama berdasarkan jumlah hasil deteksi
+    top_pests = (
+        HasilDeteksi.objects
+        .values('jenis_hama__nama')
+        .annotate(jumlah=Count('citra_id'))
+        .order_by('-jumlah')[:3]
+    )
+
+    top_pest_1_count = top_pests[0]['jumlah'] if len(top_pests) > 0 else 0
+    top_pest_2_count = top_pests[1]['jumlah'] if len(top_pests) > 1 else 0
+    top_pest_3_count = top_pests[2]['jumlah'] if len(top_pests) > 2 else 0
+
+    # Log deteksi terbaru (10 terakhir)
+    latest_logs_qs = (
+        HasilDeteksi.objects
+        .select_related('citra__petani__user', 'jenis_hama')
+        .order_by('-waktu_deteksi')[:10]
+    )
+
+    logs = []
+    for h in latest_logs_qs:
+        pengguna = h.citra.petani.user.username if hasattr(h.citra, 'petani') else 'Unknown'
+        logs.append(
+            {
+                'waktu': h.waktu_deteksi.strftime('%d %b %Y %H:%M'),
+                'pengguna': pengguna,
+                'hasil': h.jenis_hama.nama,
+                'confidence': float(h.confidence_score),
+                'status': 'Selesai',
+            }
+        )
+
+    context = {
+        'current_user': request.user,
+        'total_users': total_users,
+        'deteksi_hari_ini': deteksi_hari_ini,
+        'total_hama': total_hama,
+        'top_pest_1_count': top_pest_1_count,
+        'top_pest_2_count': top_pest_2_count,
+        'top_pest_3_count': top_pest_3_count,
+        'logs': logs,
+    }
+    return render(request, 'admin_dashboard/dashboard.html', context)
 
 # ============================================
 # USER MANAGEMENT VIEWS
@@ -294,18 +354,104 @@ def hapus_pencegahan_view(request, id):
     return redirect('admin_dashboard:data_pencegahan')
 
 # ============================================
-# LAHAN VIEWS (placeholder)
+# LAHAN VIEWS
 # ============================================
 
+@login_required(login_url='/accounts/login/')
 def data_lahan_view(request):
-    lahan_list = []
-    return render(request, 'admin_dashboard/data_lahan.html', {
-        'lahan_list': lahan_list, 
-        'current_user': request.user
-    })
+    """
+    Daftar semua lahan/unit monitoring yang ada di database.
+    """
+    lahan_list = (
+        Lahan.objects
+        .select_related('petani', 'petani__user')
+        .order_by('-created_at')
+    )
+    return render(
+        request,
+        'admin_dashboard/data_lahan.html',
+        {
+            'lahan_list': lahan_list,
+            'current_user': request.user,
+        },
+    )
 
+
+@login_required(login_url='/accounts/login/')
 def tambah_lahan_view(request):
-    return render(request, 'admin_dashboard/tambah_lahan.html')
+    """
+    Tambah lahan baru dan simpan ke tabel `lahan`.
+    """
+    petani_list = Petani.objects.select_related('user').all().order_by('nama_lengkap')
 
+    if request.method == 'POST':
+        petani_id = request.POST.get('petani')
+        nama_lahan = request.POST.get('nama_lahan')
+        lokasi = request.POST.get('lokasi')
+        luas_daerah = request.POST.get('luas_daerah')
+        jenis_tanaman = request.POST.get('jenis_tanaman')
+        deskripsi = request.POST.get('deskripsi', '')
+
+        if not petani_id or not nama_lahan or not lokasi or not luas_daerah or not jenis_tanaman:
+            messages.error(request, 'Semua field bertanda * harus diisi.')
+            return render(
+                request,
+                'admin_dashboard/tambah_lahan.html',
+                {'petani_list': petani_list},
+            )
+
+        try:
+            petani = Petani.objects.get(id=petani_id)
+            Lahan.objects.create(
+                petani=petani,
+                nama_lahan=nama_lahan,
+                lokasi=lokasi,
+                luas_daerah=luas_daerah,
+                jenis_tanaman=jenis_tanaman,
+                deskripsi=deskripsi,
+                status_aktif=True,
+            )
+            messages.success(request, 'Lahan berhasil ditambahkan.')
+            return redirect('admin_dashboard:data_lahan')
+        except Petani.DoesNotExist:
+            messages.error(request, 'Petani tidak ditemukan.')
+
+    return render(
+        request,
+        'admin_dashboard/tambah_lahan.html',
+        {'petani_list': petani_list},
+    )
+
+
+@login_required(login_url='/accounts/login/')
 def edit_lahan_view(request, id):
-    return render(request, 'admin_dashboard/edit_lahan.html', {'id': id})
+    """
+    Edit data lahan yang sudah ada.
+    (Template edit_lahan.html bisa dibuat terpisah jika diperlukan.)
+    """
+    lahan = get_object_or_404(Lahan, id=id)
+    petani_list = Petani.objects.select_related('user').all().order_by('nama_lengkap')
+
+    if request.method == 'POST':
+        petani_id = request.POST.get('petani')
+        lahan.nama_lahan = request.POST.get('nama_lahan')
+        lahan.lokasi = request.POST.get('lokasi')
+        lahan.luas_daerah = request.POST.get('luas_daerah')
+        lahan.jenis_tanaman = request.POST.get('jenis_tanaman')
+        lahan.deskripsi = request.POST.get('deskripsi', '')
+        lahan.status_aktif = request.POST.get('status_aktif') == 'on'
+
+        try:
+            if petani_id:
+                lahan.petani = Petani.objects.get(id=petani_id)
+            lahan.save()
+            messages.success(request, 'Data lahan berhasil diperbarui.')
+            return redirect('admin_dashboard:data_lahan')
+        except Petani.DoesNotExist:
+            messages.error(request, 'Petani tidak ditemukan.')
+
+    context = {
+        'lahan': lahan,
+        'petani_list': petani_list,
+    }
+    return render(request, 'admin_dashboard/edit_lahan.html', context)
