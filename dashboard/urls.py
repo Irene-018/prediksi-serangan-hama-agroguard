@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/sensor/chart/raw/', views.get_sensor_chart_raw, name='get_sensor_chart_raw'),
     path('api/ai/detect/', views.proses_deteksi_ai, name='ai_detect'),
     path('api/deteksi/history/', views.get_detection_history, name='detection_history'),
+    path('api/deteksi/statistics/', views.get_detection_statistics, name='detection_statistics'),
 ]

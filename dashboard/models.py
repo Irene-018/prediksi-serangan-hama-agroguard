@@ -19,6 +19,12 @@ class Lahan(models.Model):
     lokasi = models.CharField(max_length=255, verbose_name="Lokasi")
     luas_daerah = models.CharField(max_length=50, verbose_name="Luas Daerah", help_text="Contoh: 9km atau 2 hektar")
     deskripsi = models.TextField(blank=True, verbose_name="Deskripsi")
+    foto_unit = models.ImageField(
+        upload_to='lahan/',
+        blank=True,
+        null=True,
+        verbose_name="Foto Unit Monitoring",
+    )
     jenis_tanaman = models.CharField(max_length=100, default='Padi', verbose_name="Jenis Tanaman")
     status_aktif = models.BooleanField(default=True, verbose_name="Status Aktif")
     created_at = models.DateTimeField(auto_now_add=True)
