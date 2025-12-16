@@ -10,9 +10,11 @@ urlpatterns = [
     path('deteksi/', views.deteksi_view, name='deteksi'),
     path('rekomendasi/', views.rekomendasi_view, name='rekomendasi'),
     path("rekomendasi/<int:detection_id>/", views.recommendation_detail, name="recommendation_detail"),
+    path('recommendation/<int:detection_id>/', views.rekomendasi_view, name='recommendation'),
     path('riwayat/', views.riwayat_view, name='riwayat'),
     path('pengaturan/', views.pengaturan_view, name='pengaturan'),
     path('profile/', views.profile_view, name='profile'),
+    path('riwayat/export-pdf/', views.export_riwayat_pdf, name='export_riwayat_pdf'),
     
     # API endpoints
     path('api/test/', views.test_api, name='test_api'),
