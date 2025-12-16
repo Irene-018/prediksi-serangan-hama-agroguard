@@ -15,11 +15,12 @@
       <h1>Data Hama</h1>
     </div>
     <div class="admin-profile">
-      <div class="profile-info">
-        <p class="name">Admin</p>
-        <p class="role">Administrator</p>
+            <div class="profile-info">
+                <p class="name">{{ request.user.username|title }}</p>
+                <p class="role">Administrator</p>
+            </div>
+            <div class="profile-circle">{{ request.user.username|slice:":2"|upper }}</div>
       </div>
-      <div class="profile-circle">AD</div>
     </div>
   </div>
 

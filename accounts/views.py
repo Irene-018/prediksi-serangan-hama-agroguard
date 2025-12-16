@@ -17,8 +17,13 @@ import random
 # LOGIN VIEW
 # =======================
 def login_view(request):
+    """
+    View untuk login user
+    """
+
+    # Kalau sudah login, redirect sesuai is_superuser
     if request.user.is_authenticated:
-        if request.user.role == 'admin':
+        if request.user.is_superuser:
             return redirect('admin_dashboard:dashboard')
         return redirect('dashboard:home')
 
@@ -29,9 +34,12 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            if user.role == 'admin':
+
+            # Redirect otomatis sesuai is_superuser
+            if user.is_superuser:
                 return redirect('admin_dashboard:dashboard')
-            return redirect('dashboard:home')
+            else:
+                return redirect('dashboard:home')
         else:
             messages.error(request, 'Username atau password salah.')
             return redirect('accounts:login')
@@ -132,7 +140,7 @@ def register_petani(request):
         nama_lengkap = request.POST.get('nama_lengkap', '').strip()
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').strip()
-        password = request.POST.get('password')  # ✅ Cukup 1 field
+        password = request.POST.get('password')
         
         # Validasi field kosong
         if not all([nama_lengkap, username, email, password]):
@@ -155,21 +163,17 @@ def register_petani(request):
             return render(request, 'accounts/register.html')
         
         try:
-            # 1. Buat CustomUser
+            # Buat CustomUser (profil Petani otomatis dibuat oleh signal)
             user = CustomUser.objects.create_user(
                 username=username,
                 email=email,
                 password=password,
-                role='petani'
+                first_name=nama_lengkap,  # ✅ Simpan nama di sini
+                role='petani',
+                is_superuser=False  # ✅ Penting! Agar masuk ke Petani
             )
             
-            # 2. Buat Petani profile
-            Petani.objects.create(
-                user=user,
-                nama_lengkap=nama_lengkap,
-                no_handphone='',
-                alamat=''
-            )
+            # Profil Petani sudah otomatis dibuat oleh signal! ✅
             
             messages.success(request, 'Registrasi berhasil! Silakan login.')
             return redirect('accounts:login')
@@ -179,3 +183,66 @@ def register_petani(request):
             return render(request, 'accounts/register.html')
     
     return render(request, 'accounts/register.html')
+
+
+# =======================
+# REGISTER VIEW (ADMIN) - OPSIONAL
+# =======================
+@login_required
+@transaction.atomic
+def register_admin(request):
+    """View untuk registrasi admin baru (hanya superuser yang bisa akses)"""
+    # Cek apakah user adalah superuser
+    if not request.user.is_superuser:
+        messages.error(request, 'Anda tidak memiliki akses!')
+        return redirect('dashboard:home')
+    
+    if request.method == 'POST':
+        nama_lengkap = request.POST.get('nama_lengkap', '').strip()
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password')
+        divisi = request.POST.get('divisi', 'IT').strip()
+        
+        # Validasi field kosong
+        if not all([nama_lengkap, username, email, password]):
+            messages.error(request, 'Semua field harus diisi!')
+            return render(request, 'accounts/register_admin.html')
+        
+        # Validasi password minimal 8 karakter
+        if len(password) < 8:
+            messages.error(request, 'Password minimal 8 karakter!')
+            return render(request, 'accounts/register_admin.html')
+        
+        # Validasi username sudah ada
+        if CustomUser.objects.filter(username=username).exists():
+            messages.error(request, 'Username sudah digunakan!')
+            return render(request, 'accounts/register_admin.html')
+        
+        # Validasi email sudah ada
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, 'Email sudah digunakan!')
+            return render(request, 'accounts/register_admin.html')
+        
+        try:
+            # Buat CustomUser sebagai superuser (profil Admin otomatis dibuat oleh signal)
+            user = CustomUser.objects.create_superuser(
+                username=username,
+                email=email,
+                password=password,
+                first_name=nama_lengkap
+            )
+            
+            # Update divisi (karena signal buat default 'IT')
+            if hasattr(user, 'admin_profile'):
+                user.admin_profile.divisi = divisi
+                user.admin_profile.save()
+            
+            messages.success(request, f'Admin {nama_lengkap} berhasil didaftarkan!')
+            return redirect('admin_dashboard:dashboard')
+            
+        except Exception as e:
+            messages.error(request, f'Terjadi kesalahan: {str(e)}')
+            return render(request, 'accounts/register_admin.html')
+    
+    return render(request, 'accounts/register_admin.html')

@@ -12,32 +12,6 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
-<style>
-    .chart-title, .sensor-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .sensor-label i {
-        margin-right: 6px;
-    }
-
-    .sensor-label i:hover {
-        transform: scale(1.2);
-        transition: 0.2s ease;
-    }
-
-    .alert i {
-        margin-right: 6px;
-    }
-
-    #refreshChart {
-        transition: transform 0.5s ease;
-    }
-</style>
 {% endblock %}
 
 {% block content %}
@@ -56,28 +30,38 @@
 
     <!-- STAT CARDS -->
     <div class="stats">
-        <div class="card sehat">
-            <h2 id="totalDeteksi">-</h2>
-            <p>Total Deteksi</p>
+
+        <!-- STATUS TANAMAN -->
+        <div class="card card-green">
+            <h2 id="statusTanaman">-</h2>
+            <p>Status Tanaman</p>
         </div>
-        <div class="card sakit">
-            <h2 id="hamaDetected">-</h2>
-            <p>Hama Terdeteksi</p>
+
+        <!-- KONDISI LINGKUNGAN -->
+        <div class="card card-yellow">
+            <h2 id="kondisiLingkungan">-</h2>
+            <p>Kondisi Lingkungan</p>
         </div>
-        <div class="card risiko">
-            <h2 id="risikoSerangan">-</h2>
-            <p>Risiko Serangan Hama</p>
+
+        <!-- STATUS SENSOR -->
+        <div class="card card-blue">
+            <h2 id="statusSensor">-</h2>
+            <p>Status Sensor</p>
         </div>
-        <div class="card kelembapan">
-            <h2 id="kelembapanCard">-</h2>
-            <p>Kelembapan</p>
-        </div>
+
     </div>
 
+
     <!-- ALERT -->
-    <div class="alert" id="alertBox" style="display: none;">
-        <i class="fa-solid fa-triangle-exclamation" style="color: #FFD43B;"></i>
-        <span id="alertMessage">Loading...</span>
+    <div id="alertBox" class="alert" style="display: none;" onclick="scrollToSensor()">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <i id="alertIcon" class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: #e74c3c;"></i>
+            <div style="flex: 1;">
+                <strong id="alertTitle" style="color: #721c24; font-size: 16px;">⚠️ Peringatan Kondisi Tidak Normal!</strong>
+                <p id="alertMessage" style="margin: 5px 0 0 0; color: #721c24; font-size: 14px;">Loading...</p>
+            </div>
+            <i class="fa-solid fa-chevron-down" style="font-size: 18px; color: #721c24; animation: bounce 2s infinite;"></i>
+        </div>
     </div>
 
     <!-- CHART -->
@@ -99,7 +83,7 @@
                     <option value="1440">24 Jam Terakhir</option>
                 </select>
                 
-                <button id="refreshChart" style="padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                <button id="refreshChart" style="padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: transform 0.5s ease;">
                     <i class="fa-solid fa-rotate"></i> Refresh
                 </button>
             </div>
@@ -114,11 +98,17 @@
     </div>
 
     <!-- SENSOR DATA -->
-    <div class="sensor-box">
+    <div class="sensor-box" id="sensorBox">
         <h4 class="sensor-title">
             <i class="fa-solid fa-calendar-day" style="color:#2c3e50;"></i> Data Sensor Terbaru
         </h4>
         <p id="lastUpdate" style="margin-bottom: 15px; color: #666;">Update terakhir: Loading...</p>
+        
+        <!-- Status Badge -->
+        <div id="statusBadge" style="display: inline-block; padding: 8px 15px; border-radius: 20px; margin-bottom: 15px; font-size: 13px; font-weight: 600;">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Memeriksa status...
+        </div>
+        
         <div class="sensor-stats">
             <div class="sensor-item">
                 <span class="sensor-label">
@@ -132,9 +122,17 @@
                 </span>
                 <span class="sensor-value" id="currentHumidity">-%</span>
             </div>
+             <div class="sensor-item">
+                <span class="sensor-label">
+                    <i class="fa-solid fa-seedling" style="color:#27ae60;"></i> Kelembapan Tanah:
+                </span>
+                <span class="sensor-value" id="currentSoil">-%</span>
+            </div>
         </div>
-        <button class="btn-warning" onclick="window.location.href='{% url 'dashboard:rekomendasi' %}'">
-            <i class="fa-solid fa-lightbulb"></i> Lihat Rekomendasi
+        
+        <!-- Button Segera Deteksi -->
+        <button class="btn-warning" onclick="window.location.href='{% url 'dashboard:deteksi' %}'" style="width: 100%; padding: 12px; font-size: 15px;">
+            <i class="fa-solid fa-search"></i> Segera Deteksi Daun Sekarang
         </button>
     </div>
 </section>
@@ -144,260 +142,283 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-// ===========================================
-// CONFIGURATION
-// ===========================================
+/* ===========================================
+   CONFIG
+=========================================== */
 const API_BASE = window.location.origin + '/dashboard';
 let UPDATE_INTERVAL = 30000;
 let updateTimer = null;
 let currentTimeRange = 60;
 
-// ===========================================
-// INITIALIZE CHART
-// ===========================================
+/* ===========================================
+   SCROLL TO SENSOR
+=========================================== */
+function scrollToSensor() {
+    const el = document.getElementById('sensorBox');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('highlight');
+    setTimeout(() => el.classList.remove('highlight'), 2000);
+}
+
+/* ===========================================
+   STATUS LOGIC (MONITORING MURNI)
+=========================================== */
+function getStatusTanaman(soil) {
+    if (soil < 35)
+        return { level: 'critical',text: 'Kritis (Terlalu Kering)', color: '#e74c3c' };
+
+    if (soil > 90)
+        return { level: 'critical', text: 'Kritis (Terlalu Basah)', color: '#3498db' };
+
+    if (soil < 45 || soil > 80)
+        return { text: 'Perlu Perhatian', color: '#f39c12' };
+
+    return { text: 'Normal', color: '#27ae60' };
+}
+
+function getKondisiLingkungan(temp, hum) {
+    if (temp < 18 || temp > 35 || hum < 50 || hum > 85)
+        return { text: 'Ekstrem', color: '#e74c3c' };
+    if (temp < 22 || temp > 32 || hum < 60 || hum > 80)
+        return { text: 'Kurang Optimal', color: '#f39c12' };
+    return { text: 'Optimal', color: '#27ae60' };
+}
+
+function getStatusSensor(timestamp) {
+    const diffMin = (new Date() - new Date(timestamp)) / 60000;
+    if (diffMin <= 5) return { text: 'Aktif', color: '#27ae60' };
+    if (diffMin <= 30) return { text: 'Data Tidak Terbaru', color: '#f39c12' };
+    return { text: 'Tidak Aktif', color: '#e74c3c' };
+}
+
+/* ===========================================
+   INITIALIZE CHART
+=========================================== */
 const ctx = document.getElementById('sensorChart').getContext('2d');
 
 const sensorChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [],
+    type: 'line', 
+    data: { 
+        labels: [], 
         datasets: [
             {
-                label: 'Suhu (°C)',
-                data: [],
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 2,
+                label: 'Suhu (°C)', 
+                data: [], 
+                borderColor: '#e74c3c', 
+                backgroundColor: 'rgba(231, 76, 60, 0.1)', 
+                borderWidth: 2, 
+                tension: 0.4, 
+                fill: true, 
+                pointRadius: 2, 
                 pointHoverRadius: 4
             },
             {
-                label: 'Kelembapan (%)',
-                data: [],
-                borderColor: '#3498db',
-                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 2,
+                label: 'Kelembapan (%)', 
+                data: [], 
+                borderColor: '#3498db', 
+                backgroundColor: 'rgba(52, 152, 219, 0.1)', 
+                borderWidth: 2, 
+                tension: 0.4, 
+                fill: true, 
+                pointRadius: 2, 
                 pointHoverRadius: 4
             },
+            {
+                label: 'Kelembapan Tanah (%)', 
+                data: [], 
+                borderColor: '#27ae60', 
+                backgroundColor: 'rgba(39, 174, 96, 0.1)', 
+                borderWidth: 2, 
+                tension: 0.4, 
+                fill: true, 
+                pointRadius: 2, 
+                pointHoverRadius: 4
+            }
         ]
     },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 2.5,
-        animation: {
-            duration: 750
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    padding: 15,
-                    font: {
-                        size: 13,
-                        family: "'Poppins', sans-serif",
-                        weight: '500'
-                    }
+   options: {
+     responsive: true, 
+     maintainAspectRatio: true, 
+     aspectRatio: 2.5, 
+     animation: { duration: 750 
+     },
+     plugins: {
+         legend: {
+             display: true, 
+             position: 'top', 
+             labels: {
+                usePointStyle: true, 
+                padding: 15, 
+                font: {
+                    size: 13, 
+                    family: "'Poppins', sans-serif", 
+                    weight: '500'
                 }
-            },
-            tooltip: {
-                mode: 'index',
-                intersect: false,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                padding: 12,
-                titleFont: {
-                    size: 14,
-                    family: "'Poppins', sans-serif",
-                    weight: '600'
-                },
+            }
+        },
+        tooltip: {
+             mode: 'index', 
+             intersect: false, 
+             backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+             padding: 12, 
+             titleFont: {
+                 size: 14, 
+                 family: "'Poppins', sans-serif", 
+                 weight: '600'
+                }, 
                 bodyFont: {
-                    size: 13,
-                    family: "'Poppins', sans-serif"
-                },
-                borderColor: 'rgba(255, 255, 255, 0.2)',
-                borderWidth: 1
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: false,
-                suggestedMin: 20,
-                suggestedMax: 85,
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.05)',
-                    drawBorder: false
-                },
-                ticks: {
-                    font: {
-                        family: "'Poppins', sans-serif",
-                        size: 12
-                    },
-                    padding: 10,
-                    stepSize: 10
+                    size: 13, 
+                    family: "'Poppins', sans-serif" 
+                }, 
+                    borderColor: 'rgba(255, 255, 255, 0.2)', 
+                    borderWidth: 1 
                 }
             },
-            x: {
-                grid: {
-                    display: true,
-                    color: 'rgba(0, 0, 0, 0.05)'
-                },
-                ticks: {
-                    font: {
-                        family: "'Poppins', sans-serif",
-                        size: 11
-                    },
-                    padding: 10,
-                    maxRotation: 0,
-                    autoSkip: true,
-                    autoSkipPadding: 50,
-                    maxTicksLimit: getMaxTicksLimit()
-                }
-            }
-        },
-        interaction: {
-            mode: 'nearest',
-            axis: 'x',
-            intersect: false
+            scales: {
+                 y: {
+                    beginAtZero: false, 
+                    suggestedMin: 20, 
+                    suggestedMax: 85, 
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false 
+                    }, 
+                    ticks: {
+                        font: {
+                            family: "'Poppins', sans-serif", 
+                            size: 12 
+                        }, 
+                        padding: 10, 
+                        stepSize: 10 
+                    }
+                 },
+                 x: {
+                    grid: {
+                        display: true, 
+                        color: 'rgba(0, 0, 0, 0.05)' 
+                    }, 
+                    ticks: {
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 11 
+                        }, 
+                        padding: 10, 
+                        maxRotation: 0, 
+                        autoSkip: true, 
+                        autoSkipPadding: 50, 
+                        maxTicksLimit: getMaxTicksLimit()
+                    }
+                 }
         }
     }
 });
 
-// ===========================================
-// HELPER FUNCTIONS
-// ===========================================
+/* ===========================================
+   FETCH LATEST SENSOR DATA
+=========================================== */
+async function fetchLatestData() {
+    try {
+        const res = await fetch(`${API_BASE}/api/sensor/latest/`);
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+
+        const d = json.data;
+        const temp = +d.temperature;
+        const hum  = +d.humidity;
+        const soil = +d.soil_moisture;
+
+        // Sensor values
+        currentTemp.textContent = `${temp}°C`;
+        currentHumidity.textContent = `${hum}%`;
+        currentSoil.textContent = soil !== null ? `${soil}%` : '—';
+
+        // Status cards
+        const st = getStatusTanaman(soil);
+        const kl = getKondisiLingkungan(temp, hum);
+        const ss = getStatusSensor(d.timestamp);
+
+        statusTanaman.textContent = st.text;
+        statusTanaman.style.color = st.color;
+
+        kondisiLingkungan.textContent = kl.text;
+        kondisiLingkungan.style.color = kl.color;
+
+        statusSensor.textContent = ss.text;
+        statusSensor.style.color = ss.color;
+
+        // Status badge global
+        if (st.text === 'Kritis' || kl.text === 'Ekstrem') {
+            statusBadge.innerHTML = '🚨 Status: TIDAK NORMAL';
+            statusBadge.style.background = '#e74c3c';
+        } else if (st.text === 'Perlu Perhatian' || kl.text === 'Kurang Optimal') {
+            statusBadge.innerHTML = '⚠️ Status: PERLU PERHATIAN';
+            statusBadge.style.background = '#f39c12';
+        } else if (st.text === 'Data Tidak Tersedia') {
+            statusBadge.innerHTML = 'ℹ️ Status: DATA TIDAK TERSEDIA';
+            statusBadge.style.background = '#95a5a6';
+        } else {
+            statusBadge.innerHTML = '✅ Status: NORMAL';
+            statusBadge.style.background = '#27ae60';
+        }
+        statusBadge.style.color = '#fff';
+
+        // Alert (TURUNAN STATUS)
+       // ================================
+       const diffMin = (new Date() - new Date(d.timestamp)) / 60000;
+
+        // Jika data TIDAK fresh (> 5 menit)
+        if (diffMin > 5) {
+            alertBox.style.display = 'block';
+            alertBox.classList.remove('blinking', 'alert-high');
+            alertTitle.textContent = 'ℹ️ Data Tidak Real-Time';
+            alertMessage.textContent = `Data terakhir diterima ${Math.round(diffMin)} menit lalu. Sensor mungkin tidak aktif.`;
+            alertIcon.className = 'fa-solid fa-clock';
+            alertIcon.style.color = '#95a5a6';
+
+        // Jika data fresh DAN tanaman kritis
+        } else if (st.level === 'critical') {
+            alertBox.style.display = 'block';
+            alertBox.classList.add('blinking');
+            alertBox.classList.remove('alert-high');
+            alertTitle.textContent = '🌱 KONDISI TANAH KRITIS';
+            alertMessage.textContent = `Kelembapan tanah ${soil}% berada di luar batas aman. Segera lakukan tindakan.`;
+            alertIcon.className = 'fa-solid fa-seedling';
+            alertIcon.style.color = '#c0392b';
+
+        // Jika data fresh DAN lingkungan ekstrem
+        } else if (kl.text === 'Ekstrem') {
+            alertBox.style.display = 'block';
+            alertBox.classList.add('blinking');
+            alertBox.classList.remove('alert-high');
+            alertTitle.textContent = '🌡️ KONDISI LINGKUNGAN EKSTREM';
+            alertMessage.textContent = `Suhu (${temp}°C) atau kelembapan udara (${hum}%) tidak ideal untuk tanaman.`;
+            alertIcon.className = 'fa-solid fa-temperature-high';
+            alertIcon.style.color = '#e74c3c';
+
+        // Jika semua normal
+        } else {
+            alertBox.style.display = 'none';
+            alertBox.classList.remove('blinking', 'alert-high');
+        }
+        // Timestamp
+        const t = new Date(d.timestamp).toLocaleString('id-ID', {
+            day:'numeric', month:'short', year:'numeric',
+            hour:'2-digit', minute:'2-digit'
+        });
+        lastUpdate.textContent = `Update terakhir: ${t} WIB`;
+
+    } catch (e) {
+        console.error('Latest data error:', e);
+    }
+}
+
+/* ===========================================
+   CHART
+=========================================== */
 function getMaxTicksLimit() {
     if (currentTimeRange <= 60) return 12;
     if (currentTimeRange <= 360) return 18;
     return 24;
-}
-
-function updateStatus(message, type = 'loading') {
-    const statusEl = document.getElementById('chartStatus');
-    if (!statusEl) return;
-    
-    const icons = {
-        loading: '<i class="fa-solid fa-circle-notch fa-spin"></i>',
-        success: '<i class="fa-solid fa-circle-check"></i>',
-        error: '<i class="fa-solid fa-circle-exclamation"></i>'
-    };
-    
-    statusEl.innerHTML = `${icons[type]} ${message}`;
-}
-
-// ===========================================
-// FETCH DASHBOARD STATISTICS
-// ===========================================
-async function fetchDashboardStats() {
-    try {
-        // Fetch statistik deteksi AI (Total Deteksi & Hama Terdeteksi)
-        const deteksiResponse = await fetch(`${API_BASE}/api/deteksi/statistics/`, {
-            credentials: 'include'  // Include cookies untuk authentication
-        });
-        const deteksiResult = await deteksiResponse.json();
-        
-        // Update kartu Total Deteksi dan Hama Terdeteksi dari data deteksi AI
-        if (deteksiResult.success && deteksiResult.data) {
-            document.getElementById('totalDeteksi').textContent = deteksiResult.data.total_deteksi || 0;
-            document.getElementById('hamaDetected').textContent = deteksiResult.data.hama_terdeteksi || 0;
-        } else {
-            document.getElementById('totalDeteksi').textContent = 0;
-            document.getElementById('hamaDetected').textContent = 0;
-        }
-        
-        // Fetch statistik sensor (untuk Kelembapan & Risiko Serangan)
-        const sensorResponse = await fetch(`${API_BASE}/api/sensor/statistics/`);
-        const sensorResult = await sensorResponse.json();
-        
-        if (sensorResult.success && sensorResult.data) {
-            const stats = sensorResult.data;
-            
-            // Calculate risk percentage
-            const riskPercentage = stats.avg_humidity < 60 || stats.avg_humidity > 80 ? 
-                                   Math.round((Math.abs(70 - stats.avg_humidity) / 70) * 100) : 0;
-            document.getElementById('risikoSerangan').textContent = `${riskPercentage}%`;
-            
-            // Alert handling
-            const alertBox = document.getElementById('alertBox');
-            const alertMsg = document.getElementById('alertMessage');
-            
-            if (stats.avg_humidity < 60) {
-                alertBox.style.display = 'flex';
-                alertMsg.textContent = `Kondisi kelembapan tanah rendah (${Math.round(stats.avg_humidity)}%). Segera lakukan penyiraman untuk mencegah stress pada tanaman.`;
-            } else if (stats.avg_humidity > 80) {
-                alertBox.style.display = 'flex';
-                alertMsg.textContent = `Kondisi kelembapan tanah tinggi (${Math.round(stats.avg_humidity)}%). Periksa sistem drainase untuk mencegah pembusukan akar.`;
-            } else {
-                alertBox.style.display = 'none';
-            }
-        } else {
-            // Tidak ada data sensor untuk hari ini
-            document.getElementById('risikoSerangan').textContent = '0%';
-            document.getElementById('kelembapanCard').textContent = '-';
-
-            const alertBox = document.getElementById('alertBox');
-            const alertMsg = document.getElementById('alertMessage');
-            
-            // Hanya tampilkan alert jika ada data deteksi tapi tidak ada data sensor
-            if (deteksiResult.success && deteksiResult.data && deteksiResult.data.total_deteksi > 0) {
-                alertBox.style.display = 'flex';
-                alertMsg.textContent = 'Belum ada data sensor untuk hari ini, tapi Anda sudah memiliki hasil deteksi.';
-            } else if (!deteksiResult.success || !deteksiResult.data || deteksiResult.data.total_deteksi === 0) {
-                alertBox.style.display = 'flex';
-                alertMsg.textContent = 'Belum ada data sensor dan deteksi untuk hari ini.';
-            }
-        }
-    } catch (error) {
-        console.error('❌ Error fetching statistics:', error);
-        // Fallback: set ke 0 jika error
-        document.getElementById('totalDeteksi').textContent = 0;
-        document.getElementById('hamaDetected').textContent = 0;
-        document.getElementById('risikoSerangan').textContent = '0%';
-    }
-}
-
-// ===========================================
-// FETCH LATEST SENSOR DATA
-// ===========================================
-async function fetchLatestData() {
-    try {
-        const response = await fetch(`${API_BASE}/api/sensor/latest/`);
-        const result = await response.json();
-        
-        if (result.success && result.data) {
-            const data = result.data;
-            
-            // Update sensor values
-            document.getElementById('currentTemp').textContent = `${data.temperature}°C`;
-            document.getElementById('currentHumidity').textContent = `${data.humidity}%`;
-            document.getElementById('kelembapanCard').textContent = `${Math.round(data.humidity)}%`;
-            
-            // Update timestamp
-            const timestamp = new Date(data.timestamp);
-            const options = {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'Asia/Jakarta'
-            };
-            const formattedTime = timestamp.toLocaleString('id-ID', options);
-            document.getElementById('lastUpdate').textContent = `Update terakhir: ${formattedTime} WIB`;
-            
-            console.log('✅ Latest data updated:', data);
-        }
-    } catch (error) {
-        console.error('❌ Error fetching latest data:', error);
-        document.getElementById('currentTemp').textContent = 'N/A';
-        document.getElementById('currentHumidity').textContent = 'N/A';
-    }
 }
 
 // ===========================================
@@ -405,96 +426,62 @@ async function fetchLatestData() {
 // ===========================================
 async function fetchChartData() {
     try {
-        updateStatus('Memuat data grafik...', 'loading');
-        
+        chartStatus.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memuat data...';
+
         const hours = currentTimeRange / 60;
-        const response = await fetch(`${API_BASE}/api/sensor/chart/raw/?hours=${hours}`);
-        const result = await response.json();
-        
-        if (result.success && result.data && result.data.length > 0) {
-            const chartData = result.data;
-            
-            sensorChart.data.labels = chartData.map(item => item.time);
-            sensorChart.data.datasets[0].data = chartData.map(item => item.temperature);
-            sensorChart.data.datasets[1].data = chartData.map(item => item.humidity);
-            
-            sensorChart.options.scales.x.ticks.maxTicksLimit = getMaxTicksLimit();
-            sensorChart.update('active');
-            
-            const dataPoints = chartData.length;
-            const lastTime = chartData[chartData.length - 1].time;
-            
-            updateStatus(`${dataPoints} data point • Update: ${lastTime}`, 'success');
-            console.log('✅ Chart updated:', dataPoints, 'points');
-        } else {
-            updateStatus('Belum ada data. ESP8266 sedang mengumpulkan data...', 'error');
-            console.warn('⚠️ No chart data available');
+        const res = await fetch(`${API_BASE}/api/sensor/chart/raw/?hours=${hours}`);
+        const json = await res.json();
+
+        if (!json.success || !json.data.length) {
+            chartStatus.textContent = 'Belum ada data grafik.';
+            return;
         }
-    } catch (error) {
-        updateStatus('Error memuat data. Coba refresh.', 'error');
-        console.error('❌ Error fetching chart data:', error);
+
+        sensorChart.data.labels = json.data.map(d => d.time);
+        sensorChart.data.datasets[0].data = json.data.map(d => d.temperature);
+        sensorChart.data.datasets[1].data = json.data.map(d => d.humidity);
+        sensorChart.data.datasets[2].data = json.data.map(d => d.soil_moisture);
+
+        sensorChart.options.scales.x.ticks.maxTicksLimit = getMaxTicksLimit();
+        sensorChart.update();
+
+        chartStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${json.data.length} data dimuat`;
+
+    } catch (e) {
+        chartStatus.textContent = 'Gagal memuat grafik.';
+        console.error(e);
     }
 }
 
-// ===========================================
-// UPDATE ALL
-// ===========================================
+/* ===========================================
+   UPDATE LOOP
+=========================================== */
 function updateDashboard() {
-    const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    console.log('🔄 Updating at', now);
-    
-    fetchDashboardStats();
     fetchLatestData();
     fetchChartData();
 }
 
-// ===========================================
-// AUTO-UPDATE
-// ===========================================
 function startAutoUpdate() {
     if (updateTimer) clearInterval(updateTimer);
-    
-    if (currentTimeRange <= 60) {
-        UPDATE_INTERVAL = 30000;
-    } else if (currentTimeRange <= 360) {
-        UPDATE_INTERVAL = 60000;
-    } else {
-        UPDATE_INTERVAL = 120000;
-    }
-    
     updateTimer = setInterval(updateDashboard, UPDATE_INTERVAL);
-    console.log(`⏰ Auto-update: every ${UPDATE_INTERVAL/1000} seconds`);
 }
 
-// ===========================================
-// EVENT LISTENERS
-// ===========================================
-document.getElementById('timeRange').addEventListener('change', function(e) {
-    currentTimeRange = parseInt(e.target.value);
-    console.log(`📅 Time range changed to: ${currentTimeRange} minutes`);
-    
+/* ===========================================
+   EVENTS
+=========================================== */
+timeRange.addEventListener('change', e => {
+    currentTimeRange = +e.target.value;
     updateDashboard();
-    startAutoUpdate();
 });
 
-document.getElementById('refreshChart').addEventListener('click', function() {
-    console.log('🔄 Manual refresh triggered');
+refreshChart.addEventListener('click', () => {
     updateDashboard();
-    
-    this.style.transform = 'rotate(360deg)';
-    setTimeout(() => {
-        this.style.transform = 'rotate(0deg)';
-    }, 500);
 });
 
-// ===========================================
-// INITIALIZE
-// ===========================================
-window.addEventListener('load', function() {
-    console.log('🚀 AgroGuard Dashboard loaded');
-    console.log('📡 API:', API_BASE);
-    console.log('📅 Default time range:', currentTimeRange, 'minutes');
-    
+/* ===========================================
+   INIT
+=========================================== */
+window.addEventListener('load', () => {
     updateDashboard();
     startAutoUpdate();
 });

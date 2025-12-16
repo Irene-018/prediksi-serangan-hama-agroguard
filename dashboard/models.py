@@ -1,15 +1,105 @@
 # dashboard/models.py
 
 from django.db import models
-from accounts.models import Petani  # Import Petani dari accounts
+from accounts.models import Petani
+
+# ============================================
+# MODEL SENSOR DATA (ESP8266 + DHT22 + SOIL MOISTURE)
+# ============================================
+class SensorData(models.Model):
+    """Data sensor suhu, kelembapan udara, dan kelembapan tanah dari ESP8266"""
+    
+    petani = models.ForeignKey(
+        Petani,
+        on_delete=models.CASCADE,
+        related_name='sensor_data',
+        null=True,
+        blank=True,
+        help_text="Petani pemilik sensor"
+    )
+    
+    lahan = models.ForeignKey(
+        'Lahan',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sensor_data',
+        help_text="Lahan yang dimonitor"
+    )
+    
+    device_id = models.CharField(
+        max_length=50,
+        default='ESP8266_001',
+        help_text="ID unik ESP8266"
+    )
+    
+    temperature = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Suhu dalam Celsius (°C)"
+    )
+    
+    humidity = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Kelembapan udara dalam persen (%)"
+    )
+    
+    soil_moisture = models.IntegerField(
+        default=0,
+        help_text="Kelembapan tanah dalam persen (0-100%)"
+    )
+    
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Waktu data diterima"
+    )
+    
+    class Meta:
+        db_table = 'sensor_data'
+        verbose_name = 'Data Sensor'
+        verbose_name_plural = 'Data Sensor'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['-timestamp']),
+            models.Index(fields=['device_id', '-timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"{self.device_id} - {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
+    
+    def get_soil_status(self):
+        """Return status kelembapan tanah"""
+        if self.soil_moisture < 20:
+            return "SANGAT KERING"
+        elif self.soil_moisture < 40:
+            return "KERING"
+        elif self.soil_moisture < 60:
+            return "LEMBAP"
+        elif self.soil_moisture < 80:
+            return "BASAH"
+        else:
+            return "SANGAT BASAH"
+    
+    def get_soil_status_color(self):
+        """Return warna status untuk UI"""
+        if self.soil_moisture < 20:
+            return "#c0392b"  # Merah tua
+        elif self.soil_moisture < 40:
+            return "#e74c3c"  # Merah
+        elif self.soil_moisture < 60:
+            return "#f39c12"  # Orange
+        elif self.soil_moisture < 80:
+            return "#27ae60"  # Hijau
+        else:
+            return "#3498db"  # Biru
+
 
 # ============================================
 # MODEL LAHAN (Unit Monitoring)
 # ============================================
 class Lahan(models.Model):
-    """
-    Lahan/Unit Monitoring milik Petani
-    """
+    """Lahan/Unit Monitoring milik Petani"""
     petani = models.ForeignKey(
         Petani,
         on_delete=models.CASCADE,
@@ -17,14 +107,8 @@ class Lahan(models.Model):
     )
     nama_lahan = models.CharField(max_length=100, verbose_name="Nama Unit")
     lokasi = models.CharField(max_length=255, verbose_name="Lokasi")
-    luas_daerah = models.CharField(max_length=50, verbose_name="Luas Daerah", help_text="Contoh: 9km atau 2 hektar")
+    luas_daerah = models.CharField(max_length=50, verbose_name="Luas Daerah")
     deskripsi = models.TextField(blank=True, verbose_name="Deskripsi")
-    foto_unit = models.ImageField(
-        upload_to='lahan/',
-        blank=True,
-        null=True,
-        verbose_name="Foto Unit Monitoring",
-    )
     jenis_tanaman = models.CharField(max_length=100, default='Padi', verbose_name="Jenis Tanaman")
     status_aktif = models.BooleanField(default=True, verbose_name="Status Aktif")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,9 +128,7 @@ class Lahan(models.Model):
 # MODEL CITRA DAUN (Upload Foto)
 # ============================================
 class CitraDaun(models.Model):
-    """
-    Citra/Foto Daun yang diupload Petani untuk deteksi hama
-    """
+    """Citra/Foto Daun yang diupload Petani untuk deteksi hama"""
     STATUS_CHOICES = [
         ('pending', 'Menunggu Deteksi'),
         ('processing', 'Sedang Diproses'),
@@ -54,26 +136,12 @@ class CitraDaun(models.Model):
         ('failed', 'Gagal'),
     ]
 
-    petani = models.ForeignKey(
-        Petani,
-        on_delete=models.CASCADE,
-        related_name='citra_upload'
-    )
-    lahan = models.ForeignKey(
-        Lahan,
-        on_delete=models.CASCADE,
-        related_name='citra_lahan',
-        null=True,
-        blank=True
-    )
+    petani = models.ForeignKey(Petani, on_delete=models.CASCADE, related_name='citra_upload')
+    lahan = models.ForeignKey(Lahan, on_delete=models.CASCADE, related_name='citra_lahan', null=True, blank=True)
     nama_file = models.CharField(max_length=255)
     path_file = models.ImageField(upload_to='citra_daun/%Y/%m/%d/')
     jenis_tanaman = models.CharField(max_length=100, blank=True, verbose_name="Jenis Tanaman")
-    status_deteksi = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
+    status_deteksi = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     waktu_upload = models.DateTimeField(auto_now_add=True)
     waktu_deteksi = models.DateTimeField(null=True, blank=True)
 
@@ -88,12 +156,10 @@ class CitraDaun(models.Model):
 
 
 # ============================================
-# MODEL JENIS HAMA (Sudah Ada, Kita Pertahankan)
+# MODEL JENIS HAMA
 # ============================================
 class JenisHama(models.Model):
-    """
-    Master Data Jenis Hama
-    """
+    """Master Data Jenis Hama"""
     nama = models.CharField(max_length=100, verbose_name="Nama Hama")
     nama_latin = models.CharField(max_length=150, blank=True, verbose_name="Nama Latin")
     deskripsi = models.TextField(blank=True, verbose_name="Deskripsi")
@@ -115,52 +181,23 @@ class JenisHama(models.Model):
 
 
 # ============================================
-# MODEL HASIL DETEKSI (Update dari Deteksi lama)
+# MODEL HASIL DETEKSI
 # ============================================
 class HasilDeteksi(models.Model):
-    """
-    Hasil deteksi YOLO dari citra daun
-    """
+    """Hasil deteksi YOLO dari citra daun"""
     TINGKAT_SERANGAN_CHOICES = [
         ('ringan', 'Ringan'),
         ('sedang', 'Sedang'),
         ('berat', 'Berat'),
     ]
 
-    citra = models.OneToOneField(
-        CitraDaun,
-        on_delete=models.CASCADE,
-        related_name='hasil_deteksi',
-        primary_key=True
-    )
-    jenis_hama = models.ForeignKey(
-        JenisHama,
-        on_delete=models.CASCADE,
-        related_name='deteksi_hama'
-    )
-    confidence_score = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        help_text="Skor kepercayaan model (0-100)"
-    )
-    tingkat_serangan = models.CharField(
-        max_length=10,
-        choices=TINGKAT_SERANGAN_CHOICES,
-        null=True,
-        blank=True
-    )
+    citra = models.OneToOneField(CitraDaun, on_delete=models.CASCADE, related_name='hasil_deteksi', primary_key=True)
+    jenis_hama = models.ForeignKey(JenisHama, on_delete=models.CASCADE, related_name='deteksi_hama')
+    confidence_score = models.DecimalField(max_digits=5, decimal_places=2)
+    tingkat_serangan = models.CharField(max_length=10, choices=TINGKAT_SERANGAN_CHOICES, null=True, blank=True)
     jumlah_daun_terinfeksi = models.IntegerField(default=1)
-    koordinat_bbox = models.JSONField(
-        null=True,
-        blank=True,
-        help_text="Koordinat bounding box dari YOLO"
-    )
-    gambar_hasil = models.ImageField(
-        upload_to='hasil_deteksi/%Y/%m/%d/',
-        null=True,
-        blank=True,
-        help_text="Gambar dengan bounding box"
-    )
+    koordinat_bbox = models.JSONField(null=True, blank=True)
+    gambar_hasil = models.ImageField(upload_to='hasil_deteksi/%Y/%m/%d/', null=True, blank=True)
     rekomendasi = models.TextField(blank=True, verbose_name="Rekomendasi Penanganan")
     waktu_deteksi = models.DateTimeField(auto_now_add=True)
 
@@ -174,28 +211,13 @@ class HasilDeteksi(models.Model):
 
 
 # ============================================
-# MODEL RIWAYAT DETEKSI (Log History)
+# MODEL RIWAYAT DETEKSI
 # ============================================
 class RiwayatDeteksi(models.Model):
-    """
-    Log/Riwayat semua deteksi per Petani
-    """
-    petani = models.ForeignKey(
-        Petani,
-        on_delete=models.CASCADE,
-        related_name='riwayat_deteksi'
-    )
-    hasil_deteksi = models.ForeignKey(
-        HasilDeteksi,
-        on_delete=models.CASCADE,
-        related_name='riwayat'
-    )
-    lahan = models.ForeignKey(
-        Lahan,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    """Log/Riwayat semua deteksi per Petani"""
+    petani = models.ForeignKey(Petani, on_delete=models.CASCADE, related_name='riwayat_deteksi')
+    hasil_deteksi = models.ForeignKey(HasilDeteksi, on_delete=models.CASCADE, related_name='riwayat')
+    lahan = models.ForeignKey(Lahan, on_delete=models.SET_NULL, null=True, blank=True)
     catatan_petani = models.TextField(blank=True, verbose_name="Catatan")
     status_penanganan = models.CharField(
         max_length=20,
@@ -216,60 +238,3 @@ class RiwayatDeteksi(models.Model):
 
     def __str__(self):
         return f"Riwayat {self.petani.nama_lengkap} - {self.created_at.strftime('%Y-%m-%d')}"
-
-    # ============================================
-# MODEL SENSOR DATA (ESP8266 + DHT22)
-# ============================================
-class SensorData(models.Model):
-    """Data sensor suhu & kelembapan dari ESP8266"""
-    
-    petani = models.ForeignKey(
-        Petani,
-        on_delete=models.CASCADE,
-        related_name='sensor_data',
-        null=True,
-        blank=True,
-        help_text="Petani pemilik sensor"
-    )
-    
-    lahan = models.ForeignKey(
-        Lahan,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='sensor_data',
-        help_text="Lahan yang dimonitor"
-    )
-    
-    device_id = models.CharField(
-        max_length=50,
-        default='ESP8266_001',
-        help_text="ID unik ESP8266"
-    )
-    
-    temperature = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        help_text="Suhu dalam Celsius"
-    )
-    
-    humidity = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        help_text="Kelembapan dalam persen"
-    )
-    
-    timestamp = models.DateTimeField(
-        auto_now_add=True,
-        help_text="Waktu data diterima"
-    )
-    
-    class Meta:
-        db_table = 'sensor_data'
-        verbose_name = 'Data Sensor'
-        verbose_name_plural = 'Data Sensor'
-        ordering = ['-timestamp']
-    
-    def __str__(self):
-        return f"{self.device_id} - {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}" 
-    

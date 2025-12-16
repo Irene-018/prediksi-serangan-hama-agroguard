@@ -7,14 +7,14 @@
     <div class="dashboard-header">
         <div class="header-left">
             <h1>Dashboard Admin</h1>
-            <p class="welcome-text">Selamat datang, {{ current_user.username|title }}</p>
+            <p class="welcome-text">Selamat datang, {{ request.user.username|title }}</p>
         </div>
         <div class="admin-profile">
             <div class="profile-info">
-                <p class="name">{{ current_user.username|title }}</p>
+                <p class="name">{{ request.user.username|title }}</p>
                 <p class="role">Administrator</p>
             </div>
-            <div class="profile-circle">{{ current_user.username|slice:":2"|upper }}</div>
+            <div class="profile-circle">{{ request.user.username|slice:":2"|upper }}</div>
         </div>
     </div>
 
