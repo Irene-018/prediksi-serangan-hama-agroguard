@@ -17,7 +17,9 @@
   <div class="search-export">
     <input type="text" id="searchInput" placeholder="Cari riwayat deteksi..." />
     <button class="export-btn">
-      <i class="fas fa-file-pdf"></i> Export PDF
+      <a href="{% url 'dashboard:export_pdf' %}">
+        <i class="fas fa-file-pdf"></i> Export PDF
+      </a>
     </button>
   </div>
 
