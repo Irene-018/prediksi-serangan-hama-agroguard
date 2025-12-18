@@ -10,9 +10,7 @@ urlpatterns = [
     path('deteksi/', views.deteksi_view, name='deteksi'),
     path('rekomendasi/', views.rekomendasi_view, name='rekomendasi'),
     path("rekomendasi/<int:detection_id>/", views.recommendation_detail, name="recommendation_detail"),
-    path('recommendation/<int:detection_id>/', views.rekomendasi_view, name='recommendation'),
     path('riwayat/', views.riwayat_view, name='riwayat'),
-    path('riwayat/export_pdf/', views.export_pdf, name='export_pdf'),
     path('pengaturan/', views.pengaturan_view, name='pengaturan'),
     path('profile/', views.profile_view, name='profile'),
     
