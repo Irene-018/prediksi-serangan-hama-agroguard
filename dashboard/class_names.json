@@ -2,20 +2,20 @@
   "classes": [
     "Pepper__bell___Bacterial_spot",
     "Pepper__bell___healthy",
-    "Tomato__Target_Spot",
-    "Tomato__Tomato_mosaic_virus",
-    "Tomato__Tomato_YellowLeaf__Curl_Virus",
     "Tomato_Bacterial_spot",
     "Tomato_Early_blight",
-    "Tomato_healthy",
     "Tomato_Late_blight",
     "Tomato_Leaf_Mold",
+    "Tomato_Spider_mites_Two_spotted_spider_mite",
+    "Tomato__Target_Spot",
     "Tomato_Septoria_leaf_spot",
-    "Tomato_Spider_mites_Two_spotted_spider_mite"
+    "Tomato__Tomato_YellowLeaf__Curl_Virus",
+    "Tomato__Tomato_mosaic_virus",
+    "Tomato_healthy"
   ],
   "num_classes": 12,
-  "accuracy": 0.7974467873573303,
-  "trained_date": "2025-12-19 01:23:10",
+  "accuracy": 0.8314893841743469,
+  "trained_date": "2025-12-23 00:13:30",
   "image_size": [
     150,
     150
@@ -31,32 +31,12 @@
       "val": 100,
       "total": 500
     },
-    "Tomato__Target_Spot": {
-      "train": 400,
-      "val": 100,
-      "total": 500
-    },
-    "Tomato__Tomato_mosaic_virus": {
-      "train": 298,
-      "val": 75,
-      "total": 373
-    },
-    "Tomato__Tomato_YellowLeaf__Curl_Virus": {
-      "train": 400,
-      "val": 100,
-      "total": 500
-    },
     "Tomato_Bacterial_spot": {
       "train": 400,
       "val": 100,
       "total": 500
     },
     "Tomato_Early_blight": {
-      "train": 400,
-      "val": 100,
-      "total": 500
-    },
-    "Tomato_healthy": {
       "train": 400,
       "val": 100,
       "total": 500
@@ -71,12 +51,32 @@
       "val": 100,
       "total": 500
     },
+    "Tomato_Spider_mites_Two_spotted_spider_mite": {
+      "train": 400,
+      "val": 100,
+      "total": 500
+    },
+    "Tomato__Target_Spot": {
+      "train": 400,
+      "val": 100,
+      "total": 500
+    },
     "Tomato_Septoria_leaf_spot": {
       "train": 400,
       "val": 100,
       "total": 500
     },
-    "Tomato_Spider_mites_Two_spotted_spider_mite": {
+    "Tomato__Tomato_YellowLeaf__Curl_Virus": {
+      "train": 400,
+      "val": 100,
+      "total": 500
+    },
+    "Tomato__Tomato_mosaic_virus": {
+      "train": 298,
+      "val": 75,
+      "total": 373
+    },
+    "Tomato_healthy": {
       "train": 400,
       "val": 100,
       "total": 500
