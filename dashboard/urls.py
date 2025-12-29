@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/sensor/statistics/', views.get_statistics, name='get_statistics'),  # ← TAMBAH INI
     path('api/sensor/chart/raw/', views.get_sensor_chart_raw, name='get_sensor_chart_raw'),
     path('api/ai/detect/', views.proses_deteksi_ai, name='ai_detect'),
+    path('riwayat/export-pdf/', views.export_pdf, name='export_pdf'),
 ]

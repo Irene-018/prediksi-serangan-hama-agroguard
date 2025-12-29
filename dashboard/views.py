@@ -11,6 +11,10 @@ from datetime import timedelta
 from django.db.models import Avg, Max, Min
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from io import BytesIO
 import os
 import tempfile
 from .models import SensorData, CitraDaun, HasilDeteksi, JenisHama, RiwayatDeteksi, Lahan
@@ -662,3 +666,53 @@ def _get_error_suggestion(error_type):
         'SYSTEM_ERROR': 'Terjadi kesalahan sistem. Hubungi administrator jika masalah berlanjut.'
     }
     return suggestions.get(error_type, 'Silakan coba lagi atau hubungi administrator.')
+
+@login_required(login_url='/accounts/login/')
+def export_pdf(request):
+    """
+    Export riwayat deteksi ke PDF
+    """
+    if not hasattr(request.user, 'petani_profile'):
+        messages.error(request, 'Anda tidak memiliki akses untuk export PDF')
+        return redirect('dashboard:riwayat')
+    
+    petani = request.user.petani_profile
+    
+    # Ambil semua riwayat deteksi petani
+    riwayat_list = (
+        RiwayatDeteksi.objects
+        .filter(petani=petani)
+        .select_related('hasil_deteksi__jenis_hama', 'hasil_deteksi__citra', 'lahan')
+        .order_by('-created_at')
+    )
+    
+    # Jika tidak ada data
+    if not riwayat_list.exists():
+        messages.warning(request, 'Tidak ada data riwayat untuk diexport')
+        return redirect('dashboard:riwayat')
+    
+    # Render template ke HTML string
+    context = {
+        'riwayat': riwayat_list,
+        'petani': petani,
+        'total': riwayat_list.count(),
+    }
+    
+    html_string = render_to_string('dashboard/export_pdf.html', context)
+    
+    # Create PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Riwayat_Deteksi_{petani.nama_lengkap}.pdf"'
+    
+    # Generate PDF dari HTML
+    pisa_status = pisa.CreatePDF(
+        html_string,
+        dest=response,
+    )
+    
+    # Check for errors
+    if pisa_status.err:
+        messages.error(request, 'Terjadi kesalahan saat membuat PDF')
+        return redirect('dashboard:riwayat')
+    
+    return response
