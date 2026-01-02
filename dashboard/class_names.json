@@ -15,6 +15,7 @@
   ],
   "num_classes": 12,
   "accuracy": 0.8348936438560486,
+
   "trained_date": "2025-12-29 00:45:36",
   "image_size": [
     150,

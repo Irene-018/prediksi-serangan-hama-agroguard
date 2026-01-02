@@ -198,3 +198,4 @@ class PestDetectionAI:
             }
 
 pest_ai = PestDetectionAI()
+

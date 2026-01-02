@@ -716,3 +716,4 @@ def export_pdf(request):
         return redirect('dashboard:riwayat')
     
     return response
+
