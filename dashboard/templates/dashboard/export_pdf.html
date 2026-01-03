@@ -34,7 +34,6 @@
     <thead>
         <tr>
             <th>Tanggal</th>
-            <th>Tanaman</th>
             <th>Hama</th>
             <th>Tingkat</th>
             <th>Confidence</th>
@@ -44,7 +43,6 @@
         {% for item in riwayat %}
         <tr>
             <td>{{ item.created_at|date:"d M Y" }}</td>
-            <td>{{ item.lahan.jenis_tanaman }}</td>
             <td>{{ item.hasil_deteksi.jenis_hama.nama }}</td>
             <td>{{ item.hasil_deteksi.get_tingkat_serangan_display }}</td>
             <td>{{ item.hasil_deteksi.confidence_score }}%</td>

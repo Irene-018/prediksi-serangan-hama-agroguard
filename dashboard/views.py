@@ -670,18 +670,19 @@ def _get_error_suggestion(error_type):
 @login_required(login_url='/accounts/login/')
 def export_pdf(request):
     """
-    Export riwayat deteksi ke PDF
+    Export riwayat deteksi ke PDF - HANYA DATA MILIK USER YANG LOGIN
     """
+    # PENTING: Validasi user harus punya profil petani
     if not hasattr(request.user, 'petani_profile'):
         messages.error(request, 'Anda tidak memiliki akses untuk export PDF')
         return redirect('dashboard:riwayat')
     
     petani = request.user.petani_profile
     
-    # Ambil semua riwayat deteksi petani
+    # KRUSIAL: Filter riwayat HANYA milik petani yang login
     riwayat_list = (
         RiwayatDeteksi.objects
-        .filter(petani=petani)
+        .filter(petani=petani)  # <-- INI YANG PENTING!
         .select_related('hasil_deteksi__jenis_hama', 'hasil_deteksi__citra', 'lahan')
         .order_by('-created_at')
     )
@@ -700,9 +701,12 @@ def export_pdf(request):
     
     html_string = render_to_string('dashboard/export_pdf.html', context)
     
-    # Create PDF
+    # Create PDF Response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Riwayat_Deteksi_{petani.nama_lengkap}.pdf"'
+    
+    # Filename dengan nama petani (sanitize untuk keamanan)
+    safe_filename = petani.nama_lengkap.replace(' ', '_').replace('/', '_')
+    response['Content-Disposition'] = f'attachment; filename="Riwayat_Deteksi_{safe_filename}.pdf"'
     
     # Generate PDF dari HTML
     pisa_status = pisa.CreatePDF(
@@ -716,4 +720,3 @@ def export_pdf(request):
         return redirect('dashboard:riwayat')
     
     return response
-

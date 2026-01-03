@@ -16,11 +16,9 @@
   <!-- Search dan Export -->
   <div class="search-export">
     <input type="text" id="searchInput" placeholder="Cari riwayat deteksi..." />
-    <button class="export-btn">
-      <a href="{% url 'dashboard:export_pdf' %}">
-        <i class="fas fa-file-pdf"></i> Export PDF
-      </a>
-    </button>
+    <a href="{% url 'dashboard:export_pdf' %}" class="export-btn" id="exportBtn">
+      <i class="fas fa-file-pdf"></i> Export PDF
+    </a>
   </div>
 
   <!-- Statistik Cards (dinamis dari database) -->
@@ -46,7 +44,6 @@
         <tr>
           <th>Tanggal</th>
           <th>Foto</th>
-          <th>Tanaman</th>
           <th>Hasil Deteksi</th>
           <th>Confidence</th>
           <th>Status</th>
@@ -63,13 +60,6 @@
               </div>
             {% else %}
               <div class="photo-box"><i class="fas fa-image"></i></div>
-            {% endif %}
-          </td>
-          <td>
-            {% if r.lahan %}
-              {{ r.lahan.jenis_tanaman }}
-            {% else %}
-              -
             {% endif %}
           </td>
           <td>
@@ -91,7 +81,7 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="6" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
+          <td colspan="5" style="text-align: center; padding: 40px; color: #9cb3a5; font-style: italic;">
             Belum ada riwayat deteksi
           </td>
         </tr>
@@ -102,17 +92,40 @@
 </div>
 
 <script>
+// Fitur Search Riwayat
 document.getElementById('searchInput').addEventListener('input', function(e) {
   const searchTerm = e.target.value.toLowerCase();
   const rows = document.querySelectorAll('.riwayat-table tbody tr');
+  
   rows.forEach(row => {
     const text = row.textContent.toLowerCase();
     row.style.display = text.includes(searchTerm) ? '' : 'none';
   });
 });
 
-document.querySelector('.export-btn').addEventListener('click', () => {
-  alert('Fitur Export PDF akan segera tersedia!');
+// Handle Export PDF - HAPUS ALERT, LANGSUNG DOWNLOAD
+document.getElementById('exportBtn').addEventListener('click', function(e) {
+  const totalDeteksi = {{ total_deteksi|default:"0" }};
+  
+  // Validasi: Cek apakah ada data
+  if (totalDeteksi === 0) {
+    e.preventDefault();
+    alert('Tidak ada data riwayat untuk diexport. Lakukan deteksi terlebih dahulu.');
+    return false;
+  }
+  
+  // Show loading indicator (tanpa preventDefault, biarkan link berjalan)
+  const originalHTML = this.innerHTML;
+  this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+  this.style.pointerEvents = 'none';
+  
+  // Reset button setelah 2 detik
+  setTimeout(() => {
+    this.innerHTML = originalHTML;
+    this.style.pointerEvents = 'auto';
+  }, 2000);
+  
+  // Biarkan link href berjalan normal (download PDF)
 });
 </script>
 {% endblock %}
